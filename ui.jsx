@@ -3,75 +3,46 @@ const { useState, useEffect } = React;
 // Music tracks - moved outside component to prevent re-renders
 const MUSIC_TRACKS = [
     {
-        id: 'arcane_awakening',
-        name: 'Arcane Awakening',
+        id: 'pixel_dreams',
+        name: 'Pixel Dreams',
         artist: 'Fabian Kjaergaard',
-        path: 'music/pixel-dreams.wav'
+        path: 'music/Pixel Dreams.wav'
     },
     {
-        id: 'mystic_journey',
-        name: 'Mystic Journey',
+        id: 'pixel_dreams_1',
+        name: 'Pixel Dreams (1)',
         artist: 'Fabian Kjaergaard',
-        path: 'music/pixel-dreams-2.wav'
-    },
-    {
-        id: 'crystal_caverns',
-        name: 'Crystal Caverns',
-        artist: 'Fabian Kjaergaard',
-        path: 'music/pixel-dreams-3.wav'
-    },
-    {
-        id: 'wizards_quest',
-        name: "Wizard's Quest",
-        artist: 'Fabian Kjaergaard',
-        path: 'music/pixel-dreams-4.wav'
-    },
-    {
-        id: 'enchanted_forest',
-        name: 'Enchanted Forest',
-        artist: 'Fabian Kjaergaard',
-        path: 'music/pixel-dreams-5.wav'
-    },
-    {
-        id: 'ethereal_winds',
-        name: 'Ethereal Winds',
-        artist: 'Fabian Kjaergaard',
-        path: 'music/pixel-dreams-6.wav'
-    },
-    {
-        id: 'spellbound_skies',
-        name: 'Spellbound Skies',
-        artist: 'Fabian Kjaergaard',
-        path: 'music/pixel-dreams-7.wav'
-    },
-    {
-        id: 'moonlight_sorcery',
-        name: 'Moonlight Sorcery',
-        artist: 'Fabian Kjaergaard',
-        path: 'music/pixel-dreams-8.wav'
-    },
-    {
-        id: 'ancient_ruins',
-        name: 'Ancient Ruins',
-        artist: 'Fabian Kjaergaard',
-        path: 'music/pixel-dreams-9.wav'
+        path: 'music/Pixel Dreams (1).wav'
     }
 ];
 
-// Weapon icon mapping
+// Weapon icon mapping - returns image path or text
 const getWeaponIcon = (weaponType) => {
     const icons = {
-        'magic_missile': '🔮',
-        'lightning': '⚡',
-        'fireball': '🔥',
-        'ice': '❄️',
-        'arcane': '🌀',
-        'homing_missile': '🚀',
-        'chain_lightning': '⚡',
-        'spirit_wolf': '🐺',
-        'black_hole': '🌑'
+        'magic_missile': { type: 'image', src: 'assets/MagicMisileGame.png' },
+        'lightning': { type: 'text', value: 'LTG' },
+        'fireball': { type: 'text', value: 'FIR' },
+        'ice': { type: 'text', value: 'ICE' },
+        'arcane': { type: 'text', value: 'ARC' },
+        'homing_missile': { type: 'text', value: 'HMS' },
+        'chain_lightning': { type: 'text', value: 'CLG' },
+        'spirit_wolf': { type: 'text', value: 'WLF' },
+        'black_hole': { type: 'text', value: 'BHO' }
     };
-    return icons[weaponType] || '⚔️';
+    return icons[weaponType] || { type: 'text', value: 'WPN' };
+};
+
+// Ultimate icon mapping - returns image path or text
+const getUltimateIcon = (ultimateType) => {
+    const icons = {
+        'meteor_storm': { type: 'image', src: 'assets/MeteorsStormUltimateGame.png' },
+        'time_freeze': { type: 'text', value: 'TMP' },
+        'black_hole': { type: 'text', value: 'BHO' },
+        'titan_form': { type: 'text', value: 'TTN' },
+        'void_rift': { type: 'text', value: 'VRF' },
+        'cosmic_storm': { type: 'text', value: 'CSM' }
+    };
+    return icons[ultimateType] || { type: 'text', value: 'ULT' };
 };
 
 function GameUI() {
@@ -93,6 +64,7 @@ function GameUI() {
     const [showPaused, setShowPaused] = useState(false);
     const [showChestPopup, setShowChestPopup] = useState(false);
     const [chestData, setChestData] = useState(null);
+    const [showMysteryBoxSpinner, setShowMysteryBoxSpinner] = useState(false);
     const [upgrades, setUpgrades] = useState([]);
     const [showDebugMenu, setShowDebugMenu] = useState(false);
     const [coins, setCoins] = useState(0);
@@ -184,6 +156,12 @@ function GameUI() {
                     }
                     setShowChestPopup(true);
                     window.gameState.openingChest = null; // Clear it after showing
+                }
+
+                // Check for mystery box opening
+                if (window.gameState.openingMysteryBox) {
+                    setShowMysteryBoxSpinner(true);
+                    window.gameState.openingMysteryBox = null;
                 }
             }
         }, 100);
@@ -387,7 +365,7 @@ function GameUI() {
         return (
             <div className="main-menu-container">
                 <div className="main-menu">
-                    <h1 className="game-title">WIZARD SURVIVORS</h1>
+                    <h1 className="game-title">[GAME TITLE]</h1>
 
                     {currentMenuView === 'main' && (
                         <div className="menu-content">
@@ -473,33 +451,56 @@ function GameUI() {
             <div id="game-container">
                 <canvas id="gameCanvas"></canvas>
 
-                {/* Stats HUD */}
-                <div className="stats-hud">
-                    {/* HP Bar */}
-                    <div className="stat-card hp-card">
-                        <div className="stat-label">HP</div>
-                        <div className="hp-bar-container">
-                            <div
-                                className="hp-bar-fill"
-                                style={{
-                                    width: `${(gameStats.hp / gameStats.maxHp) * 100}%`,
-                                    backgroundColor: getHPColor()
-                                }}
-                            />
+                {/* Compact Pixel Art HUD */}
+                <div className="pixel-hud">
+                    <div className="pixel-hud-main">
+                        {/* Character Portrait */}
+                        <div className="char-portrait">
+                            <div className="portrait-inner">
+                                <img
+                                    src="assets/wizard-lpc.png"
+                                    className="wizard-face-sprite"
+                                    alt="Wizard"
+                                />
+                            </div>
                         </div>
-                        <div className="stat-value">{gameStats.hp}/{gameStats.maxHp}</div>
-                    </div>
 
-                    {/* XP Bar */}
-                    <div className="stat-card xp-card">
-                        <div className="stat-label">Level {gameStats.level}</div>
-                        <div className="xp-bar-container">
-                            <div
-                                className="xp-bar-fill"
-                                style={{width: `${(gameStats.xp / gameStats.xpToLevel) * 100}%`}}
-                            />
+                        {/* Bars and Stats */}
+                        <div className="hud-bars">
+                            {/* HP Bar */}
+                            <div className="pixel-bar-row">
+                                <div className="bar-label">HP</div>
+                                <div className="pixel-bar hp-pixel-bar">
+                                    <div
+                                        className="pixel-bar-fill"
+                                        style={{
+                                            width: `${(gameStats.hp / gameStats.maxHp) * 100}%`,
+                                            backgroundColor: '#ff4444'
+                                        }}
+                                    />
+                                </div>
+                            </div>
+
+                            {/* XP Bar */}
+                            <div className="pixel-bar-row">
+                                <div className="bar-label">XP</div>
+                                <div className="pixel-bar xp-pixel-bar">
+                                    <div
+                                        className="pixel-bar-fill"
+                                        style={{
+                                            width: `${(gameStats.xp / gameStats.xpToLevel) * 100}%`,
+                                            backgroundColor: '#4a9eff'
+                                        }}
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Coins */}
+                            <div className="pixel-stat-row">
+                                <span className="coin-icon">💰</span>
+                                <span className="coin-value">{coins}</span>
+                            </div>
                         </div>
-                        <div className="stat-value">{gameStats.xp}/{gameStats.xpToLevel} XP</div>
                     </div>
 
                     {/* Other Stats */}
@@ -554,10 +555,31 @@ function GameUI() {
                         const cooldownPercent = ((Date.now() - weapon.lastFired) / weapon.cooldown) * 100;
                         const isReady = cooldownPercent >= 100;
 
+                        const weaponIcon = getWeaponIcon(weapon.type);
+
                         return (
-                            <div key={index} className={`weapon-slot ${isReady ? 'ready' : 'cooldown'}`}>
+                            <div
+                                key={index}
+                                className={`weapon-slot ${isReady ? 'ready' : 'cooldown'}`}
+                                style={{
+                                    borderColor: isReady ? '#00ff88' : `rgba(255, 165, 0, ${Math.min(cooldownPercent / 100, 1)})`,
+                                    boxShadow: isReady ? '0 0 15px rgba(0, 255, 136, 0.3)' : 'none'
+                                }}
+                            >
                                 <div className="weapon-icon-display">
-                                    {getWeaponIcon(weapon.type)}
+                                    {weaponIcon.type === 'image' ? (
+                                        <img
+                                            src={weaponIcon.src}
+                                            alt={weapon.name}
+                                            style={{
+                                                width: '100%',
+                                                height: '100%',
+                                                objectFit: 'contain'
+                                            }}
+                                        />
+                                    ) : (
+                                        weaponIcon.value
+                                    )}
                                 </div>
                                 <div className="weapon-info">
                                     <div className="weapon-name">{weapon.name}</div>
@@ -575,9 +597,6 @@ function GameUI() {
                                         }}
                                     />
                                 </div>
-                                <div className="weapon-stats">
-                                    <span className="weapon-dmg">⚔️ {Math.floor(weapon.damage)}</span>
-                                </div>
                             </div>
                         );
                     })}
@@ -593,48 +612,72 @@ function GameUI() {
                     ))}
 
                     {/* Ultimate Ability Display - Now inline with weapons */}
-                    {window.gameState && window.gameState.player.ultimate && (
-                        <div className="weapon-slot ultimate-slot">
-                            <div className="weapon-keybind">R</div>
-                            <div className="weapon-icon-display ultimate-icon">
-                                {window.gameState.player.ultimate.icon}
-                            </div>
-                            <div className="weapon-info">
-                                <div className="weapon-name">{window.gameState.player.ultimate.name}</div>
-                            </div>
-                            <div className="weapon-cooldown-container">
-                                {(() => {
-                                    const cooldownPercent = window.gameState.player.ultimateCooldown > 0
-                                        ? ((window.gameState.player.ultimateCooldown /
-                                            (window.gameState.player.ultimate.type &&
-                                             window.ULTIMATES &&
-                                             window.ULTIMATES[window.gameState.player.ultimate.type]
-                                                ? window.ULTIMATES[window.gameState.player.ultimate.type].cooldown
-                                                : 60000)) * 100)
-                                        : 0;
-                                    const isReady = cooldownPercent === 0;
-                                    const remainingSeconds = Math.ceil(window.gameState.player.ultimateCooldown / 1000);
+                    {window.gameState && window.gameState.player.ultimate && (() => {
+                        const ultimateIcon = getUltimateIcon(window.gameState.player.ultimate.type);
 
-                                    return (
-                                        <>
-                                            <div className="weapon-cooldown-bar">
-                                                <div
-                                                    className="weapon-cooldown-fill"
-                                                    style={{
-                                                        width: `${Math.max(100 - cooldownPercent, 0)}%`,
-                                                        backgroundColor: isReady ? '#00ff88' : '#ffa500'
-                                                    }}
-                                                />
-                                            </div>
-                                            {!isReady && (
-                                                <div className="weapon-cooldown-text">{remainingSeconds}s</div>
-                                            )}
-                                        </>
-                                    );
-                                })()}
+                        // Calculate cooldown for border color
+                        const cooldownPercent = window.gameState.player.ultimateCooldown > 0
+                            ? ((window.gameState.player.ultimateCooldown /
+                                (window.gameState.player.ultimate.type &&
+                                 window.ULTIMATES &&
+                                 window.ULTIMATES[window.gameState.player.ultimate.type]
+                                    ? window.ULTIMATES[window.gameState.player.ultimate.type].cooldown
+                                    : 60000)) * 100)
+                            : 0;
+                        const isReady = cooldownPercent === 0;
+
+                        // Progress goes from 100% (on cooldown) to 0% (ready)
+                        // We want to show progress filling from 0 to 360 degrees
+                        const progressDegrees = isReady ? 360 : (360 * (1 - cooldownPercent / 100));
+
+                        return (
+                            <div
+                                className="weapon-slot ultimate-slot"
+                                style={{
+                                    position: 'relative',
+                                    background: `conic-gradient(
+                                        #ec4899 0deg ${progressDegrees}deg,
+                                        rgba(236, 72, 153, 0.2) ${progressDegrees}deg 360deg
+                                    )`,
+                                    padding: '3px',
+                                    boxShadow: isReady ? '0 0 15px rgba(236, 72, 153, 0.3)' : 'none'
+                                }}
+                            >
+                                <div style={{
+                                    background: 'rgba(26, 26, 46, 0.95)',
+                                    width: '100%',
+                                    height: '100%',
+                                    borderRadius: '5px',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    gap: '3px',
+                                    position: 'relative'
+                                }}>
+                                    <div className="weapon-keybind" style={{ position: 'absolute', top: '2px', right: '2px' }}>R</div>
+                                    <div className="weapon-icon-display ultimate-icon">
+                                        {ultimateIcon.type === 'image' ? (
+                                            <img
+                                                src={ultimateIcon.src}
+                                                alt={window.gameState.player.ultimate.name}
+                                                style={{
+                                                    width: '100%',
+                                                    height: '100%',
+                                                    objectFit: 'contain'
+                                                }}
+                                            />
+                                        ) : (
+                                            ultimateIcon.value
+                                        )}
+                                    </div>
+                                    <div className="weapon-info">
+                                        <div className="weapon-name">{window.gameState.player.ultimate.name}</div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    )}
+                        );
+                    })()}
                 </div>
 
                 {/* Debug Menu Toggle Button */}
@@ -723,16 +766,26 @@ function GameUI() {
                         <div className="modal level-up-modal">
                             <h2>Level Up!</h2>
                             <div className="upgrade-options">
-                                {upgrades.map((upgrade, index) => (
-                                    <div
-                                        key={index}
-                                        className="upgrade-option"
-                                        onClick={() => window.selectUpgrade(index)}
-                                    >
-                                        <h3>{upgrade.name}</h3>
-                                        <p>{upgrade.desc}</p>
-                                    </div>
-                                ))}
+                                {upgrades.map((upgrade, index) => {
+                                    const rarityClass = upgrade.rarity ? `rarity-${upgrade.rarity.key.toLowerCase()}` : '';
+                                    return (
+                                        <div
+                                            key={index}
+                                            className={`upgrade-option ${rarityClass}`}
+                                            onClick={() => window.selectUpgrade(index)}
+                                        >
+                                            <h3>
+                                                {upgrade.name}
+                                                {upgrade.rarity && (
+                                                    <span className="upgrade-rarity-badge">
+                                                        {upgrade.rarity.name.toUpperCase()}
+                                                    </span>
+                                                )}
+                                            </h3>
+                                            <p>{upgrade.desc}</p>
+                                        </div>
+                                    );
+                                })}
                             </div>
                         </div>
                     </div>
@@ -893,8 +946,22 @@ function GameUI() {
                     </div>
                 )}
 
+                {/* Mystery Box Spinner */}
+                {showMysteryBoxSpinner && (
+                    <MysteryBoxSpinner
+                        playerData={playerData}
+                        setPlayerData={setPlayerData}
+                        onClose={() => {
+                            setShowMysteryBoxSpinner(false);
+                            if (window.gameState) {
+                                window.gameState.isPaused = false;
+                            }
+                        }}
+                    />
+                )}
+
                 {/* Pause Screen */}
-                {showPaused && !showLevelUp && !showGameOver && !showChestPopup && (
+                {showPaused && !showLevelUp && !showGameOver && !showChestPopup && !showMysteryBoxSpinner && (
                     <div className="modal-overlay">
                         <div className="modal pause-modal">
                             <h2>PAUSED</h2>
@@ -1074,14 +1141,16 @@ function CharacterMenu({ playerData, setPlayerData, onBack }) {
         { id: 'helmet', name: 'Helmet', icon: 'H' },
         { id: 'chest', name: 'Chest', icon: 'C' },
         { id: 'belt', name: 'Belt', icon: 'B' },
-        { id: 'boots', name: 'Boots', icon: 'Bo' }
+        { id: 'boots', name: 'Boots', icon: 'Bo' },
+        { id: 'gloves', name: 'Gloves', icon: 'G' }
     ];
 
     const rightSlots = [
         { id: 'staff', name: 'Staff', icon: 'S' },
         { id: 'ring', name: 'Ring', icon: 'R' },
-        { id: 'gloves', name: 'Gloves', icon: 'G' },
-        { id: 'amulet', name: 'Amulet', icon: 'A' }
+        { id: 'amulet', name: 'Amulet', icon: 'A' },
+        { id: 'trinket1', name: 'Trinket', icon: 'T1' },
+        { id: 'trinket2', name: 'Trinket', icon: 'T2' }
     ];
 
     // Calculate total stats from equipped gear
@@ -1128,11 +1197,11 @@ function CharacterMenu({ playerData, setPlayerData, onBack }) {
                 key={slot.id}
                 className={`gear-slot ${equippedItem ? 'filled' : 'empty'}`}
                 style={{
-                    width: '70px',
-                    height: '70px',
-                    border: equippedItem ? `3px solid ${equippedItem.rarity === 'legendary' ? '#FFD700' : equippedItem.rarity === 'rare' ? '#4169E1' : '#666'}` : '3px solid #333',
-                    borderRadius: '10px',
-                    background: equippedItem ? 'linear-gradient(135deg, #2a3f5f 0%, #1a2f4f 100%)' : 'rgba(20, 20, 30, 0.8)',
+                    aspectRatio: '1',
+                    width: '50px',
+                    border: equippedItem ? `2px solid ${equippedItem.rarity === 'legendary' ? '#FFD700' : equippedItem.rarity === 'rare' ? '#4169E1' : '#666'}` : '2px solid #555',
+                    borderRadius: '4px',
+                    background: equippedItem ? '#1a1a2e' : '#2a2a4a',
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
@@ -1140,32 +1209,32 @@ function CharacterMenu({ playerData, setPlayerData, onBack }) {
                     cursor: equippedItem ? 'pointer' : 'default',
                     transition: 'all 0.2s',
                     position: 'relative',
-                    marginBottom: '10px',
-                    boxShadow: equippedItem ? '0 0 20px rgba(0,0,0,0.5)' : '0 0 10px rgba(0,0,0,0.3)'
+                    padding: '4px'
                 }}
                 onClick={() => equippedItem && unequipGear(slot.id)}
                 onMouseEnter={(e) => equippedItem && (e.currentTarget.style.transform = 'scale(1.05)')}
                 onMouseLeave={(e) => equippedItem && (e.currentTarget.style.transform = 'scale(1)')}
             >
-                <div style={{fontSize: '32px'}}>{equippedItem ? equippedItem.icon : slot.icon}</div>
-                <div style={{fontSize: '10px', color: '#888', marginTop: '4px'}}>{slot.name}</div>
+                <div style={{fontSize: '20px'}}>{equippedItem ? equippedItem.icon : slot.icon}</div>
+                <div style={{fontSize: '7px', color: '#999', marginTop: '1px', fontWeight: '600', textAlign: 'center'}}>{slot.name}</div>
                 {equippedItem && (
                     <div style={{
                         position: 'absolute',
-                        top: '-8px',
-                        right: '-8px',
-                        width: '24px',
-                        height: '24px',
+                        top: '-10px',
+                        right: '-10px',
+                        width: '26px',
+                        height: '26px',
                         borderRadius: '50%',
-                        background: equippedItem.rarity === 'legendary' ? 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)' :
-                                   equippedItem.rarity === 'rare' ? 'linear-gradient(135deg, #4169E1 0%, #1E90FF 100%)' :
-                                   'linear-gradient(135deg, #808080 0%, #696969 100%)',
+                        background: equippedItem.rarity === 'legendary' ? '#FFD700' :
+                                   equippedItem.rarity === 'rare' ? '#4169E1' :
+                                   '#808080',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        fontSize: '12px',
+                        fontSize: '13px',
                         fontWeight: 'bold',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.5)'
+                        color: '#000',
+                        border: '2px solid #000'
                     }}>
                         {equippedItem.rarity === 'legendary' ? 'L' : equippedItem.rarity === 'rare' ? 'R' : 'C'}
                     </div>
@@ -1175,146 +1244,210 @@ function CharacterMenu({ playerData, setPlayerData, onBack }) {
     };
 
     return (
-        <div className="submenu gear-menu" style={{maxWidth: '1200px', margin: '0 auto'}}>
-            <h2>EQUIPMENT</h2>
+        <div className="submenu gear-menu" style={{width: '100%', maxWidth: '1600px', margin: '0 auto'}}>
+            <h2 style={{marginBottom: '8px', fontSize: '20px'}}>EQUIPMENT</h2>
 
-            {/* WoW-Style Character Sheet */}
+            {/* Main Grid: Character on Left, Inventory on Right */}
             <div style={{
-                display: 'flex',
-                justifyContent: 'center',
-                gap: '30px',
-                marginBottom: '30px',
-                background: 'rgba(20, 20, 30, 0.6)',
-                padding: '30px',
-                borderRadius: '12px',
-                border: '2px solid #444'
+                display: 'grid',
+                gridTemplateColumns: 'auto 1fr',
+                gap: '20px'
             }}>
-                {/* Left Gear Slots */}
-                <div style={{display: 'flex', flexDirection: 'column'}}>
-                    {leftSlots.map(slot => renderGearSlot(slot))}
-                </div>
-
-                {/* Character Model in Center */}
+                {/* Character Sheet - LEFT SIDE */}
                 <div style={{
+                    background: '#2a2a4a',
+                    padding: '15px',
+                    borderRadius: '6px',
+                    border: '2px solid #444',
                     display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    minWidth: '200px'
+                    flexDirection: 'column'
                 }}>
-                    {/* Wizard Sprite from Game */}
+                    <h3 style={{marginBottom: '10px', color: '#fff', fontSize: '13px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1px'}}>Equipped Gear</h3>
+
                     <div style={{
-                        position: 'relative',
-                        width: '120px',
-                        height: '120px',
-                        marginBottom: '20px',
-                        display: 'flex',
+                        display: 'grid',
+                        gridTemplateColumns: '1fr auto 1fr',
+                        gap: '10px',
                         alignItems: 'center',
-                        justifyContent: 'center',
-                        filter: 'drop-shadow(0 0 20px rgba(148, 0, 211, 0.6))'
+                        marginBottom: '12px',
+                        flex: 1
                     }}>
-                        <img
-                            src="assets/wizard/Idle.png"
-                            alt="Wizard"
-                            style={{
-                                width: '231px',
-                                height: '190px',
-                                objectFit: 'none',
-                                objectPosition: '0 0',
-                                transform: 'scale(0.8)',
-                                imageRendering: 'pixelated'
-                            }}
-                        />
+                        {/* Left Gear Slots - 5 slots vertical */}
+                        <div style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '5px',
+                            justifyContent: 'center'
+                        }}>
+                            {leftSlots.map(slot => renderGearSlot(slot))}
+                        </div>
+
+                        {/* Wizard Sprite in Center */}
+                        <div style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            padding: '0 8px'
+                        }}>
+                            <div style={{
+                                position: 'relative',
+                                width: '90px',
+                                height: '90px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                filter: 'drop-shadow(0 0 10px rgba(74, 157, 95, 0.6))'
+                            }}>
+                                <img
+                                    src="assets/wizard/Idle.png"
+                                    alt="Wizard"
+                                    style={{
+                                        width: '231px',
+                                        height: '190px',
+                                        objectFit: 'none',
+                                        objectPosition: '0 0',
+                                        transform: 'scale(0.55)',
+                                        imageRendering: 'pixelated'
+                                    }}
+                                />
+                            </div>
+                        </div>
+
+                        {/* Right Gear Slots - 5 slots vertical */}
+                        <div style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '5px',
+                            justifyContent: 'center'
+                        }}>
+                            {rightSlots.map(slot => renderGearSlot(slot))}
+                        </div>
                     </div>
 
                     {/* Total Stats Display */}
                     <div style={{
-                        padding: '15px 20px',
-                        background: 'linear-gradient(135deg, rgba(30, 30, 40, 0.9) 0%, rgba(20, 20, 30, 0.9) 100%)',
-                        borderRadius: '10px',
-                        border: '2px solid #FFD700',
-                        minWidth: '180px'
+                        padding: '10px',
+                        background: '#1a1a2e',
+                        borderRadius: '6px',
+                        border: '2px solid #4a9d5f'
                     }}>
-                        <h4 style={{color: '#FFD700', marginBottom: '10px', textAlign: 'center', fontSize: '14px'}}>Total Stats</h4>
-                        <div style={{fontSize: '13px'}}>
-                            {totalStats.damage > 0 && <div style={{marginBottom: '5px'}}>+{totalStats.damage} Damage</div>}
-                            {totalStats.maxHp > 0 && <div style={{marginBottom: '5px'}}>+{totalStats.maxHp} Max HP</div>}
-                            {totalStats.speed > 0 && <div style={{marginBottom: '5px'}}>+{totalStats.speed.toFixed(1)} Speed</div>}
-                            {totalStats.luck > 0 && <div style={{marginBottom: '5px'}}>+{totalStats.luck}% Luck</div>}
-                            {Object.values(totalStats).every(v => v === 0) && <div style={{color: '#888', textAlign: 'center'}}>No bonuses</div>}
+                        <h4 style={{color: '#4a9d5f', marginBottom: '6px', textAlign: 'center', fontSize: '10px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1px'}}>Total Stats</h4>
+                        <div style={{
+                            display: 'grid',
+                            gridTemplateColumns: 'repeat(2, 1fr)',
+                            gap: '5px',
+                            fontSize: '10px',
+                            color: '#fff'
+                        }}>
+                            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '5px', background: 'rgba(0,0,0,0.3)', borderRadius: '4px'}}>
+                                <span style={{color: '#999', fontSize: '8px', marginBottom: '2px'}}>Damage</span>
+                                <span style={{color: '#4a9d5f', fontWeight: '700', fontSize: '12px'}}>+{totalStats.damage}</span>
+                            </div>
+                            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '5px', background: 'rgba(0,0,0,0.3)', borderRadius: '4px'}}>
+                                <span style={{color: '#999', fontSize: '8px', marginBottom: '2px'}}>Max HP</span>
+                                <span style={{color: '#4a9d5f', fontWeight: '700', fontSize: '12px'}}>+{totalStats.maxHp}</span>
+                            </div>
+                            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '5px', background: 'rgba(0,0,0,0.3)', borderRadius: '4px'}}>
+                                <span style={{color: '#999', fontSize: '8px', marginBottom: '2px'}}>Speed</span>
+                                <span style={{color: '#4a9d5f', fontWeight: '700', fontSize: '12px'}}>+{totalStats.speed.toFixed(1)}</span>
+                            </div>
+                            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '5px', background: 'rgba(0,0,0,0.3)', borderRadius: '4px'}}>
+                                <span style={{color: '#999', fontSize: '8px', marginBottom: '2px'}}>Luck</span>
+                                <span style={{color: '#4a9d5f', fontWeight: '700', fontSize: '12px'}}>+{totalStats.luck}%</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                {/* Right Gear Slots */}
-                <div style={{display: 'flex', flexDirection: 'column'}}>
-                    {rightSlots.map(slot => renderGearSlot(slot))}
+                {/* Inventory - RIGHT SIDE */}
+                <div style={{
+                    background: '#2a2a4a',
+                    padding: '15px',
+                    borderRadius: '6px',
+                    border: '2px solid #444'
+                }}>
+                    <h3 style={{marginBottom: '10px', color: '#fff', fontSize: '13px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1px'}}>Inventory ({playerData.inventory.length}/32)</h3>
+                    <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(16, 1fr)',
+                        gap: '5px'
+                    }}>
+                        {/* Render all 32 slots (4 rows x 8 columns) */}
+                        {Array.from({ length: 32 }).map((_, index) => {
+                            const item = playerData.inventory[index];
+
+                            if (item) {
+                                // Filled slot with item
+                                return (
+                                    <div
+                                        key={index}
+                                        className={`inventory-item rarity-${item.rarity}`}
+                                        onClick={() => equipGear(item.slot, item)}
+                                        style={{
+                                            aspectRatio: '1',
+                                            padding: '4px',
+                                            background: '#1a1a2e',
+                                            border: `2px solid ${item.rarity === 'legendary' ? '#FFD700' : item.rarity === 'rare' ? '#4169E1' : '#666'}`,
+                                            borderRadius: '4px',
+                                            cursor: 'pointer',
+                                            textAlign: 'center',
+                                            transition: 'all 0.2s',
+                                            position: 'relative',
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            alignItems: 'center',
+                                            justifyContent: 'center'
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            e.currentTarget.style.transform = 'scale(1.05)';
+                                            e.currentTarget.style.borderColor = item.rarity === 'legendary' ? '#FFD700' : item.rarity === 'rare' ? '#6495ED' : '#999';
+                                            const rect = e.currentTarget.getBoundingClientRect();
+                                            setTooltipPosition({ x: rect.left + rect.width / 2, y: rect.top });
+                                            setHoveredItem(item);
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.currentTarget.style.transform = 'scale(1)';
+                                            e.currentTarget.style.borderColor = item.rarity === 'legendary' ? '#FFD700' : item.rarity === 'rare' ? '#4169E1' : '#666';
+                                            setHoveredItem(null);
+                                        }}
+                                    >
+                                        <div style={{fontSize: '18px'}}>{item.icon}</div>
+                                        <div style={{
+                                            position: 'absolute',
+                                            bottom: '2px',
+                                            right: '2px',
+                                            fontSize: '7px',
+                                            fontWeight: 'bold',
+                                            color: item.rarity === 'legendary' ? '#FFD700' : item.rarity === 'rare' ? '#4169E1' : '#999',
+                                            textShadow: '0 0 3px #000'
+                                        }}>
+                                            {item.rarity === 'legendary' ? 'L' : item.rarity === 'rare' ? 'R' : 'C'}
+                                        </div>
+                                    </div>
+                                );
+                            } else {
+                                // Empty slot
+                                return (
+                                    <div
+                                        key={index}
+                                        style={{
+                                            aspectRatio: '1',
+                                            background: '#1a1a2e',
+                                            border: '2px solid #444',
+                                            borderRadius: '4px',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            opacity: 0.5
+                                        }}
+                                    >
+                                        <div style={{fontSize: '14px', color: '#333'}}>+</div>
+                                    </div>
+                                );
+                            }
+                        })}
                 </div>
             </div>
-
-            {/* Inventory Below */}
-            <div style={{
-                background: 'rgba(20, 20, 30, 0.6)',
-                padding: '20px',
-                borderRadius: '12px',
-                border: '2px solid #444'
-            }}>
-                <h3 style={{marginBottom: '15px'}}>Inventory ({playerData.inventory.length})</h3>
-                <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fill, minmax(90px, 1fr))',
-                    gap: '10px',
-                    maxHeight: '300px',
-                    overflowY: 'auto',
-                    padding: '10px'
-                }}>
-                    {playerData.inventory.length === 0 ? (
-                        <div style={{gridColumn: '1 / -1', textAlign: 'center', color: '#888', padding: '40px'}}>
-                            No items in inventory<br/>
-                            <span style={{fontSize: '14px', color: '#666'}}>Open chests to find gear!</span>
-                        </div>
-                    ) : (
-                        playerData.inventory.map((item, index) => (
-                            <div
-                                key={index}
-                                className={`inventory-item rarity-${item.rarity}`}
-                                onClick={() => equipGear(item.slot, item)}
-                                style={{
-                                    padding: '10px',
-                                    background: item.rarity === 'legendary' ? 'linear-gradient(135deg, rgba(255, 215, 0, 0.3) 0%, rgba(255, 165, 0, 0.3) 100%)' :
-                                               item.rarity === 'rare' ? 'linear-gradient(135deg, rgba(65, 105, 225, 0.3) 0%, rgba(30, 144, 255, 0.3) 100%)' :
-                                               'linear-gradient(135deg, rgba(128, 128, 128, 0.3) 0%, rgba(105, 105, 105, 0.3) 100%)',
-                                    border: `2px solid ${item.rarity === 'legendary' ? '#FFD700' : item.rarity === 'rare' ? '#4169E1' : '#808080'}`,
-                                    borderRadius: '8px',
-                                    cursor: 'pointer',
-                                    textAlign: 'center',
-                                    transition: 'all 0.2s',
-                                    position: 'relative'
-                                }}
-                                onMouseEnter={(e) => {
-                                    e.currentTarget.style.transform = 'scale(1.05)';
-                                    e.currentTarget.style.boxShadow = '0 0 20px rgba(255,255,255,0.3)';
-                                    const rect = e.currentTarget.getBoundingClientRect();
-                                    setTooltipPosition({ x: rect.left + rect.width / 2, y: rect.top });
-                                    setHoveredItem(item);
-                                }}
-                                onMouseLeave={(e) => {
-                                    e.currentTarget.style.transform = 'scale(1)';
-                                    e.currentTarget.style.boxShadow = 'none';
-                                    setHoveredItem(null);
-                                }}
-                            >
-                                <div style={{fontSize: '36px', marginBottom: '5px'}}>{item.icon}</div>
-                                <div style={{fontSize: '11px', fontWeight: 'bold', color: '#fff', marginBottom: '5px'}}>{item.name}</div>
-                                <div style={{fontSize: '9px', color: '#ccc'}}>
-                                    {Object.entries(item.stats).map(([stat, value]) => (
-                                        <div key={stat} style={{color: '#4ade80'}}>+{value} {stat}</div>
-                                    ))}
-                                </div>
-                            </div>
-                        ))
-                    )}
-                </div>
             </div>
 
             <button className="back-button" onClick={onBack} style={{marginTop: '20px'}}>BACK</button>
@@ -1509,7 +1642,10 @@ function SkillTreeMenu({ playerData, setPlayerData, onBack }) {
 
 // Shop Menu Component
 function ShopMenu({ playerData, setPlayerData, onBack }) {
+    const [showMysteryBox, setShowMysteryBox] = useState(false);
+
     const shopItems = [
+        { id: 'mysterybox', name: 'Mystery Box', icon: 'BOX', cost: 100, desc: 'Spin for random rewards!', special: true },
         { id: 'skillpoint', name: 'Skill Point', icon: 'SP', cost: 200, desc: 'Get 1 skill point' },
         { id: 'xpboost', name: 'XP Boost', icon: 'XP', cost: 150, desc: '+50% XP for next game' },
         { id: 'startweapon', name: 'Extra Start Weapon', icon: 'WPN', cost: 300, desc: 'Start with 2 weapons' },
@@ -1519,6 +1655,16 @@ function ShopMenu({ playerData, setPlayerData, onBack }) {
 
     const buyItem = (item) => {
         if (playerData.coins >= item.cost) {
+            // Special handling for mystery box
+            if (item.id === 'mysterybox') {
+                setPlayerData({
+                    ...playerData,
+                    coins: playerData.coins - item.cost
+                });
+                setShowMysteryBox(true);
+                return;
+            }
+
             let newPlayerData = {
                 ...playerData,
                 coins: playerData.coins - item.cost
@@ -1535,6 +1681,16 @@ function ShopMenu({ playerData, setPlayerData, onBack }) {
         }
     };
 
+    if (showMysteryBox) {
+        return (
+            <MysteryBoxSpinner
+                playerData={playerData}
+                setPlayerData={setPlayerData}
+                onClose={() => setShowMysteryBox(false)}
+            />
+        );
+    }
+
     return (
         <div className="submenu">
             <h2>SHOP</h2>
@@ -1543,21 +1699,376 @@ function ShopMenu({ playerData, setPlayerData, onBack }) {
             </div>
             <div className="shop-grid">
                 {shopItems.map(item => (
-                    <div key={item.id} className="shop-item-card">
-                        <div className="shop-item-icon">{item.icon}</div>
+                    <div key={item.id} className={`shop-item-card ${item.special ? 'special-item' : ''}`}>
+                        <div className="shop-item-icon" style={{fontSize: item.special ? '48px' : '32px'}}>{item.icon}</div>
                         <h3>{item.name}</h3>
                         <p>{item.desc}</p>
                         <button
                             className="buy-button"
                             onClick={() => buyItem(item)}
                             disabled={playerData.coins < item.cost}
+                            style={{
+                                background: item.special ? 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)' : '',
+                                border: item.special ? '3px solid #FFD700' : ''
+                            }}
                         >
-                            BUY - {item.cost}
+                            {item.special ? '🎰 ' : ''}BUY - {item.cost} 💰
                         </button>
                     </div>
                 ))}
             </div>
             <button className="back-button" onClick={onBack}>BACK</button>
+        </div>
+    );
+}
+
+// Mystery Box Spinner Component
+function MysteryBoxSpinner({ playerData, setPlayerData, onClose }) {
+    const [isSpinning, setIsSpinning] = useState(false);
+    const [spinOffset, setSpinOffset] = useState(0);
+    const [wonItem, setWonItem] = useState(null);
+    const [showResult, setShowResult] = useState(false);
+
+    // All possible rewards (mixed rarities for visual variety)
+    const possibleRewards = [
+        { id: '20coins', name: '20 Coins', icon: '$20', rarity: 'common', type: 'coins', value: 20 },
+        { id: '75coins', name: '75 Coins', icon: '$75', rarity: 'rare', type: 'coins', value: 75 },
+        { id: '30coins', name: '30 Coins', icon: '$30', rarity: 'common', type: 'coins', value: 30 },
+        { id: 'ultimate_meteor', name: 'Meteor Storm Ultimate', icon: 'MTR', rarity: 'legendary', type: 'ultimate', ultimate: 'meteor_storm' },
+        { id: 'heal', name: 'Health Potion', icon: 'HP+', rarity: 'common', type: 'item', item: 'heal' },
+        { id: 'skillpoint', name: 'Skill Point', icon: 'SP', rarity: 'rare', type: 'skillpoint', value: 1 },
+        { id: '40coins', name: '40 Coins', icon: '$40', rarity: 'common', type: 'coins', value: 40 },
+        { id: '200coins', name: '200 Coins', icon: '$200', rarity: 'legendary', type: 'coins', value: 200 },
+        { id: 'xpboost', name: 'XP Boost', icon: 'XP+', rarity: 'rare', type: 'boost', boost: 'xp' },
+        { id: '50coins', name: '50 Coins', icon: '$50', rarity: 'common', type: 'coins', value: 50 },
+        { id: '100coins', name: '100 Coins', icon: '$100', rarity: 'rare', type: 'coins', value: 100 },
+        { id: 'ultimate_blackhole', name: 'Black Hole Ultimate', icon: 'BHO', rarity: 'legendary', type: 'ultimate', ultimate: 'black_hole' },
+        { id: 'heal2', name: 'Health Potion', icon: 'HP+', rarity: 'common', type: 'item', item: 'heal' },
+        { id: 'goldboost', name: 'Gold Boost', icon: 'GLD', rarity: 'rare', type: 'boost', boost: 'gold' },
+        { id: 'smallxp', name: 'Small XP Boost', icon: 'XP', rarity: 'common', type: 'boost', boost: 'xp_small' },
+        { id: '2skillpoints', name: '2 Skill Points', icon: 'SP+', rarity: 'legendary', type: 'skillpoint', value: 2 },
+        { id: '125coins', name: '125 Coins', icon: '$125', rarity: 'rare', type: 'coins', value: 125 },
+        { id: 'revive', name: 'Revive Token', icon: 'REV', rarity: 'rare', type: 'item', item: 'revive' },
+        { id: '250coins', name: '250 Coins', icon: '$250', rarity: 'legendary', type: 'coins', value: 250 },
+        { id: 'skillpoint2', name: 'Skill Point', icon: 'SP', rarity: 'rare', type: 'skillpoint', value: 1 },
+        { id: 'ultimate_timefreeze', name: 'Time Freeze Ultimate', icon: 'TMP', rarity: 'legendary', type: 'ultimate', ultimate: 'time_freeze' },
+        { id: '3skillpoints', name: '3 Skill Points', icon: 'SP++', rarity: 'legendary', type: 'skillpoint', value: 3 }
+    ];
+
+    // Create carousel with duplicates for smooth loop
+    const carouselItems = [...possibleRewards, ...possibleRewards, ...possibleRewards];
+
+    const startSpin = () => {
+        setIsSpinning(true);
+        setShowResult(false);
+
+        // Randomly select winning item
+        const winningIndex = Math.floor(Math.random() * possibleRewards.length);
+        const winningItem = possibleRewards[winningIndex];
+
+        // Calculate spin distance
+        const itemWidth = 150; // width of each item
+        const totalItems = carouselItems.length;
+        const targetIndex = possibleRewards.length + winningIndex; // Middle set
+        const randomExtra = Math.random() * 100 - 50; // Add some randomness
+        const finalOffset = -(targetIndex * itemWidth) + (window.innerWidth / 2) - 75 + randomExtra;
+
+        // Spin animation
+        setTimeout(() => {
+            setSpinOffset(finalOffset);
+        }, 50);
+
+        // Show result after spin completes
+        setTimeout(() => {
+            setIsSpinning(false);
+            setWonItem(winningItem);
+            setShowResult(true);
+            applyReward(winningItem);
+        }, 4000);
+    };
+
+    const applyReward = (item) => {
+        let newPlayerData = { ...playerData };
+
+        switch (item.type) {
+            case 'coins':
+                newPlayerData.coins = (newPlayerData.coins || 0) + item.value;
+                break;
+            case 'skillpoint':
+                newPlayerData.skillPoints = (newPlayerData.skillPoints || 0) + item.value;
+                break;
+            case 'ultimate':
+                // Add ultimate to player (this would need game integration)
+                console.log('Unlocked ultimate:', item.ultimate);
+                break;
+            case 'boost':
+                newPlayerData.shopItems = [...(newPlayerData.shopItems || []), item.boost + 'boost'];
+                break;
+            case 'item':
+                newPlayerData.shopItems = [...(newPlayerData.shopItems || []), item.item];
+                break;
+        }
+
+        setPlayerData(newPlayerData);
+    };
+
+    const getRarityColor = (rarity) => {
+        switch (rarity) {
+            case 'legendary': return '#FFD700';
+            case 'rare': return '#4169E1';
+            case 'common': return '#808080';
+            default: return '#fff';
+        }
+    };
+
+    return (
+        <div style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            background: 'rgba(0,0,0,0.95)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000
+        }}>
+            <h2 style={{
+                color: '#D4AF37',
+                marginBottom: '20px',
+                fontSize: '32px',
+                fontFamily: 'monospace',
+                textTransform: 'uppercase',
+                letterSpacing: '4px'
+            }}>
+                MYSTERY BOX
+            </h2>
+
+            {/* Carousel Container */}
+            <div style={{
+                width: '100%',
+                height: '200px',
+                overflow: 'hidden',
+                position: 'relative',
+                marginBottom: '40px',
+                background: '#1a1a1a'
+            }}>
+                {/* Pointer/Arrow at top overlapping boxes */}
+                <div style={{
+                    position: 'absolute',
+                    top: '-60px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    zIndex: 10,
+                    pointerEvents: 'none'
+                }}>
+                    <img
+                        src="assets/ui_arrow_down.png"
+                        alt="↓"
+                        style={{
+                            width: '64px',
+                            height: '64px',
+                            filter: 'brightness(1.5) saturate(1.2)'
+                        }}
+                    />
+                </div>
+                {/* Items Carousel */}
+                <div style={{
+                    display: 'flex',
+                    gap: '20px',
+                    transition: isSpinning ? 'transform 3.5s cubic-bezier(0.17, 0.67, 0.3, 0.99)' : 'none',
+                    transform: `translateX(${spinOffset}px)`,
+                    padding: '20px 0'
+                }}>
+                    {carouselItems.map((item, index) => (
+                        <div key={index} style={{
+                            minWidth: '130px',
+                            height: '160px',
+                            position: 'relative',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            padding: '15px'
+                        }}>
+                            {/* Background UI button image */}
+                            <img
+                                src={item.rarity === 'legendary' ? 'assets/ui_button_gold.png' : 'assets/ui_button.png'}
+                                alt=""
+                                style={{
+                                    position: 'absolute',
+                                    top: 0,
+                                    left: 0,
+                                    width: '100%',
+                                    height: '100%',
+                                    objectFit: 'fill',
+                                    filter: item.rarity === 'rare' ? 'hue-rotate(180deg)' : 'none',
+                                    opacity: 0.9
+                                }}
+                            />
+                            {/* Content on top */}
+                            <div style={{position: 'relative', zIndex: 1}}>
+                                <div style={{fontSize: '48px', marginBottom: '10px', textShadow: '2px 2px 4px rgba(0,0,0,0.8)'}}>{item.icon}</div>
+                                <div style={{
+                                    fontSize: '12px',
+                                    color: '#fff',
+                                    textAlign: 'center',
+                                    fontWeight: '700',
+                                    fontFamily: 'monospace',
+                                    textShadow: '1px 1px 2px rgba(0,0,0,0.9)'
+                                }}>
+                                    {item.name}
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* Spin Button or Result */}
+            {!isSpinning && !showResult && (
+                <button
+                    onClick={startSpin}
+                    style={{
+                        position: 'relative',
+                        padding: '20px 60px',
+                        fontSize: '20px',
+                        background: 'transparent',
+                        border: 'none',
+                        color: '#000',
+                        fontWeight: '900',
+                        cursor: 'pointer',
+                        fontFamily: 'monospace',
+                        letterSpacing: '2px',
+                        transition: 'all 0.2s'
+                    }}
+                    onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = 'scale(1.05)';
+                    }}
+                    onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'scale(1)';
+                    }}
+                >
+                    <img
+                        src="assets/ui_button_gold.png"
+                        alt=""
+                        style={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'fill',
+                            zIndex: -1
+                        }}
+                    />
+                    SPIN NOW!
+                </button>
+            )}
+
+            {showResult && wonItem && (
+                <div style={{
+                    textAlign: 'center',
+                    animation: 'bounceIn 0.5s'
+                }}>
+                    <h3 style={{
+                        color: getRarityColor(wonItem.rarity),
+                        fontSize: '28px',
+                        marginBottom: '20px',
+                        fontFamily: 'monospace',
+                        letterSpacing: '3px'
+                    }}>
+                        YOU WON!
+                    </h3>
+                    <div style={{
+                        fontSize: '64px',
+                        marginBottom: '15px'
+                    }}>
+                        {wonItem.icon}
+                    </div>
+                    <div style={{
+                        fontSize: '20px',
+                        color: '#fff',
+                        marginBottom: '30px',
+                        fontWeight: '700',
+                        fontFamily: 'monospace'
+                    }}>
+                        {wonItem.name}
+                    </div>
+                    <button
+                        onClick={onClose}
+                        style={{
+                            position: 'relative',
+                            padding: '20px 50px',
+                            fontSize: '18px',
+                            background: 'transparent',
+                            border: 'none',
+                            color: '#fff',
+                            fontWeight: '700',
+                            cursor: 'pointer',
+                            fontFamily: 'monospace',
+                            letterSpacing: '2px',
+                            transition: 'all 0.2s'
+                        }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.transform = 'scale(1.05)';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.transform = 'scale(1)';
+                        }}
+                    >
+                        <img
+                            src="assets/ui_button_green.png"
+                            alt=""
+                            style={{
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                width: '100%',
+                                height: '100%',
+                                objectFit: 'fill',
+                                zIndex: -1
+                            }}
+                        />
+                        CONTINUE
+                    </button>
+                </div>
+            )}
+
+            {isSpinning && (
+                <div style={{
+                    color: '#D4AF37',
+                    fontSize: '20px',
+                    fontWeight: '700',
+                    fontFamily: 'monospace',
+                    letterSpacing: '3px',
+                    animation: 'pulse 1s infinite'
+                }}>
+                    SPINNING...
+                </div>
+            )}
+
+            {!isSpinning && !showResult && (
+                <button
+                    onClick={onClose}
+                    style={{
+                        marginTop: '20px',
+                        padding: '10px 30px',
+                        fontSize: '16px',
+                        background: 'transparent',
+                        border: '2px solid #666',
+                        borderRadius: '4px',
+                        color: '#999',
+                        cursor: 'pointer',
+                        fontFamily: 'monospace',
+                        letterSpacing: '2px'
+                    }}
+                >
+                    CANCEL
+                </button>
+            )}
         </div>
     );
 }

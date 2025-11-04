@@ -4,9 +4,14 @@
     box-sizing: border-box;
 }
 
+/* Custom pixel cursor - using Kenney pixel cursor pack */
+body, button, .menu-button {
+    cursor: url('assets/cursor-sword.png'), auto;
+}
+
 body {
     background: #000000;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    font-family: 'Courier New', monospace;
     overflow: hidden;
     width: 100vw;
     height: 100vh;
@@ -31,6 +36,120 @@ body {
     background: #1a1a2e;
 }
 
+/* Pixel Art HUD */
+.pixel-hud {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    z-index: 100;
+    pointer-events: none;
+}
+
+.pixel-hud-main {
+    display: flex;
+    gap: 8px;
+    background: #1a1a1a;
+    border: 4px solid #2a2a2a;
+    padding: 8px;
+    box-shadow: 4px 4px 0px #000;
+    image-rendering: pixelated;
+}
+
+.char-portrait {
+    width: 64px;
+    height: 64px;
+    background: #2a2a2a;
+    border: 3px solid #5fb571;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    image-rendering: pixelated;
+    overflow: hidden;
+}
+
+.portrait-inner {
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.wizard-face {
+    font-size: 40px;
+    line-height: 1;
+    image-rendering: pixelated;
+}
+
+.wizard-face-sprite {
+    width: 64px;
+    height: 64px;
+    object-fit: none;
+    object-position: 0px 0px;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+}
+
+.hud-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 200px;
+}
+
+.pixel-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.bar-label {
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    font-weight: bold;
+    color: #5fb571;
+    min-width: 24px;
+    text-transform: uppercase;
+}
+
+.pixel-bar {
+    flex: 1;
+    height: 16px;
+    background: #000;
+    border: 2px solid #444;
+    position: relative;
+    overflow: hidden;
+}
+
+.pixel-bar-fill {
+    height: 100%;
+    transition: width 0.2s steps(10);
+    image-rendering: pixelated;
+}
+
+.pixel-stat-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px;
+    background: #000;
+    border: 2px solid #444;
+}
+
+.coin-icon {
+    font-size: 14px;
+}
+
+.coin-value {
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    font-weight: bold;
+    color: #ffd700;
+}
+
 /* Stats HUD */
 .stats-hud {
     position: absolute;
@@ -48,12 +167,18 @@ body {
 }
 
 .stat-card {
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(10px);
-    border: 2px solid rgba(233, 69, 96, 0.3);
-    border-radius: 12px;
-    padding: 12px 16px;
-    color: white;
+    background: #1a1a1a;
+    backdrop-filter: none;
+    border: 4px solid #4a9d5f;
+    border-radius: 0px;
+    padding: 8px 12px;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+    color: #5fb571;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    text-transform: uppercase;
 }
 
 .stat-label {
@@ -61,7 +186,7 @@ body {
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1px;
-    color: #e94560;
+    color: #4a9d5f;
     margin-bottom: 6px;
 }
 
@@ -73,35 +198,58 @@ body {
 
 /* HP Bar */
 .hp-bar-container {
-    height: 24px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
+    height: 16px;
+    background: #000000;
+    border-radius: 0px;
     overflow: hidden;
     position: relative;
+    border: 2px solid #5fb571;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+}
+
+.hp-bar-pixel-container {
+    display: flex;
+    gap: 2px;
+    align-items: center;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
 }
 
 .hp-bar-fill {
     height: 100%;
-    background: #4ade80;
-    transition: width 0.3s ease, background-color 0.3s ease;
-    border-radius: 12px;
-    box-shadow: 0 0 10px currentColor;
+    background: #ff6b35;
+    transition: width 0.2s steps(10), background-color 0.3s ease;
+    border-radius: 0px;
+    box-shadow: none;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
 }
 
 /* XP Bar */
 .xp-bar-container {
-    height: 16px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
+    height: 12px;
+    background: #000000;
+    border-radius: 0px;
     overflow: hidden;
+    border: 2px solid #5fb571;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
 }
 
 .xp-bar-fill {
     height: 100%;
-    background: linear-gradient(90deg, #6366f1, #8b5cf6);
-    transition: width 0.3s ease;
-    border-radius: 8px;
-    box-shadow: 0 0 10px #8b5cf6;
+    background: #8b5cf6;
+    transition: width 0.2s steps(10);
+    border-radius: 0px;
+    box-shadow: none;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
 }
 
 /* Stats Row */
@@ -114,7 +262,7 @@ body {
     flex: 1;
     background: rgba(0, 0, 0, 0.85);
     backdrop-filter: blur(10px);
-    border: 2px solid rgba(233, 69, 96, 0.3);
+    border: 2px solid rgba(74, 157, 95, 0.3);
     border-radius: 12px;
     padding: 10px 12px;
     color: white;
@@ -132,8 +280,8 @@ body {
 /* Music Mute Button */
 .music-mute-button {
     margin-top: 8px;
-    background: rgba(34, 197, 94, 0.2);
-    border: 2px solid #22c55e;
+    background: rgba(74, 157, 95, 0.2);
+    border: 2px solid #4a9d5f;
     border-radius: 50%;
     width: 45px;
     height: 45px;
@@ -142,12 +290,12 @@ body {
     justify-content: center;
     cursor: pointer;
     transition: all 0.3s ease;
-    color: #22c55e;
+    color: #4a9d5f;
 }
 
 .music-mute-button:hover {
-    background: rgba(34, 197, 94, 0.4);
-    border-color: #4ade80;
+    background: rgba(74, 157, 95, 0.4);
+    border-color: #5fb571;
     transform: scale(1.1);
 }
 
@@ -184,39 +332,45 @@ body {
 }
 
 .modal {
-    background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%);
-    border: 3px solid #e94560;
-    border-radius: 20px;
-    padding: 40px;
+    background: #1a1a1a;
+    border: 6px solid #5fb571;
+    border-radius: 0px;
+    padding: 32px;
     max-width: 500px;
     width: 90%;
-    box-shadow: 0 20px 60px rgba(233, 69, 96, 0.3);
-    animation: modalSlideIn 0.3s ease;
+    box-shadow: 8px 8px 0px #000;
+    animation: modalSlideIn 0.2s ease;
+    font-family: 'Courier New', monospace;
 }
 
 @keyframes modalSlideIn {
     from {
         opacity: 0;
-        transform: translateY(-20px) scale(0.95);
+        transform: translate(-4px, -4px);
+        box-shadow: 4px 4px 0px #000;
     }
     to {
         opacity: 1;
-        transform: translateY(0) scale(1);
+        transform: translate(0, 0);
+        box-shadow: 8px 8px 0px #000;
     }
 }
 
 .modal h2 {
-    color: #e94560;
-    font-size: 32px;
+    color: #5fb571;
+    font-size: 28px;
     margin-bottom: 24px;
     text-align: center;
-    text-shadow: 0 0 20px rgba(233, 69, 96, 0.5);
+    text-shadow: 3px 3px 0px #000;
+    font-family: 'Courier New', monospace;
+    text-transform: uppercase;
+    letter-spacing: 4px;
 }
 
 /* Pause Menu Music Section */
 .pause-music-section {
     background: rgba(0, 0, 0, 0.4);
-    border: 2px solid rgba(34, 197, 94, 0.3);
+    border: 2px solid rgba(74, 157, 95, 0.3);
     border-radius: 12px;
     padding: 15px;
     margin-bottom: 20px;
@@ -233,7 +387,7 @@ body {
 
 .pause-music-track {
     background: rgba(26, 26, 46, 0.6);
-    border: 2px solid rgba(34, 197, 94, 0.3);
+    border: 2px solid rgba(74, 157, 95, 0.3);
     border-radius: 8px;
     padding: 10px 12px;
     cursor: pointer;
@@ -247,14 +401,14 @@ body {
 
 .pause-music-track:hover {
     background: rgba(26, 26, 46, 0.9);
-    border-color: #22c55e;
+    border-color: #4a9d5f;
     transform: translateX(3px);
 }
 
 .pause-music-track.playing {
-    background: rgba(34, 197, 94, 0.2);
-    border-color: #22c55e;
-    box-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
+    background: rgba(74, 157, 95, 0.2);
+    border-color: #4a9d5f;
+    box-shadow: 0 0 10px rgba(74, 157, 95, 0.3);
 }
 
 /* Final Stats */
@@ -272,7 +426,7 @@ body {
     padding: 16px;
     background: rgba(0, 0, 0, 0.5);
     border-radius: 12px;
-    border: 2px solid rgba(233, 69, 96, 0.3);
+    border: 2px solid rgba(74, 157, 95, 0.3);
 }
 
 .final-stat span {
@@ -281,7 +435,7 @@ body {
 }
 
 .final-stat strong {
-    color: #e94560;
+    color: #4a9d5f;
     font-size: 24px;
 }
 
@@ -291,7 +445,7 @@ body {
     padding: 16px 32px;
     font-size: 18px;
     font-weight: 600;
-    background: linear-gradient(135deg, #e94560 0%, #ff6b81 100%);
+    background: linear-gradient(135deg, #4a9d5f 0%, #5fb571 100%);
     color: white;
     border: none;
     border-radius: 12px;
@@ -299,12 +453,12 @@ body {
     transition: all 0.3s ease;
     text-transform: uppercase;
     letter-spacing: 1px;
-    box-shadow: 0 4px 15px rgba(233, 69, 96, 0.4);
+    box-shadow: 0 4px 15px rgba(74, 157, 95, 0.4);
 }
 
 .primary-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(233, 69, 96, 0.6);
+    box-shadow: 0 6px 20px rgba(74, 157, 95, 0.6);
 }
 
 .primary-button:active {
@@ -319,29 +473,93 @@ body {
 }
 
 .upgrade-option {
-    background: rgba(15, 52, 96, 0.8);
-    border: 2px solid rgba(233, 69, 96, 0.3);
-    border-radius: 12px;
+    background: #1a1a1a;
+    border: 4px solid #444;
+    border-radius: 0px;
     padding: 16px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.1s ease;
+    font-family: 'Courier New', monospace;
+    box-shadow: 4px 4px 0px #000;
+    position: relative;
+    overflow: hidden;
+}
+
+.upgrade-option::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--rarity-color, #444);
+    box-shadow: 0 0 10px var(--rarity-glow, transparent);
 }
 
 .upgrade-option:hover {
-    background: rgba(22, 33, 62, 0.9);
-    border-color: #e94560;
-    transform: translateX(4px);
+    background: #2a2a2a;
+    border-color: var(--rarity-color, #5fb571);
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0px #000, 0 0 20px var(--rarity-glow, transparent);
 }
 
 .upgrade-option h3 {
-    color: #e94560;
-    font-size: 18px;
-    margin-bottom: 8px;
+    color: var(--rarity-color, #5fb571);
+    font-size: 16px;
+    margin-bottom: 4px;
+    font-family: 'Courier New', monospace;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px var(--rarity-glow, transparent);
+}
+
+.upgrade-rarity-badge {
+    display: inline-block;
+    font-size: 10px;
+    padding: 2px 6px;
+    background: var(--rarity-color, #444);
+    color: #000;
+    font-weight: bold;
+    margin-left: 8px;
+    text-shadow: none;
+    box-shadow: 0 0 8px var(--rarity-glow, transparent);
 }
 
 .upgrade-option p {
     color: #ccc;
-    font-size: 14px;
+    font-size: 13px;
+    font-family: 'Courier New', monospace;
+}
+
+/* Rarity-specific styles */
+.upgrade-option.rarity-common {
+    --rarity-color: #9ca3af;
+    --rarity-glow: rgba(156, 163, 175, 0.5);
+}
+
+.upgrade-option.rarity-rare {
+    --rarity-color: #3b82f6;
+    --rarity-glow: rgba(59, 130, 246, 0.5);
+}
+
+.upgrade-option.rarity-epic {
+    --rarity-color: #a855f7;
+    --rarity-glow: rgba(168, 85, 247, 0.5);
+}
+
+.upgrade-option.rarity-legendary {
+    --rarity-color: #f59e0b;
+    --rarity-glow: rgba(245, 158, 11, 0.5);
+    animation: legendary-pulse 2s ease-in-out infinite;
+}
+
+@keyframes legendary-pulse {
+    0%, 100% {
+        box-shadow: 4px 4px 0px #000, 0 0 20px rgba(245, 158, 11, 0.5);
+    }
+    50% {
+        box-shadow: 4px 4px 0px #000, 0 0 30px rgba(245, 158, 11, 0.8);
+    }
 }
 
 /* Debug Menu */
@@ -350,8 +568,8 @@ body {
     top: 20px;
     right: 20px;
     padding: 12px 20px;
-    background: rgba(233, 69, 96, 0.9);
-    border: 2px solid #e94560;
+    background: rgba(74, 157, 95, 0.9);
+    border: 2px solid #4a9d5f;
     border-radius: 8px;
     color: white;
     font-size: 14px;
@@ -363,7 +581,7 @@ body {
 }
 
 .debug-toggle-btn:hover {
-    background: #e94560;
+    background: #4a9d5f;
     transform: scale(1.05);
 }
 
@@ -373,7 +591,7 @@ body {
     right: 20px;
     background: rgba(0, 0, 0, 0.95);
     backdrop-filter: blur(10px);
-    border: 2px solid #e94560;
+    border: 2px solid #4a9d5f;
     border-radius: 12px;
     padding: 20px;
     min-width: 300px;
@@ -390,7 +608,7 @@ body {
 .weapon-btn {
     padding: 12px;
     background: rgba(15, 52, 96, 0.8);
-    border: 2px solid rgba(233, 69, 96, 0.3);
+    border: 2px solid rgba(74, 157, 95, 0.3);
     border-radius: 8px;
     color: white;
     cursor: pointer;
@@ -405,7 +623,7 @@ body {
 
 .weapon-btn:hover {
     background: rgba(22, 33, 62, 0.9);
-    border-color: #e94560;
+    border-color: #4a9d5f;
     transform: translateY(-2px);
 }
 
@@ -514,7 +732,7 @@ body {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: linear-gradient(135deg, #0f1419 0%, #1a1a2e 50%, #0f3460 100%);
+    background: #1a1a2e;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -535,15 +753,14 @@ body {
 .game-title {
     text-align: center;
     font-size: 48px;
-    color: #e94560;
-    text-shadow: 0 0 20px rgba(233, 69, 96, 0.8);
-    margin-bottom: 40px;
-    animation: pulse-glow 2s ease-in-out infinite;
-}
-
-@keyframes pulse-glow {
-    0%, 100% { text-shadow: 0 0 20px rgba(233, 69, 96, 0.8); }
-    50% { text-shadow: 0 0 30px rgba(233, 69, 96, 1), 0 0 40px rgba(233, 69, 96, 0.6); }
+    color: #5fb571;
+    text-shadow: 4px 4px 0px #000;
+    margin-bottom: 60px;
+    font-weight: 900;
+    letter-spacing: 6px;
+    font-family: 'Courier New', monospace;
+    text-transform: uppercase;
+    image-rendering: pixelated;
 }
 
 .menu-content {
@@ -557,37 +774,48 @@ body {
 
 .menu-button {
     width: 100%;
-    padding: 20px 30px;
-    font-size: 20px;
-    font-weight: 600;
-    background: linear-gradient(135deg, rgba(15, 52, 96, 0.8) 0%, rgba(26, 26, 46, 0.9) 100%);
-    color: white;
-    border: 2px solid rgba(233, 69, 96, 0.5);
-    border-radius: 12px;
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: 700;
+    background: #1a1a1a;
+    color: #fff;
+    border: 3px solid #444;
+    border-radius: 0px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: none;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
+    font-family: 'Courier New', monospace;
+    image-rendering: pixelated;
+    box-shadow: 3px 3px 0px #000;
+    position: relative;
+    text-shadow: 2px 2px 0px #000;
+    margin-bottom: 8px;
 }
 
 .menu-button:hover {
-    background: linear-gradient(135deg, #e94560 0%, #ff6b81 100%);
-    border-color: #e94560;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(233, 69, 96, 0.6);
+    background: #2a2a2a;
+    border-color: #5fb571;
+    color: #5fb571;
+    box-shadow: 3px 3px 0px #000;
 }
 
 .primary-menu-button {
-    background: linear-gradient(135deg, #e94560 0%, #ff6b81 100%);
-    border-color: #e94560;
-    font-size: 24px;
-    padding: 24px 30px;
-    box-shadow: 0 4px 15px rgba(233, 69, 96, 0.4);
+    background: #1a1a1a;
+    border: 3px solid #5fb571;
+    font-size: 16px;
+    padding: 14px 24px;
+    color: #5fb571;
+    box-shadow: 4px 4px 0px #000;
+    text-shadow: 2px 2px 0px #000;
 }
 
 .primary-menu-button:hover {
-    background: linear-gradient(135deg, #ff6b81 0%, #e94560 100%);
-    transform: translateY(-4px) scale(1.02);
+    background: #5fb571;
+    color: #000;
+    border-color: #5fb571;
+    box-shadow: 4px 4px 0px #000;
+    text-shadow: none;
 }
 
 .player-stats-summary {
@@ -595,13 +823,22 @@ body {
     justify-content: space-around;
     margin-top: 30px;
     padding-top: 30px;
-    border-top: 2px solid rgba(233, 69, 96, 0.3);
+    border-top: 2px solid #444;
 }
 
 .stat-summary-item {
     color: #ccc;
     font-size: 16px;
     font-weight: 600;
+    text-align: center;
+}
+
+.stat-summary-item .highlight {
+    color: #4a9d5f;
+    font-weight: 700;
+    font-size: 20px;
+    display: block;
+    margin-top: 5px;
 }
 
 /* Submenu Styles */
@@ -617,11 +854,11 @@ body {
 }
 
 .submenu h2 {
-    color: #e94560;
+    color: #4a9d5f;
     font-size: 36px;
     text-align: center;
     margin-bottom: 30px;
-    text-shadow: 0 0 15px rgba(233, 69, 96, 0.5);
+    text-shadow: 0 0 15px rgba(74, 157, 95, 0.5);
 }
 
 .back-button {
@@ -633,7 +870,7 @@ body {
     font-weight: 600;
     background: rgba(15, 52, 96, 0.8);
     color: white;
-    border: 2px solid rgba(233, 69, 96, 0.5);
+    border: 2px solid rgba(74, 157, 95, 0.5);
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -641,7 +878,7 @@ body {
 
 .back-button:hover {
     background: rgba(22, 33, 62, 0.9);
-    border-color: #e94560;
+    border-color: #4a9d5f;
 }
 
 /* Character Menu */
@@ -654,7 +891,7 @@ body {
 
 .character-card {
     background: rgba(15, 52, 96, 0.6);
-    border: 3px solid rgba(233, 69, 96, 0.3);
+    border: 3px solid rgba(74, 157, 95, 0.3);
     border-radius: 15px;
     padding: 25px;
     text-align: center;
@@ -665,12 +902,12 @@ body {
 
 .character-card:hover {
     background: rgba(22, 33, 62, 0.8);
-    border-color: #e94560;
+    border-color: #4a9d5f;
     transform: translateY(-5px);
 }
 
 .character-card.selected {
-    border-color: #4ade80;
+    border-color: #5fb571;
     background: rgba(74, 222, 128, 0.1);
 }
 
@@ -684,7 +921,7 @@ body {
 }
 
 .character-card h3 {
-    color: #e94560;
+    color: #4a9d5f;
     font-size: 22px;
     margin-bottom: 10px;
 }
@@ -706,7 +943,7 @@ body {
     position: absolute;
     top: 10px;
     right: 10px;
-    background: #4ade80;
+    background: #5fb571;
     color: white;
     padding: 5px 10px;
     border-radius: 5px;
@@ -723,7 +960,7 @@ body {
 }
 
 .skill-points-display .highlight {
-    color: #e94560;
+    color: #4a9d5f;
     font-weight: 700;
     font-size: 28px;
 }
@@ -738,7 +975,7 @@ body {
 
 .skill-card {
     background: rgba(15, 52, 96, 0.6);
-    border: 2px solid rgba(233, 69, 96, 0.3);
+    border: 2px solid rgba(74, 157, 95, 0.3);
     border-radius: 12px;
     padding: 20px;
     text-align: center;
@@ -750,7 +987,7 @@ body {
 }
 
 .skill-card h3 {
-    color: #e94560;
+    color: #4a9d5f;
     font-size: 20px;
     margin-bottom: 8px;
 }
@@ -786,7 +1023,7 @@ body {
     padding: 10px;
     font-size: 16px;
     font-weight: 600;
-    background: linear-gradient(135deg, #e94560 0%, #ff6b81 100%);
+    background: linear-gradient(135deg, #4a9d5f 0%, #5fb571 100%);
     color: white;
     border: none;
     border-radius: 8px;
@@ -796,7 +1033,7 @@ body {
 
 .upgrade-skill-btn:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(233, 69, 96, 0.6);
+    box-shadow: 0 4px 15px rgba(74, 157, 95, 0.6);
 }
 
 .upgrade-skill-btn:disabled {
@@ -826,53 +1063,73 @@ body {
 }
 
 .shop-item-card {
-    background: rgba(15, 52, 96, 0.6);
-    border: 2px solid rgba(233, 69, 96, 0.3);
-    border-radius: 12px;
-    padding: 20px;
+    background: #1a1a1a;
+    border: 4px solid #444;
+    border-radius: 0px;
+    padding: 16px;
     text-align: center;
+    box-shadow: 4px 4px 0px #000;
+    transition: all 0.1s ease;
+}
+
+.shop-item-card:hover {
+    border-color: #5fb571;
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0px #000;
 }
 
 .shop-item-icon {
-    font-size: 50px;
+    font-size: 40px;
     margin-bottom: 10px;
 }
 
 .shop-item-card h3 {
-    color: #e94560;
-    font-size: 18px;
+    color: #5fb571;
+    font-size: 16px;
     margin-bottom: 8px;
+    font-family: 'Courier New', monospace;
+    text-transform: uppercase;
+    letter-spacing: 2px;
 }
 
 .shop-item-card p {
     color: #ccc;
-    font-size: 13px;
+    font-size: 12px;
     margin-bottom: 15px;
     min-height: 40px;
+    font-family: 'Courier New', monospace;
 }
 
 .buy-button {
     width: 100%;
-    padding: 12px;
-    font-size: 16px;
-    font-weight: 600;
-    background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
-    color: white;
-    border: none;
-    border-radius: 8px;
+    padding: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    background: #2a2a2a;
+    color: #5fb571;
+    border: 3px solid #5fb571;
+    border-radius: 0px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.1s ease;
+    font-family: 'Courier New', monospace;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 3px 3px 0px #000;
 }
 
 .buy-button:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(74, 222, 128, 0.6);
+    background: #5fb571;
+    color: #000;
+    transform: translate(-1px, -1px);
+    box-shadow: 4px 4px 0px #000;
 }
 
 .buy-button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
-    background: #555;
+    background: #1a1a1a;
+    color: #555;
+    border-color: #333;
 }
 
 /* Achievements */
@@ -886,7 +1143,7 @@ body {
 
 .achievement-card {
     background: rgba(15, 52, 96, 0.6);
-    border: 2px solid rgba(233, 69, 96, 0.3);
+    border: 2px solid rgba(74, 157, 95, 0.3);
     border-radius: 12px;
     padding: 20px;
     text-align: center;
@@ -894,7 +1151,7 @@ body {
 }
 
 .achievement-card.unlocked {
-    border-color: #4ade80;
+    border-color: #5fb571;
     background: rgba(74, 222, 128, 0.1);
 }
 
@@ -913,7 +1170,7 @@ body {
 }
 
 .achievement-card h3 {
-    color: #e94560;
+    color: #4a9d5f;
     font-size: 20px;
     margin-bottom: 8px;
 }
@@ -934,7 +1191,7 @@ body {
     position: absolute;
     top: 10px;
     right: 10px;
-    background: #4ade80;
+    background: #5fb571;
     color: white;
     padding: 5px 10px;
     border-radius: 5px;
@@ -956,7 +1213,7 @@ body {
 /* Music Menu */
 .music-controls {
     background: rgba(15, 52, 96, 0.6);
-    border: 2px solid rgba(233, 69, 96, 0.3);
+    border: 2px solid rgba(74, 157, 95, 0.3);
     border-radius: 12px;
     padding: 20px;
     margin-bottom: 20px;
@@ -974,7 +1231,7 @@ body {
 }
 
 .volume-control label {
-    color: #e94560;
+    color: #4a9d5f;
     font-weight: 600;
     font-size: 16px;
 }
@@ -983,7 +1240,7 @@ body {
     width: 100%;
     height: 8px;
     border-radius: 4px;
-    background: rgba(233, 69, 96, 0.2);
+    background: rgba(74, 157, 95, 0.2);
     outline: none;
     -webkit-appearance: none;
 }
@@ -994,7 +1251,7 @@ body {
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    background: #e94560;
+    background: #4a9d5f;
     cursor: pointer;
     transition: all 0.2s;
 }
@@ -1008,7 +1265,7 @@ body {
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    background: #e94560;
+    background: #4a9d5f;
     cursor: pointer;
     border: none;
     transition: all 0.2s;
@@ -1020,9 +1277,9 @@ body {
 }
 
 .stop-music-button {
-    background: rgba(233, 69, 96, 0.8);
+    background: rgba(74, 157, 95, 0.8);
     color: white;
-    border: 2px solid #e94560;
+    border: 2px solid #4a9d5f;
     padding: 12px 24px;
     border-radius: 8px;
     font-family: 'Press Start 2P', monospace;
@@ -1032,7 +1289,7 @@ body {
 }
 
 .stop-music-button:hover {
-    background: #e94560;
+    background: #4a9d5f;
     transform: scale(1.05);
 }
 
@@ -1046,7 +1303,7 @@ body {
 
 .music-track-item {
     background: rgba(15, 52, 96, 0.6);
-    border: 2px solid rgba(233, 69, 96, 0.3);
+    border: 2px solid rgba(74, 157, 95, 0.3);
     border-radius: 12px;
     padding: 16px 20px;
     display: flex;
@@ -1058,14 +1315,14 @@ body {
 
 .music-track-item:hover {
     background: rgba(15, 52, 96, 0.8);
-    border-color: #e94560;
+    border-color: #4a9d5f;
     transform: translateX(5px);
 }
 
 .music-track-item.playing {
-    background: rgba(233, 69, 96, 0.2);
-    border-color: #e94560;
-    box-shadow: 0 0 20px rgba(233, 69, 96, 0.3);
+    background: rgba(74, 157, 95, 0.2);
+    border-color: #4a9d5f;
+    box-shadow: 0 0 20px rgba(74, 157, 95, 0.3);
 }
 
 .track-icon {
@@ -1081,7 +1338,7 @@ body {
 }
 
 .track-name {
-    color: #e94560;
+    color: #4a9d5f;
     font-weight: 600;
     font-size: 16px;
 }
@@ -1092,7 +1349,7 @@ body {
 }
 
 .playing-indicator {
-    color: #4ade80;
+    color: #5fb571;
     font-weight: 600;
     font-size: 12px;
     animation: pulse 1.5s infinite;
@@ -1109,7 +1366,7 @@ body {
 
 .no-tracks-message {
     background: rgba(15, 52, 96, 0.6);
-    border: 2px solid rgba(233, 69, 96, 0.3);
+    border: 2px solid rgba(74, 157, 95, 0.3);
     border-radius: 12px;
     padding: 40px;
     text-align: center;
@@ -1122,7 +1379,7 @@ body {
 }
 
 .no-tracks-message p:first-child {
-    color: #e94560;
+    color: #4a9d5f;
     font-size: 16px;
     font-weight: 600;
 }
@@ -1140,15 +1397,22 @@ body {
 }
 
 .weapon-slot {
-    background: rgba(26, 26, 46, 0.95);
-    border: 2px solid #8b5cf6;
-    border-radius: 10px;
-    padding: 8px;
-    width: 90px;
+    background: #1a1a1a;
+    border: 3px solid #666;
+    border-radius: 0px;
+    padding: 6px;
+    width: 70px;
+    height: 70px;
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    transition: all 0.3s ease;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    transition: all 0.1s ease;
+    position: relative;
+    box-sizing: border-box;
+    image-rendering: pixelated;
+    box-shadow: 2px 2px 0px #000;
 }
 
 .weapon-slot.ready {
@@ -1167,48 +1431,52 @@ body {
 }
 
 .weapon-icon-display {
-    font-size: 24px;
+    font-size: 18px;
     text-align: center;
     line-height: 1;
-    margin-bottom: 3px;
+    width: 100%;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
 }
 
 .weapon-info {
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 1px;
+    flex-shrink: 0;
+    width: 100%;
 }
 
 .weapon-name {
-    font-size: 9px;
+    font-size: 8px;
     font-weight: bold;
     color: #fff;
     text-align: center;
 }
 
 .weapon-level {
-    font-size: 8px;
+    font-size: 7px;
     color: #8b5cf6;
     text-align: center;
     font-weight: 600;
 }
 
 .weapon-projectiles {
-    font-size: 9px;
+    font-size: 8px;
     color: #00ff88;
     font-weight: bold;
     text-align: center;
     background: rgba(0, 255, 136, 0.2);
     border-radius: 3px;
-    padding: 1px 4px;
+    padding: 1px 3px;
 }
 
 .weapon-cooldown-bar {
-    height: 5px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 2px;
-    overflow: hidden;
-    margin: 3px 0;
+    display: none;
 }
 
 .weapon-cooldown-fill {
@@ -1218,8 +1486,8 @@ body {
 }
 
 .weapon-stats {
-    font-size: 9px;
-    color: #e94560;
+    font-size: 8px;
+    color: #4a9d5f;
     display: flex;
     justify-content: center;
     font-weight: 600;
@@ -1233,9 +1501,9 @@ body {
 
 /* Ultimate Slot (inline with weapons) */
 .weapon-slot.ultimate-slot {
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.95) 0%, rgba(236, 72, 153, 0.95) 100%);
-    border: 2px solid #ec4899;
-    box-shadow: 0 0 15px rgba(236, 72, 153, 0.4);
+    background: #1a1a1a;
+    border: 3px solid #ec4899;
+    box-shadow: 2px 2px 0px #000;
 }
 
 .weapon-slot.ultimate-slot .weapon-icon-display {
@@ -1259,14 +1527,14 @@ body {
     top: 0;
     left: 310px;
     background: rgba(15, 52, 96, 0.98);
-    border: 3px solid #22c55e;
+    border: 3px solid #4a9d5f;
     border-radius: 16px;
     padding: 20px;
     width: 350px;
     max-height: 400px;
     overflow-y: auto;
     z-index: 1000;
-    box-shadow: 0 0 30px rgba(34, 197, 94, 0.5);
+    box-shadow: 0 0 30px rgba(74, 157, 95, 0.5);
     animation: slideIn 0.3s ease-out;
 }
 
@@ -1287,11 +1555,11 @@ body {
     align-items: center;
     margin-bottom: 15px;
     padding-bottom: 10px;
-    border-bottom: 2px solid rgba(34, 197, 94, 0.3);
+    border-bottom: 2px solid rgba(74, 157, 95, 0.3);
 }
 
 .music-popup-header h3 {
-    color: #22c55e;
+    color: #4a9d5f;
     font-size: 18px;
     margin: 0;
 }
@@ -1318,7 +1586,7 @@ body {
 }
 
 .music-popup-volume label {
-    color: #22c55e;
+    color: #4a9d5f;
     font-size: 14px;
     font-weight: 600;
     display: block;
@@ -1336,7 +1604,7 @@ body {
 
 .music-popup-track {
     background: rgba(26, 26, 46, 0.8);
-    border: 2px solid rgba(34, 197, 94, 0.3);
+    border: 2px solid rgba(74, 157, 95, 0.3);
     border-radius: 8px;
     padding: 12px;
     cursor: pointer;
@@ -1348,14 +1616,14 @@ body {
 
 .music-popup-track:hover {
     background: rgba(26, 26, 46, 1);
-    border-color: #22c55e;
+    border-color: #4a9d5f;
     transform: translateX(5px);
 }
 
 .music-popup-track.playing {
-    background: rgba(34, 197, 94, 0.2);
-    border-color: #22c55e;
-    box-shadow: 0 0 15px rgba(34, 197, 94, 0.3);
+    background: rgba(74, 157, 95, 0.2);
+    border-color: #4a9d5f;
+    box-shadow: 0 0 15px rgba(74, 157, 95, 0.3);
 }
 
 .music-popup-track .track-name {
@@ -1365,7 +1633,7 @@ body {
 }
 
 .playing-badge {
-    color: #22c55e;
+    color: #4a9d5f;
     font-size: 16px;
     animation: pulse 1.5s infinite;
 }

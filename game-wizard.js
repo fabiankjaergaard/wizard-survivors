@@ -94,6 +94,52 @@ const SoundSystem = {
     }
 };
 
+// Rarity System
+const RARITY = {
+    COMMON: {
+        name: 'Common',
+        color: '#9ca3af',
+        glowColor: '#6b7280',
+        weight: 60, // Drop chance weight
+        statMultiplier: 1.0
+    },
+    RARE: {
+        name: 'Rare',
+        color: '#3b82f6',
+        glowColor: '#60a5fa',
+        weight: 25,
+        statMultiplier: 1.5
+    },
+    EPIC: {
+        name: 'Epic',
+        color: '#a855f7',
+        glowColor: '#c084fc',
+        weight: 12,
+        statMultiplier: 2.0
+    },
+    LEGENDARY: {
+        name: 'Legendary',
+        color: '#f59e0b',
+        glowColor: '#fbbf24',
+        weight: 3,
+        statMultiplier: 3.0
+    }
+};
+
+// Helper function to get random rarity based on weights
+function getRandomRarity() {
+    const totalWeight = Object.values(RARITY).reduce((sum, r) => sum + r.weight, 0);
+    let random = Math.random() * totalWeight;
+
+    for (const [key, rarity] of Object.entries(RARITY)) {
+        random -= rarity.weight;
+        if (random <= 0) {
+            return { key, ...rarity };
+        }
+    }
+    return { key: 'COMMON', ...RARITY.COMMON };
+}
+
 const CONFIG = {
     canvas: {
         width: window.innerWidth,
@@ -104,7 +150,7 @@ const CONFIG = {
         height: 8000  // Much larger map
     },
     player: {
-        size: 20,
+        size: 12,
         speed: 2,  // Reduced from 3 to 2
         maxHp: 100
     },
@@ -196,13 +242,13 @@ const ULTIMATES = {
     meteor_storm: {
         type: 'meteor_storm',
         name: 'Meteor Storm',
-        icon: '☄️',
+        icon: 'MTR',
         description: 'Rain down meteors across the battlefield',
         cooldown: 60000, // 60 seconds
         duration: 8000, // 8 seconds of meteor rain
         damage: 150,
         execute: () => {
-            console.log('🌠 METEOR STORM ACTIVATED!');
+            console.log('METEOR STORM ACTIVATED!');
             gameState.player.ultimateActive = true;
             gameState.meteorStormStartTime = Date.now();
             gameState.meteorStormLastSpawn = Date.now();
@@ -211,12 +257,12 @@ const ULTIMATES = {
     time_freeze: {
         type: 'time_freeze',
         name: 'Temporal Freeze',
-        icon: '⏸️',
+        icon: 'TMP',
         description: 'Freeze time for all enemies',
         cooldown: 90000, // 90 seconds
         duration: 5000, // 5 seconds
         execute: () => {
-            console.log('⏸️ TIME FREEZE ACTIVATED!');
+            console.log('TIME FREEZE ACTIVATED!');
             gameState.player.ultimateActive = true;
 
             // Store original enemy speeds
@@ -465,35 +511,35 @@ const ULTIMATES = {
     titan_form: {
         type: 'titan_form',
         name: 'Titan Form',
-        icon: '⚔️',
+        icon: 'TTN',
         description: 'Become invincible and deal 10x damage',
         cooldown: 240000, // 4 minutes
         duration: 10000, // 10 seconds
         achievement: 'kill_1000_enemies', // Requires achievement
         rarity: 'legendary',
         execute: () => {
-            console.log('⚔️ TITAN FORM ACTIVATED!');
+            console.log('TITAN FORM ACTIVATED!');
             gameState.titanForm = true;
             gameState.player.ultimateActive = true;
 
             setTimeout(() => {
                 gameState.titanForm = false;
                 gameState.player.ultimateActive = false;
-                console.log('⚔️ Titan Form ended');
+                console.log('Titan Form ended');
             }, 10000);
         }
     },
     void_rift: {
         type: 'void_rift',
         name: 'Void Rift',
-        icon: '🕳️',
+        icon: 'VRF',
         description: 'Open a rift that banishes enemies to the void',
         cooldown: 180000, // 3 minutes
         duration: 8000, // 8 seconds
         achievement: 'survive_20_minutes',
         rarity: 'legendary',
         execute: () => {
-            console.log('🕳️ VOID RIFT ACTIVATED!');
+            console.log('VOID RIFT ACTIVATED!');
 
             gameState.voidRift = {
                 x: gameState.player.x,
@@ -555,21 +601,21 @@ const ULTIMATES = {
             setTimeout(() => {
                 clearInterval(riftInterval);
                 gameState.voidRift = null;
-                console.log('🕳️ Void Rift closed');
+                console.log('Void Rift closed');
             }, 8000);
         }
     },
     cosmic_storm: {
         type: 'cosmic_storm',
         name: 'Cosmic Storm',
-        icon: '🌌',
+        icon: 'CSM',
         description: 'Summon stars that orbit and obliterate enemies',
         cooldown: 150000, // 2.5 minutes
         duration: 12000, // 12 seconds
         achievement: 'kill_boss_without_damage',
         rarity: 'legendary',
         execute: () => {
-            console.log('🌌 COSMIC STORM ACTIVATED!');
+            console.log('COSMIC STORM ACTIVATED!');
 
             gameState.cosmicStorm = {
                 stars: [],
@@ -703,7 +749,7 @@ const ACHIEVEMENTS = {
         id: 'kill_1000_enemies',
         name: 'Slayer of Thousands',
         description: 'Kill 1000 enemies',
-        icon: '⚔️',
+        icon: 'K1K',
         requirement: {type: 'kills', value: 1000},
         reward: 'titan_form',
         unlocked: false
@@ -712,7 +758,7 @@ const ACHIEVEMENTS = {
         id: 'survive_20_minutes',
         name: 'Endurance Master',
         description: 'Survive for 20 minutes',
-        icon: '⏱️',
+        icon: 'T20',
         requirement: {type: 'time', value: 1200000}, // 20 minutes in ms
         reward: 'void_rift',
         unlocked: false
@@ -721,7 +767,7 @@ const ACHIEVEMENTS = {
         id: 'kill_boss_without_damage',
         name: 'Untouchable',
         description: 'Kill a major boss without taking damage',
-        icon: '🛡️',
+        icon: 'NHT',
         requirement: {type: 'boss_no_damage', value: 1},
         reward: 'cosmic_storm',
         unlocked: false
@@ -730,7 +776,7 @@ const ACHIEVEMENTS = {
         id: 'reach_level_50',
         name: 'Legendary Wizard',
         description: 'Reach level 50',
-        icon: '⭐',
+        icon: 'L50',
         requirement: {type: 'level', value: 50},
         reward: 'dragons_fury',
         unlocked: false
@@ -795,6 +841,7 @@ window.gameState = {
         dashDuration: 0,
         dashDx: 0,
         dashDy: 0,
+        hasXPMagnet: false, // XP Magnet upgrade
         maxWeapons: 3, // Can have 3 weapons active
         weapons: [ // Start with magic missile
             {
@@ -812,7 +859,7 @@ window.gameState = {
         ultimate: {
             type: 'meteor_storm',
             name: 'Meteor Storm',
-            icon: '☄️'
+            icon: 'MTR'
         }, // Start with Meteor Storm for testing
         ultimateCooldown: 0, // Time until ultimate is ready again
         ultimateActive: false // Whether ultimate effect is currently active
@@ -826,6 +873,9 @@ window.gameState = {
     orbitingOrbs: [],
     homingMissiles: [],
     tornadoes: [],
+    damageNumbers: [], // Floating damage text
+    critChance: 0.15, // 15% base crit chance
+    critMultiplier: 2.0, // 2x damage on crit
     spinningBlades: [],
     meteors: [],
     chainLightnings: [],
@@ -846,26 +896,23 @@ window.gameState = {
     animationCounter: 0
 };
 
-// Load Wizard Sprites (old wizard with beard and hat!)
-const wizardSprites = {
-    idle: new Image(),
-    run: new Image(),
-    attack1: new Image(),
-    attack2: new Image(),
-    hit: new Image(),
-    death: new Image(),
-    jump: new Image(),
-    fall: new Image()
-};
+// Load New Wizard Spritesheet
+const wizardLPCSprite = new Image();
+wizardLPCSprite.src = 'assets/Download62188.png';
 
-wizardSprites.idle.src = 'assets/wizard/Idle.png';
-wizardSprites.run.src = 'assets/wizard/Run.png';
-wizardSprites.attack1.src = 'assets/wizard/Attack1.png';
-wizardSprites.attack2.src = 'assets/wizard/Attack2.png';
-wizardSprites.hit.src = 'assets/wizard/Hit.png';
-wizardSprites.death.src = 'assets/wizard/Death.png';
-wizardSprites.jump.src = 'assets/wizard/Jump.png';
-wizardSprites.fall.src = 'assets/wizard/Fall.png';
+// Load Enemy Sprite
+const enemySprite = new Image();
+enemySprite.src = 'assets/Download67833.png';
+
+// Load Magic Missile Sprite
+const magicMissileSprite = new Image();
+magicMissileSprite.src = 'assets/MagicMisileGame.png';
+
+
+// LPC Spritesheet has all animations in one image
+const wizardSprites = {
+    lpc: wizardLPCSprite
+};
 
 // Helper to activate ultimate (defined after gameState)
 function activateUltimate() {
@@ -897,39 +944,63 @@ function activateUltimate() {
     gameState.player.ultimateCooldown = ultimate.cooldown;
 }
 
-let spritesLoaded = 0;
-const totalSprites = Object.keys(wizardSprites).length;
 let spritesReady = false;
 
-Object.values(wizardSprites).forEach(img => {
-    img.onload = () => {
-        spritesLoaded++;
-        console.log(`Loaded sprite ${spritesLoaded}/${totalSprites}`);
-        if (spritesLoaded === totalSprites) {
-            console.log('All wizard sprites loaded!');
-            spritesReady = true;
-            // Don't auto-start game - wait for user to press Play
-            console.log('Sprites ready. Waiting for player to start game...');
-        }
-    };
-    img.onerror = () => {
-        console.error(`Failed to load sprite: ${img.src}`);
-    };
-});
+wizardLPCSprite.onload = () => {
+    console.log('LPC wizard spritesheet loaded!');
+    spritesReady = true;
+    console.log('Sprites ready. Waiting for player to start game...');
+};
 
-// Wizard sprite config: Each frame is 231x190 pixels
+wizardLPCSprite.onerror = () => {
+    console.error(`Failed to load LPC sprite: ${wizardLPCSprite.src}`);
+};
+
+// LPC Wizard sprite config: Each frame is 64x64 pixels
+// LPC format: rows are animations for different directions
+// Row 9-12 = Walk (up, left, down, right) - 9 frames each
+// Row 1-4 = Spellcast (up, left, down, right) - 7 frames each
 const wizardConfig = {
-    frameWidth: 231,
-    frameHeight: 190,
+    frameWidth: 64,
+    frameHeight: 64,
     animations: {
-        idle: { frames: 6, speed: 10 },      // 1386 / 231 = 6
-        run: { frames: 8, speed: 6 },        // 1848 / 231 = 8
-        attack1: { frames: 8, speed: 5 },
-        attack2: { frames: 8, speed: 5 },
-        hit: { frames: 4, speed: 8 },
-        death: { frames: 7, speed: 8 },
-        jump: { frames: 2, speed: 8 },
-        fall: { frames: 2, speed: 8 }
+        walk: { frames: 9, speed: 6 },
+        idle: { frames: 1, speed: 10 },  // Use first frame of walk as idle
+        spellcast: { frames: 7, speed: 5 }
+    },
+    // LPC row indices for each direction
+    rows: {
+        up: {
+            walk: 8,      // Row 9 (0-indexed = 8)
+            spellcast: 0  // Row 1 (0-indexed = 0)
+        },
+        left: {
+            walk: 9,      // Row 10 (0-indexed = 9)
+            spellcast: 1  // Row 2 (0-indexed = 1)
+        },
+        down: {
+            walk: 10,     // Row 11 (0-indexed = 10)
+            spellcast: 2  // Row 3 (0-indexed = 2)
+        },
+        right: {
+            walk: 11,     // Row 12 (0-indexed = 11)
+            spellcast: 3  // Row 4 (0-indexed = 3)
+        }
+    }
+};
+
+// Enemy sprite config (looking at the sprite, appears to be ~64x64 frames)
+const enemyConfig = {
+    frameWidth: 64,
+    frameHeight: 64,
+    animations: {
+        walk: { frames: 9, speed: 8 }
+    },
+    rows: {
+        up: 8,
+        left: 9,
+        down: 10,
+        right: 11
     }
 };
 
@@ -957,7 +1028,7 @@ function initGame() {
     gameState.player.hp = gameState.player.maxHp;
     gameState.player.level = 1;
     gameState.player.xp = 0;
-    gameState.player.xpToLevel = 10;
+    gameState.player.xpToLevel = 20;
     gameState.player.isDashing = false;
     gameState.player.dashCooldown = 0;
     gameState.player.dashDuration = 0;
@@ -1123,6 +1194,22 @@ document.addEventListener('keydown', (e) => {
                 break;
             }
         }
+
+        // Check for mystery boxes
+        if (gameState.mysteryBoxes) {
+            for (let i = gameState.mysteryBoxes.length - 1; i >= 0; i--) {
+                const box = gameState.mysteryBoxes[i];
+                if (box.isNearPlayer) {
+                    // Open mystery box spinner (free spin from drop!)
+                    gameState.openingMysteryBox = { free: true }; // Mark as free spin
+                    gameState.mysteryBoxes.splice(i, 1);
+                    gameState.isPaused = true; // Pause game to show spinner
+                    console.log('Opening Mystery Box!');
+                    break;
+                }
+            }
+        }
+
         return;
     }
 
@@ -1225,19 +1312,8 @@ class Player {
     }
 
     drawCharacter() {
-        // Select sprite and animation based on movement
-        let currentSprite, animation;
-
-        if (gameState.player.isMoving) {
-            currentSprite = wizardSprites.run;
-            animation = wizardConfig.animations.run;
-        } else {
-            currentSprite = wizardSprites.idle;
-            animation = wizardConfig.animations.idle;
-        }
-
-        // Check if sprite is loaded
-        if (!currentSprite || !currentSprite.complete || currentSprite.naturalWidth === 0) {
+        // Check if LPC sprite is loaded
+        if (!wizardLPCSprite.complete || wizardLPCSprite.naturalWidth === 0) {
             // Draw a fallback circle if sprite not loaded
             const screenX = gameState.player.x - camera.x;
             const screenY = gameState.player.y - camera.y;
@@ -1248,12 +1324,30 @@ class Player {
             return;
         }
 
-        const frame = gameState.player.animationFrame % animation.frames;
-        const srcX = frame * wizardConfig.frameWidth;
-        const srcY = 0;
+        // Get direction (default to 'down' if not set)
+        const direction = gameState.player.direction || 'down';
 
-        // Scale up for better visibility (from 231x190 to ~138x114)
-        const scale = 0.6;
+        // Choose animation type
+        const animationType = gameState.player.isMoving ? 'walk' : 'walk'; // Use walk for both, idle uses frame 0
+        const animation = wizardConfig.animations[animationType];
+
+        // Get the correct row for this direction
+        const row = wizardConfig.rows[direction][animationType];
+
+        // Calculate frame
+        let frame;
+        if (gameState.player.isMoving) {
+            frame = gameState.player.animationFrame % animation.frames;
+        } else {
+            frame = 0; // Idle uses first frame of walk
+        }
+
+        // Calculate source position in spritesheet
+        const srcX = frame * wizardConfig.frameWidth;
+        const srcY = row * wizardConfig.frameHeight;
+
+        // Scale for character (64x64 -> 64x64)
+        const scale = 1.0;
         const drawWidth = wizardConfig.frameWidth * scale;
         const drawHeight = wizardConfig.frameHeight * scale;
 
@@ -1270,44 +1364,22 @@ class Player {
             ctx.globalAlpha = 0.9;
         }
 
-        // Flip sprite for left movement
-        if (gameState.player.direction === 'left') {
-            ctx.translate(screenX, screenY);
-            ctx.scale(-1, 1);
-            ctx.drawImage(
-                currentSprite,
-                srcX, srcY,
-                wizardConfig.frameWidth, wizardConfig.frameHeight,
-                -drawWidth / 2, -drawHeight / 2,
-                drawWidth, drawHeight
-            );
-        } else {
-            ctx.drawImage(
-                currentSprite,
-                srcX, srcY,
-                wizardConfig.frameWidth, wizardConfig.frameHeight,
-                screenX - drawWidth / 2,
-                screenY - drawHeight / 2,
-                drawWidth, drawHeight
-            );
-        }
+        // Draw the sprite (no rotation needed - LPC has proper directional sprites!)
+        ctx.drawImage(
+            wizardLPCSprite,
+            srcX, srcY,
+            wizardConfig.frameWidth, wizardConfig.frameHeight,
+            screenX - drawWidth / 2,
+            screenY - drawHeight / 2,
+            drawWidth, drawHeight
+        );
 
         ctx.restore();
     }
 
     draw() {
         this.drawCharacter();
-
-        // Draw weapon range indicator (subtle) - only if player has weapons
-        if (gameState.player.weapons && gameState.player.weapons.length > 0) {
-            const screenX = gameState.player.x - camera.x;
-            const screenY = gameState.player.y - camera.y;
-            ctx.strokeStyle = 'rgba(0, 217, 255, 0.1)';
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.arc(screenX, screenY, gameState.player.weapons[0].range, 0, Math.PI * 2);
-            ctx.stroke();
-        }
+        // Removed weapon range indicator circle
     }
 
     takeDamage(amount) {
@@ -1328,13 +1400,21 @@ class Enemy {
         // Apply difficulty scaling
         const difficulty = getDifficultyMultipliers();
         this.speed = CONFIG.enemy.speed * difficulty.speed;
-        this.baseHp = 30;
+        this.baseHp = 15;
         this.hp = this.baseHp * difficulty.hp;
         this.maxHp = this.hp;
         this.baseDamage = 10;
         this.damage = this.baseDamage * difficulty.damage;
         this.slowedUntil = 0; // For ice effect
         this.difficultyTier = difficulty.intervals; // Track which tier this enemy is
+
+        // Animation properties
+        this.direction = 'down';
+        this.animationFrame = 0;
+        this.animationCounter = 0;
+
+        // Death explosion color palette (green for goblin)
+        this.colorPalette = ['#4a9d5f', '#5fb571', '#6ed47f', '#3d8a4f', '#7be58d'];
     }
 
     update() {
@@ -1349,6 +1429,22 @@ class Enemy {
         if (distance > 0) {
             this.x += (dx / distance) * currentSpeed;
             this.y += (dy / distance) * currentSpeed;
+
+            // Update direction based on movement
+            const absX = Math.abs(dx);
+            const absY = Math.abs(dy);
+            if (absX > absY) {
+                this.direction = dx > 0 ? 'right' : 'left';
+            } else {
+                this.direction = dy > 0 ? 'down' : 'up';
+            }
+
+            // Update animation
+            this.animationCounter++;
+            if (this.animationCounter >= enemyConfig.animations.walk.speed) {
+                this.animationCounter = 0;
+                this.animationFrame = (this.animationFrame + 1) % enemyConfig.animations.walk.frames;
+            }
         }
 
         // Check collision with player
@@ -1366,103 +1462,58 @@ class Enemy {
         const screen = toScreen(this.x, this.y);
         const isSlowed = Date.now() < this.slowedUntil;
 
-        // Monster body colors - darker/more intense with difficulty tier
-        const tierIntensity = Math.min(this.difficultyTier * 0.15, 0.6); // Max 60% darker
-        const bodyColor = isSlowed ? '#4a5f8a' : this.adjustColorForTier('#2d4a3e', tierIntensity);
-        const darkColor = isSlowed ? '#2a3f5a' : this.adjustColorForTier('#1a2d24', tierIntensity);
-        const eyeGlow = isSlowed ? '#00ffff' : this.adjustColorForTier('#ff3333', tierIntensity, true);
+        // Draw sprite if loaded, otherwise fallback
+        if (enemySprite.complete && enemySprite.naturalWidth > 0) {
+            const row = enemyConfig.rows[this.direction];
+            const srcX = this.animationFrame * enemyConfig.frameWidth;
+            const srcY = row * enemyConfig.frameHeight;
 
-        // Draw monster body (blob shape)
-        ctx.fillStyle = bodyColor;
-        ctx.beginPath();
-        // Create a wobbly blob shape
-        const time = Date.now() * 0.003;
-        const wobble = Math.sin(time + this.x) * 2;
-        ctx.ellipse(screen.x, screen.y + 2, this.size, this.size - 3 + wobble, 0, 0, Math.PI * 2);
-        ctx.fill();
+            const scale = 1.0;
+            const drawWidth = enemyConfig.frameWidth * scale;
+            const drawHeight = enemyConfig.frameHeight * scale;
 
-        // Draw darker bottom shadow
-        ctx.fillStyle = darkColor;
-        ctx.beginPath();
-        ctx.ellipse(screen.x, screen.y + 6, this.size - 4, this.size - 8, 0, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Draw monster eyes (glowing)
-        const eyeOffset = this.size * 0.3;
-        const eyeSize = this.size * 0.2;
-
-        // White part of eyes
-        ctx.fillStyle = '#ffffff';
-        ctx.beginPath();
-        ctx.arc(screen.x - eyeOffset, screen.y - 2, eyeSize, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(screen.x + eyeOffset, screen.y - 2, eyeSize, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Colored pupils (track player)
-        const dx = gameState.player.x - this.x;
-        const dy = gameState.player.y - this.y;
-        const angle = Math.atan2(dy, dx);
-        const pupilDist = eyeSize * 0.3;
-        const pupilX = Math.cos(angle) * pupilDist;
-        const pupilY = Math.sin(angle) * pupilDist;
-
-        ctx.fillStyle = eyeGlow;
-        ctx.beginPath();
-        ctx.arc(screen.x - eyeOffset + pupilX, screen.y - 2 + pupilY, eyeSize * 0.6, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(screen.x + eyeOffset + pupilX, screen.y - 2 + pupilY, eyeSize * 0.6, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Eye glow effect
-        ctx.shadowBlur = 8;
-        ctx.shadowColor = eyeGlow;
-        ctx.fillStyle = eyeGlow;
-        ctx.beginPath();
-        ctx.arc(screen.x - eyeOffset + pupilX, screen.y - 2 + pupilY, eyeSize * 0.4, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(screen.x + eyeOffset + pupilX, screen.y - 2 + pupilY, eyeSize * 0.4, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.shadowBlur = 0;
-
-        // Draw mouth (sharp teeth)
-        ctx.fillStyle = '#000000';
-        ctx.beginPath();
-        ctx.ellipse(screen.x, screen.y + 4, this.size * 0.4, this.size * 0.25, 0, 0, Math.PI);
-        ctx.fill();
-
-        // Teeth
-        ctx.fillStyle = '#ffffff';
-        const teeth = 4;
-        for (let i = 0; i < teeth; i++) {
-            const tx = screen.x - this.size * 0.3 + (this.size * 0.6 / (teeth - 1)) * i;
-            ctx.beginPath();
-            ctx.moveTo(tx, screen.y + 4);
-            ctx.lineTo(tx - 2, screen.y + 8);
-            ctx.lineTo(tx + 2, screen.y + 8);
-            ctx.closePath();
-            ctx.fill();
-        }
-
-        // Ice effect overlay
-        if (isSlowed) {
-            ctx.strokeStyle = 'rgba(0, 255, 255, 0.5)';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.arc(screen.x, screen.y, this.size + 4, 0, Math.PI * 2);
-            ctx.stroke();
-
-            // Ice crystals
-            for (let i = 0; i < 6; i++) {
-                const iceAngle = (Math.PI * 2 / 6) * i + time;
-                const iceX = screen.x + Math.cos(iceAngle) * (this.size + 6);
-                const iceY = screen.y + Math.sin(iceAngle) * (this.size + 6);
-                ctx.fillStyle = 'rgba(0, 255, 255, 0.6)';
-                ctx.fillRect(iceX - 2, iceY - 2, 4, 4);
+            // Apply ice tint if slowed
+            if (isSlowed) {
+                ctx.save();
+                ctx.globalAlpha = 0.7;
+                ctx.filter = 'hue-rotate(180deg) brightness(1.2)';
             }
+
+            ctx.drawImage(
+                enemySprite,
+                srcX, srcY,
+                enemyConfig.frameWidth, enemyConfig.frameHeight,
+                screen.x - drawWidth / 2,
+                screen.y - drawHeight / 2,
+                drawWidth, drawHeight
+            );
+
+            if (isSlowed) {
+                ctx.restore();
+
+                // Ice effect overlay
+                const time = Date.now() * 0.003;
+                ctx.strokeStyle = 'rgba(0, 255, 255, 0.5)';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(screen.x, screen.y, this.size + 4, 0, Math.PI * 2);
+                ctx.stroke();
+
+                // Ice crystals
+                for (let i = 0; i < 6; i++) {
+                    const iceAngle = (Math.PI * 2 / 6) * i + time;
+                    const iceX = screen.x + Math.cos(iceAngle) * (this.size + 6);
+                    const iceY = screen.y + Math.sin(iceAngle) * (this.size + 6);
+                    ctx.fillStyle = 'rgba(0, 255, 255, 0.6)';
+                    ctx.fillRect(iceX - 2, iceY - 2, 4, 4);
+                }
+            }
+        } else {
+            // Fallback circle
+            ctx.fillStyle = isSlowed ? '#4a5f8a' : '#2d4a3e';
+            ctx.beginPath();
+            ctx.arc(screen.x, screen.y, this.size, 0, Math.PI * 2);
+            ctx.fill();
         }
 
         // Draw health bar
@@ -1832,6 +1883,9 @@ class TeleporterEnemy {
         this.lastAttackTime = 0;
         this.attackCooldown = 800; // Shoot every 0.8 seconds
         this.projectiles = []; // Store enemy projectiles
+
+        // Death explosion color palette (purple for teleporter)
+        this.colorPalette = ['#8b5cf6', '#a78bfa', '#c4b5fd', '#7c3aed', '#ddd6fe'];
     }
 
     update() {
@@ -2199,6 +2253,9 @@ class NecromancerBoss {
         this.maxShieldHp = 100;
         this.shieldRegenCooldown = 0;
         this.shieldRegenDelay = 5000; // 5 seconds before shield starts regenerating
+
+        // Death explosion color palette (dark purple/black for necromancer)
+        this.colorPalette = ['#4c1d95', '#6b21a8', '#7e22ce', '#2e1065', '#9333ea'];
     }
 
     update() {
@@ -2748,6 +2805,9 @@ class ArchDemonBoss {
         this.auraIntensity = 0;
         this.particles = [];
         this.groundCracks = [];
+
+        // Death explosion color palette (red/orange for arch-demon)
+        this.colorPalette = ['#dc2626', '#ef4444', '#f97316', '#991b1b', '#fb923c'];
 
         // Shield system
         this.shields = [
@@ -4523,9 +4583,21 @@ class Projectile {
         const distance = Math.sqrt(dx * dx + dy * dy);
         this.vx = (dx / distance) * this.speed;
         this.vy = (dy / distance) * this.speed;
+
+        // Trail effect for magic missile
+        this.trail = [];
+        this.maxTrailLength = 8;
     }
 
     update() {
+        // Add current position to trail
+        if (this.weapon.type === 'magic_missile') {
+            this.trail.push({ x: this.x, y: this.y });
+            if (this.trail.length > this.maxTrailLength) {
+                this.trail.shift();
+            }
+        }
+
         this.x += this.vx;
         this.y += this.vy;
         this.distanceTraveled += this.speed;
@@ -4548,10 +4620,55 @@ class Projectile {
     }
 
     handleHit(enemy, enemyIndex) {
-        const isDead = enemy.takeDamage(this.damage);
+        // Calculate critical hit
+        const isCrit = Math.random() < gameState.critChance;
+        const finalDamage = isCrit ? this.damage * gameState.critMultiplier : this.damage;
+
+        // Show damage number
+        gameState.damageNumbers.push(new DamageNumber(enemy.x, enemy.y, finalDamage, isCrit));
+
+        // Deal damage
+        const isDead = enemy.takeDamage(finalDamage);
+
+        // Critical hit visual effect
+        if (isCrit) {
+            // Extra particles for crits
+            for (let i = 0; i < 8; i++) {
+                const angle = (Math.PI * 2 / 8) * i;
+                gameState.particles.push({
+                    x: enemy.x,
+                    y: enemy.y,
+                    vx: Math.cos(angle) * 3,
+                    vy: Math.sin(angle) * 3,
+                    size: 2 + Math.random() * 2,
+                    color: '#ffd700',
+                    alpha: 1,
+                    gravity: 0,
+                    life: 1,
+                    draw: function() {
+                        const screen = toScreen(this.x, this.y);
+                        ctx.save();
+                        ctx.globalAlpha = this.alpha;
+                        ctx.fillStyle = this.color;
+                        ctx.shadowBlur = 8;
+                        ctx.shadowColor = '#ffd700';
+                        ctx.fillRect(screen.x - this.size/2, screen.y - this.size/2, this.size, this.size);
+                        ctx.restore();
+                    },
+                    update: function() {
+                        this.x += this.vx;
+                        this.y += this.vy;
+                        this.vx *= 0.95;
+                        this.vy *= 0.95;
+                        this.life -= 0.02;
+                        this.alpha = this.life;
+                    }
+                });
+            }
+        }
 
         // Play weapon-specific hit sound
-        let soundType = 'normal';
+        let soundType = isCrit ? 'critical' : 'normal';
         if (isDead) {
             soundType = 'critical';
         } else if (this.weapon.type === 'fireball' || this.weapon.type === 'meteor') {
@@ -4731,6 +4848,7 @@ class Projectile {
 
         const screen = toScreen(this.x, this.y);
 
+        // Draw simple circle projectile
         ctx.fillStyle = fillColor;
         ctx.beginPath();
         ctx.arc(screen.x, screen.y, size, 0, Math.PI * 2);
@@ -4866,70 +4984,226 @@ class XPOrb {
         this.magnetSpeed = 4;
         this.pulseTimer = 0;
         this.glowIntensity = 0;
+        this.rotation = Math.random() * Math.PI * 2; // Random start rotation
+        this.rotationSpeed = 0.05;
+        this.floatOffset = Math.random() * Math.PI * 2; // Random float phase
+        this.sparkles = []; // Particle sparkles around orb
+        this.age = 0;
     }
 
     update() {
+        this.age++;
+
         // Calculate distance to player
         const dx = gameState.player.x - this.x;
         const dy = gameState.player.y - this.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
 
-        // Magnetic pull when player is close
-        if (dist < this.magnetRange) {
+        // Magnetic pull when player is close (only if player has XP magnet upgrade)
+        if (gameState.player.hasXPMagnet && dist < this.magnetRange) {
             const pullStrength = 1 - (dist / this.magnetRange);
             this.x += (dx / dist) * this.magnetSpeed * pullStrength;
             this.y += (dy / dist) * this.magnetSpeed * pullStrength;
         }
 
-        // Check if player collects the orb
+        // Check if player collects the orb (must touch it without magnet)
         if (dist < CONFIG.player.size + this.size) {
             return true; // Signal for removal and XP gain
         }
 
-        // Update pulse animation
+        // Update animations
         this.pulseTimer += 0.1;
         this.glowIntensity = Math.sin(this.pulseTimer) * 0.3 + 0.7;
+        this.rotation += this.rotationSpeed;
+        this.floatOffset += 0.08;
+
+        // Add sparkle particles occasionally
+        if (Math.random() < 0.15) {
+            const angle = Math.random() * Math.PI * 2;
+            const distance = this.size * 0.8;
+            this.sparkles.push({
+                x: this.x + Math.cos(angle) * distance,
+                y: this.y + Math.sin(angle) * distance,
+                vx: Math.cos(angle) * 0.5,
+                vy: Math.sin(angle) * 0.5 - 0.3,
+                life: 1,
+                size: 1 + Math.random() * 1.5
+            });
+        }
+
+        // Update sparkles
+        this.sparkles = this.sparkles.filter(sparkle => {
+            sparkle.x += sparkle.vx;
+            sparkle.y += sparkle.vy;
+            sparkle.vy += 0.02; // Gravity
+            sparkle.life -= 0.03;
+            return sparkle.life > 0;
+        });
 
         return false;
     }
 
     draw() {
         const screen = toScreen(this.x, this.y);
+        const floatY = Math.sin(this.floatOffset) * 3; // Floating effect
 
-        // Outer glow
-        const gradient = ctx.createRadialGradient(screen.x, screen.y, 0, screen.x, screen.y, this.size * 2);
-        gradient.addColorStop(0, `rgba(100, 200, 255, ${this.glowIntensity * 0.5})`);
-        gradient.addColorStop(0.5, `rgba(100, 200, 255, ${this.glowIntensity * 0.2})`);
+        ctx.save();
+
+        // Draw sparkles first (behind orb)
+        this.sparkles.forEach(sparkle => {
+            const sparkleScreen = toScreen(sparkle.x, sparkle.y);
+            ctx.globalAlpha = sparkle.life;
+            ctx.fillStyle = '#ffffff';
+            ctx.shadowBlur = 4;
+            ctx.shadowColor = '#64c8ff';
+            ctx.fillRect(
+                sparkleScreen.x - sparkle.size / 2,
+                sparkleScreen.y - sparkle.size / 2,
+                sparkle.size,
+                sparkle.size
+            );
+        });
+        ctx.shadowBlur = 0;
+        ctx.globalAlpha = 1;
+
+        // Outer pulsing glow
+        const gradient = ctx.createRadialGradient(
+            screen.x,
+            screen.y + floatY,
+            0,
+            screen.x,
+            screen.y + floatY,
+            this.size * 2.5
+        );
+        gradient.addColorStop(0, `rgba(100, 200, 255, ${this.glowIntensity * 0.6})`);
+        gradient.addColorStop(0.4, `rgba(100, 200, 255, ${this.glowIntensity * 0.3})`);
         gradient.addColorStop(1, 'rgba(100, 200, 255, 0)');
 
         ctx.fillStyle = gradient;
         ctx.beginPath();
-        ctx.arc(screen.x, screen.y, this.size * 2, 0, Math.PI * 2);
+        ctx.arc(screen.x, screen.y + floatY, this.size * 2.5, 0, Math.PI * 2);
         ctx.fill();
 
-        // Main orb body
+        // Rotating energy ring
+        ctx.strokeStyle = `rgba(100, 200, 255, ${this.glowIntensity * 0.5})`;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        for (let i = 0; i < 8; i++) {
+            const angle = this.rotation + (Math.PI * 2 / 8) * i;
+            const ringRadius = this.size * 1.3;
+            const x = screen.x + Math.cos(angle) * ringRadius;
+            const y = screen.y + floatY + Math.sin(angle) * ringRadius;
+
+            if (i === 0) {
+                ctx.moveTo(x, y);
+            } else {
+                ctx.lineTo(x, y);
+            }
+        }
+        ctx.closePath();
+        ctx.stroke();
+
+        // Main orb body with better gradient
+        const currentSize = this.size * (0.9 + Math.sin(this.pulseTimer) * 0.1);
         const orbGradient = ctx.createRadialGradient(
-            screen.x - this.size * 0.3,
-            screen.y - this.size * 0.3,
+            screen.x - currentSize * 0.4,
+            screen.y + floatY - currentSize * 0.4,
             0,
             screen.x,
-            screen.y,
-            this.size
+            screen.y + floatY,
+            currentSize
         );
-        orbGradient.addColorStop(0, '#e0f7ff');
-        orbGradient.addColorStop(0.5, '#64c8ff');
+        orbGradient.addColorStop(0, '#ffffff');
+        orbGradient.addColorStop(0.3, '#e0f7ff');
+        orbGradient.addColorStop(0.6, '#64c8ff');
         orbGradient.addColorStop(1, '#3498db');
 
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = '#64c8ff';
         ctx.fillStyle = orbGradient;
         ctx.beginPath();
-        ctx.arc(screen.x, screen.y, this.size * (0.8 + this.glowIntensity * 0.2), 0, Math.PI * 2);
+        ctx.arc(screen.x, screen.y + floatY, currentSize, 0, Math.PI * 2);
         ctx.fill();
 
-        // Highlight
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+        // Inner core
+        ctx.shadowBlur = 8;
+        ctx.fillStyle = '#ffffff';
+        ctx.globalAlpha = this.glowIntensity * 0.7;
         ctx.beginPath();
-        ctx.arc(screen.x - this.size * 0.3, screen.y - this.size * 0.3, this.size * 0.3, 0, Math.PI * 2);
+        ctx.arc(screen.x, screen.y + floatY, currentSize * 0.4, 0, Math.PI * 2);
         ctx.fill();
+
+        // Highlight shine
+        ctx.globalAlpha = 0.8;
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(
+            screen.x - currentSize * 0.35,
+            screen.y + floatY - currentSize * 0.35,
+            currentSize * 0.25,
+            0,
+            Math.PI * 2
+        );
+        ctx.fill();
+
+        ctx.restore();
+    }
+}
+
+// Damage Number class - floating combat text
+class DamageNumber {
+    constructor(x, y, damage, isCrit = false) {
+        this.x = x;
+        this.y = y;
+        this.damage = Math.floor(damage);
+        this.isCrit = isCrit;
+        this.life = 1;
+        this.vy = -2; // Float upward
+        this.vx = (Math.random() - 0.5) * 1; // Slight horizontal drift
+        this.scale = 1;
+        this.rotation = 0;
+    }
+
+    update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.vy += 0.05; // Slight gravity
+        this.life -= 0.015;
+
+        return this.life <= 0; // Return true when should be removed
+    }
+
+    draw() {
+        const screen = toScreen(this.x, this.y);
+
+        ctx.save();
+        ctx.globalAlpha = this.life;
+        ctx.translate(screen.x, screen.y);
+
+        // Shadow/outline for readability
+        ctx.font = this.isCrit ? 'bold 22px "Courier New"' : 'bold 16px "Courier New"';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+
+        // Outline
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = this.isCrit ? 4 : 3;
+        ctx.strokeText(this.damage, 0, 0);
+
+        // Fill
+        if (this.isCrit) {
+            // Critical - red
+            ctx.fillStyle = '#ff4444';
+            ctx.shadowBlur = 8;
+            ctx.shadowColor = '#ff0000';
+        } else {
+            // Normal - white
+            ctx.fillStyle = '#ffffff';
+        }
+
+        ctx.fillText(this.damage, 0, 0);
+
+        ctx.restore();
     }
 }
 
@@ -5188,13 +5462,176 @@ class Chest {
     }
 }
 
+// Mystery Box Drop class - dropped from enemies during gameplay
+class MysteryBoxDrop {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.size = 25;
+        this.bobTimer = Math.random() * Math.PI * 2;
+        this.glowIntensity = 0;
+        this.isNearPlayer = false;
+        this.rotationAngle = 0;
+    }
+
+    update() {
+        // Calculate distance to player
+        const dx = gameState.player.x - this.x;
+        const dy = gameState.player.y - this.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        // Check if player is near
+        this.isNearPlayer = dist < 50;
+
+        // Update animations
+        this.bobTimer += 0.05;
+        this.rotationAngle += 0.02;
+        this.glowIntensity = Math.sin(this.bobTimer) * 0.3 + 0.7;
+
+        return false; // Mystery boxes don't get auto-collected
+    }
+
+    draw() {
+        const screen = toScreen(this.x, this.y);
+        const bobOffset = Math.sin(this.bobTimer) * 7;
+
+        // Shadow
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+        ctx.beginPath();
+        ctx.ellipse(screen.x, screen.y + this.size * 1.5, this.size * 1.3, this.size * 0.5, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Rainbow glow if player is near
+        if (this.isNearPlayer) {
+            const rainbow = ['#FFD700', '#FF1493', '#00CED1', '#9370DB', '#FFD700'];
+            const glowPhase = this.bobTimer * 2;
+
+            for (let i = 0; i < 5; i++) {
+                const phase = (glowPhase + i * 0.4) % rainbow.length;
+                const colorIndex = Math.floor(phase);
+                const color = rainbow[colorIndex];
+
+                const glow = ctx.createRadialGradient(screen.x, screen.y + bobOffset, 0, screen.x, screen.y + bobOffset, this.size * (4 - i * 0.5));
+                glow.addColorStop(0, `${color}${Math.floor(this.glowIntensity * 100).toString(16).padStart(2, '0')}`);
+                glow.addColorStop(0.5, `${color}33`);
+                glow.addColorStop(1, `${color}00`);
+                ctx.fillStyle = glow;
+                ctx.beginPath();
+                ctx.arc(screen.x, screen.y + bobOffset, this.size * (4 - i * 0.5), 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        ctx.save();
+        ctx.translate(screen.x, screen.y + bobOffset);
+        ctx.rotate(Math.sin(this.rotationAngle) * 0.1);
+
+        // Box main body with gradient (golden)
+        const boxGradient = ctx.createLinearGradient(-this.size, -this.size, this.size, this.size);
+        boxGradient.addColorStop(0, '#FFD700');
+        boxGradient.addColorStop(0.3, '#FFA500');
+        boxGradient.addColorStop(0.7, '#FFD700');
+        boxGradient.addColorStop(1, '#FF8C00');
+        ctx.fillStyle = boxGradient;
+        ctx.fillRect(-this.size, -this.size, this.size * 2, this.size * 2);
+
+        // Box border
+        ctx.strokeStyle = '#8B4513';
+        ctx.lineWidth = 3;
+        ctx.strokeRect(-this.size, -this.size, this.size * 2, this.size * 2);
+
+        // Question mark
+        ctx.fillStyle = '#8B4513';
+        ctx.font = 'bold 32px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('?', 0, 0);
+
+        // Sparkles around box
+        const sparkleCount = 6;
+        for (let i = 0; i < sparkleCount; i++) {
+            const angle = (this.rotationAngle * 2 + (i / sparkleCount) * Math.PI * 2);
+            const sparkleX = Math.cos(angle) * this.size * 1.8;
+            const sparkleY = Math.sin(angle) * this.size * 1.8;
+            const sparkleSize = 3 + Math.sin(this.bobTimer * 3 + i) * 2;
+
+            ctx.fillStyle = '#FFD700';
+            ctx.beginPath();
+            ctx.arc(sparkleX, sparkleY, sparkleSize, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        ctx.restore();
+
+        // Interaction prompt
+        if (this.isNearPlayer) {
+            const promptGradient = ctx.createLinearGradient(
+                screen.x - 50,
+                screen.y - this.size * 2.8 + bobOffset,
+                screen.x + 50,
+                screen.y - this.size * 2.8 + bobOffset + 26
+            );
+            promptGradient.addColorStop(0, 'rgba(20, 20, 30, 0.85)');
+            promptGradient.addColorStop(0.5, 'rgba(30, 30, 40, 0.95)');
+            promptGradient.addColorStop(1, 'rgba(20, 20, 30, 0.85)');
+            ctx.fillStyle = promptGradient;
+
+            ctx.beginPath();
+            ctx.roundRect(screen.x - 50, screen.y - this.size * 2.8 + bobOffset, 100, 26, 8);
+            ctx.fill();
+
+            ctx.strokeStyle = '#FFD700';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            ctx.save();
+            ctx.shadowBlur = 5;
+            ctx.shadowColor = '#FFD700';
+            ctx.fillStyle = '#FFD700';
+            ctx.font = 'bold 14px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('Press E to Spin!', screen.x, screen.y - this.size * 2.8 + bobOffset + 13);
+            ctx.restore();
+        }
+    }
+}
+
 // Handle enemy death - spawn XP orb and maybe chest
 function handleEnemyDeath(enemy) {
-    gameState.xpOrbs.push(new XPOrb(enemy.x, enemy.y, 5));
+    // Calculate XP based on enemy type and difficulty
+    let xpValue = 3; // Base XP for normal enemy (goblin)
+
+    if (enemy.isMajorBoss) {
+        xpValue = 100; // Major boss gives huge XP
+    } else if (enemy.isBoss) {
+        xpValue = 50; // Boss gives lots of XP
+    } else if (enemy.maxHp >= 50) {
+        xpValue = 8; // Ghost (50 HP) - medium XP
+    } else if (enemy.maxHp >= 40) {
+        xpValue = 6; // Orc (40 HP) - slightly more XP
+    } else {
+        xpValue = 3; // Goblin (30 HP) - base XP
+    }
+
+    gameState.xpOrbs.push(new XPOrb(enemy.x, enemy.y, xpValue));
+
     // 5% chance to drop a chest
     if (Math.random() < 0.05) {
         gameState.chests.push(new Chest(enemy.x, enemy.y));
     }
+
+    // 2% chance to drop a Mystery Box (rarer than chests!)
+    if (Math.random() < 0.02) {
+        gameState.mysteryBoxes = gameState.mysteryBoxes || [];
+        gameState.mysteryBoxes.push(new MysteryBoxDrop(enemy.x, enemy.y));
+    }
+
+    // CREATE AWESOME DEATH EXPLOSION!
+    // Use enemy's own color palette if available, otherwise default green
+    const enemyColorPalette = enemy.colorPalette || ['#4a9d5f', '#5fb571', '#6ed47f', '#3d8a4f', '#7be58d'];
+    createDeathExplosion(enemy.x, enemy.y, enemy.isBoss || enemy.isMajorBoss, enemyColorPalette);
+
     gameState.kills++;
 }
 
@@ -5279,6 +5716,133 @@ function createExplosionEffect(x, y, radius) {
             if (this.radius >= this.maxRadius) this.life = 0;
         }
     });
+}
+
+// Create awesome death explosion with multiple particle types
+function createDeathExplosion(x, y, isBoss = false, colorPalette = null) {
+    const particleCount = isBoss ? 40 : 20;
+    const colors = colorPalette || ['#ff6b35', '#f7931e', '#fdc830', '#ff4444', '#ff8800'];
+
+    // Explosive particles shooting outward
+    for (let i = 0; i < particleCount; i++) {
+        const angle = (Math.PI * 2 * i) / particleCount;
+        const speed = isBoss ? 4 + Math.random() * 3 : 2 + Math.random() * 2;
+        const color = colors[Math.floor(Math.random() * colors.length)];
+
+        gameState.particles.push({
+            x: x,
+            y: y,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            size: isBoss ? 4 + Math.random() * 3 : 2 + Math.random() * 2,
+            color: color,
+            alpha: 1,
+            gravity: 0.1,
+            friction: 0.98,
+            life: 1,
+            maxLife: 1,
+            draw: function() {
+                const screen = toScreen(this.x, this.y);
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.fillStyle = this.color;
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = this.color;
+                ctx.beginPath();
+                ctx.arc(screen.x, screen.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            },
+            update: function() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.vy += this.gravity;
+                this.vx *= this.friction;
+                this.vy *= this.friction;
+                this.life -= 0.02;
+                this.alpha = this.life;
+                this.size *= 0.97;
+            }
+        });
+    }
+
+    // Add central flash explosion ring
+    const ringColor = colors[0]; // Use primary color from palette
+    const glowColor = colors[2] || colors[1]; // Use lighter color for inner glow
+
+    gameState.particles.push({
+        type: 'flash',
+        x: x,
+        y: y,
+        radius: 5,
+        maxRadius: isBoss ? 60 : 30,
+        life: 1,
+        ringColor: ringColor,
+        glowColor: glowColor,
+        draw: function() {
+            const screen = toScreen(this.x, this.y);
+
+            // Outer ring
+            ctx.save();
+            ctx.globalAlpha = this.life * 0.8;
+            ctx.strokeStyle = this.ringColor;
+            ctx.lineWidth = 3;
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = this.ringColor;
+            ctx.beginPath();
+            ctx.arc(screen.x, screen.y, this.radius, 0, Math.PI * 2);
+            ctx.stroke();
+
+            // Inner glow
+            ctx.strokeStyle = this.glowColor;
+            ctx.lineWidth = 1;
+            ctx.shadowBlur = 20;
+            ctx.shadowColor = this.glowColor;
+            ctx.stroke();
+            ctx.restore();
+        },
+        update: function() {
+            this.radius += (this.maxRadius - this.radius) * 0.3;
+            this.life -= 0.05;
+        }
+    });
+
+    // Sparks
+    const sparkCount = isBoss ? 15 : 8;
+    for (let i = 0; i < sparkCount; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 3 + Math.random() * 4;
+
+        gameState.particles.push({
+            x: x,
+            y: y,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed - 1,
+            size: 1 + Math.random(),
+            color: '#ffffff',
+            alpha: 1,
+            gravity: 0.15,
+            life: 1,
+            draw: function() {
+                const screen = toScreen(this.x, this.y);
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.fillStyle = this.color;
+                ctx.shadowBlur = 8;
+                ctx.shadowColor = '#ffff00';
+                ctx.fillRect(screen.x - this.size/2, screen.y - this.size/2, this.size, this.size);
+                ctx.restore();
+            },
+            update: function() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.vy += this.gravity;
+                this.vx *= 0.96;
+                this.life -= 0.025;
+                this.alpha = this.life;
+            }
+        });
+    }
 }
 
 // Initialize
@@ -5533,6 +6097,16 @@ function levelUp() {
         { name: 'Heal 50 HP', desc: 'Restore health', type: 'stat', apply: () => { gameState.player.hp = Math.min(gameState.player.maxHp, gameState.player.hp + 50); } }
     ];
 
+    // Add XP Magnet upgrade if player doesn't have it yet
+    if (!gameState.player.hasXPMagnet) {
+        allUpgrades.push({
+            name: 'XP Magnet',
+            desc: 'Automatically attract XP orbs from nearby enemies',
+            type: 'stat',
+            apply: () => { gameState.player.hasXPMagnet = true; }
+        });
+    }
+
     // Add weapon-specific upgrades for existing weapons
     gameState.player.weapons.forEach(weapon => {
         // Level up existing weapon
@@ -5635,7 +6209,7 @@ function levelUp() {
 
     if (canAddWeapon() && !hasWeapon('ice')) {
         allUpgrades.push({
-            name: '❄️ Ice Spikes',
+            name: 'Ice Spikes',
             desc: 'NEW WEAPON: Freezing spikes that slow enemies',
             type: 'new_weapon',
             apply: () => {
@@ -5739,7 +6313,7 @@ function levelUp() {
 
     if (canAddWeapon() && !hasWeapon('black_hole')) {
         allUpgrades.push({
-            name: '🌑 Black Hole',
+            name: 'Black Hole',
             desc: 'NEW WEAPON: Create a gravity well that pulls and damages enemies',
             type: 'new_weapon',
             apply: () => {
@@ -5757,10 +6331,69 @@ function levelUp() {
         });
     }
 
+    // Select 3 unique upgrades and assign rarities
     const selectedUpgrades = [];
-    while (selectedUpgrades.length < 3) {
+    while (selectedUpgrades.length < 3 && allUpgrades.length > 0) {
         const upgrade = allUpgrades[Math.floor(Math.random() * allUpgrades.length)];
         if (!selectedUpgrades.includes(upgrade)) {
+            // Assign random rarity to this upgrade
+            const rarity = getRandomRarity();
+            upgrade.rarity = rarity;
+
+            // Apply rarity multiplier to stat bonuses
+            if (upgrade.type === 'stat' && !upgrade.name.includes('Heal')) {
+                // Create a new apply function that uses rarity multiplier
+                const originalApply = upgrade.apply;
+                const multiplier = rarity.statMultiplier;
+
+                // Update description to show boosted value
+                if (upgrade.name.includes('Max HP')) {
+                    const baseValue = 20;
+                    const boostedValue = Math.floor(baseValue * multiplier);
+                    upgrade.name = `Max HP +${boostedValue}`;
+                    upgrade.apply = () => {
+                        gameState.player.maxHp += boostedValue;
+                        gameState.player.hp += boostedValue;
+                    };
+                } else if (upgrade.name.includes('Speed')) {
+                    const baseValue = 0.5;
+                    const boostedValue = +(baseValue * multiplier).toFixed(1);
+                    upgrade.name = `Speed +${boostedValue}`;
+                    upgrade.apply = () => {
+                        gameState.player.speed += boostedValue;
+                    };
+                } else if (upgrade.name.includes('All Weapons Damage')) {
+                    const baseValue = 5;
+                    const boostedValue = Math.floor(baseValue * multiplier);
+                    upgrade.name = `All Weapons Damage +${boostedValue}`;
+                    upgrade.apply = () => {
+                        gameState.player.weapons.forEach(w => w.damage += boostedValue);
+                    };
+                } else if (upgrade.name.includes('All Weapons Range')) {
+                    const baseValue = 30;
+                    const boostedValue = Math.floor(baseValue * multiplier);
+                    upgrade.name = `All Weapons Range +${boostedValue}`;
+                    upgrade.apply = () => {
+                        gameState.player.weapons.forEach(w => w.range += boostedValue);
+                    };
+                } else if (upgrade.name.includes('weapon_upgrade') || upgrade.name.includes('Level')) {
+                    // Weapon upgrade bonuses scale with rarity
+                    const baseDamage = 3;
+                    const boostedDamage = Math.floor(baseDamage * multiplier);
+                    if (upgrade.weaponType) {
+                        const weaponName = upgrade.name.split(' Level')[0];
+                        upgrade.name = `${weaponName} Level ${getWeapon(upgrade.weaponType).level + 1}`;
+                        upgrade.desc = `Upgrade: +${boostedDamage} damage, -5% cooldown`;
+                        upgrade.apply = () => {
+                            const weapon = getWeapon(upgrade.weaponType);
+                            weapon.level++;
+                            weapon.damage += boostedDamage;
+                            weapon.cooldown *= 0.95;
+                        };
+                    }
+                }
+            }
+
             selectedUpgrades.push(upgrade);
         }
     }
@@ -5921,11 +6554,11 @@ function gameLoop(currentTime) {
                 gameState.meteorStormStartTime = null;
                 gameState.meteorStormLastSpawn = null;
                 gameState.player.ultimateActive = false;
-                console.log('🌠 Meteor Storm ended');
+                console.log('Meteor Storm ended');
             } else {
                 // Spawn meteors every 400ms
                 if (Date.now() - gameState.meteorStormLastSpawn > 400) {
-                    console.log('☄️ Spawning meteors!');
+                    console.log('Spawning meteors!');
                     for (let i = 0; i < 3; i++) {
                         const angle = Math.random() * Math.PI * 2;
                         const distance = 200 + Math.random() * 400;
@@ -5985,7 +6618,7 @@ function gameLoop(currentTime) {
                 if (!gameState.lastDifficultyLog || gameState.gameTime - gameState.lastDifficultyLog > 60000) {
                     gameState.lastDifficultyLog = gameState.gameTime;
                     const minutes = Math.floor(gameState.gameTime / 60000);
-                    console.log(`⚠️ DIFFICULTY TIER ${difficulty.intervals} (${minutes} min): Speed x${difficulty.speed.toFixed(2)}, HP x${difficulty.hp.toFixed(2)}, Damage x${difficulty.damage.toFixed(2)}, Spawn: ${difficulty.spawnRate.toFixed(0)}ms, Max: ${difficulty.maxEnemies}`);
+                    console.log(`DIFFICULTY TIER ${difficulty.intervals} (${minutes} min): Speed x${difficulty.speed.toFixed(2)}, HP x${difficulty.hp.toFixed(2)}, Damage x${difficulty.damage.toFixed(2)}, Spawn: ${difficulty.spawnRate.toFixed(0)}ms, Max: ${difficulty.maxEnemies}`);
                 }
             }
             gameState.lastSpawn = currentTime;
@@ -6354,6 +6987,18 @@ function gameLoop(currentTime) {
             }
         }
 
+        // Update and draw damage numbers
+        for (let i = gameState.damageNumbers.length - 1; i >= 0; i--) {
+            const damageNum = gameState.damageNumbers[i];
+            if (!gameState.isPaused && !gameState.isGameOver) {
+                if (damageNum.update()) {
+                    gameState.damageNumbers.splice(i, 1);
+                    continue;
+                }
+            }
+            damageNum.draw();
+        }
+
         // Update and draw XP orbs
         for (let i = gameState.xpOrbs.length - 1; i >= 0; i--) {
             const orb = gameState.xpOrbs[i];
@@ -6379,6 +7024,17 @@ function gameLoop(currentTime) {
                 chest.update();
             }
             chest.draw();
+        }
+
+        // Update and draw mystery boxes
+        if (gameState.mysteryBoxes) {
+            for (let i = gameState.mysteryBoxes.length - 1; i >= 0; i--) {
+                const box = gameState.mysteryBoxes[i];
+                if (!gameState.isPaused && !gameState.isGameOver) {
+                    box.update();
+                }
+                box.draw();
+            }
         }
 
         // UI is updated automatically by React
