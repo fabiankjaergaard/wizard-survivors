@@ -753,7 +753,7 @@ body {
     justify-content: center;
     align-items: center;
     padding: 40px;
-    overflow-y: auto;
+    overflow: hidden;
 }
 
 .game-title {
@@ -870,33 +870,7 @@ body {
     letter-spacing: 2px;
 }
 
-.back-button {
-    width: 100%;
-    max-width: 600px;
-    padding: 14px 20px;
-    margin-top: 30px;
-    font-size: 14px;
-    font-weight: bold;
-    background: linear-gradient(180deg, #8b7355 0%, #6b5545 100%);
-    color: #f5e6c8;
-    border: 4px solid #4a3830;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: transform 0.1s;
-    box-shadow: 0 5px 0 #4a3830, inset 0 2px 0 #a89070;
-    font-family: "Press Start 2P", monospace;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    image-rendering: pixelated;
-}
-
-.back-button:hover {
-    transform: translateY(-2px);
-}
-
-.back-button:active {
-    transform: translateY(2px);
-}
+/* Back button styles removed - now using inline styles with KNAPP1.png background */
 
 /* Character Menu */
 .character-grid {
@@ -1733,4 +1707,93 @@ body {
     color: #ffa500;
     text-align: center;
     font-weight: 600;
+}
+
+/* ============================================
+   RESPONSIVE DESIGN - Media Queries
+   ============================================ */
+
+/* Main Menu Box Responsiveness */
+.main-menu-box {
+    /* Smooth scrollbar for overflow content */
+    scrollbar-width: thin;
+    scrollbar-color: #5fb571 rgba(0,0,0,0.3);
+}
+
+.main-menu-box::-webkit-scrollbar {
+    width: 8px;
+}
+
+.main-menu-box::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.3);
+    border-radius: 4px;
+}
+
+.main-menu-box::-webkit-scrollbar-thumb {
+    background: #5fb571;
+    border-radius: 4px;
+}
+
+.main-menu-box::-webkit-scrollbar-thumb:hover {
+    background: #6fc681;
+}
+
+/* Tablet and smaller screens */
+@media screen and (max-height: 900px) {
+    .main-menu-box {
+        min-height: 750px !important;
+        padding: 120px 30px 50px 30px !important;
+    }
+}
+
+/* Mobile landscape and smaller tablets */
+@media screen and (max-height: 700px) {
+    .main-menu-box {
+        min-height: 650px !important;
+        padding: 100px 25px 40px 25px !important;
+    }
+}
+
+/* Small mobile screens */
+@media screen and (max-height: 600px) {
+    .main-menu-box {
+        min-height: 550px !important;
+        padding: 80px 20px 30px 20px !important;
+    }
+}
+
+/* Very small screens (phones in landscape) */
+@media screen and (max-height: 500px) {
+    .main-menu-box {
+        min-height: 450px !important;
+        padding: 60px 15px 25px 15px !important;
+    }
+}
+
+/* Width-based responsive adjustments */
+@media screen and (max-width: 600px) {
+    .main-menu-box {
+        width: 95vw !important;
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+    }
+
+    .game-title {
+        font-size: 32px !important;
+        margin-bottom: 40px !important;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .main-menu-box {
+        width: 98vw !important;
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+    }
+
+    .game-title {
+        font-size: 24px !important;
+        margin-bottom: 30px !important;
+        letter-spacing: 3px !important;
+    }
 }

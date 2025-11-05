@@ -16,6 +16,67 @@ const MUSIC_TRACKS = [
     }
 ];
 
+// ============================================
+// STANDARD BACK BUTTON COMPONENT
+// ============================================
+// IMPORTANT: This is the ONLY back button design allowed!
+// ALL pages MUST use this exact component.
+// DO NOT create custom back buttons or modify this styling.
+// Size: 300px × 145px
+// Background: KNAPP1.png
+// Font: Press Start 2P, 24px, color #2a1810
+// ============================================
+function BackButton({ onClick }) {
+    return (
+        <button onClick={onClick} style={{
+            width: '300px !important',
+            height: '145px !important',
+            minWidth: '300px !important',
+            minHeight: '145px !important',
+            maxWidth: '300px !important',
+            maxHeight: '145px !important',
+            backgroundImage: 'url(assets/KNAPP1.png)',
+            backgroundSize: '100% 100%',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            border: 'none',
+            cursor: 'pointer',
+            imageRendering: 'pixelated',
+            transition: 'transform 0.15s ease, filter 0.15s ease',
+            backgroundColor: 'transparent',
+            fontFamily: '"Press Start 2P", monospace',
+            fontSize: '24px',
+            color: '#2a1810',
+            fontWeight: 'bold',
+            textShadow: '2px 2px 0 rgba(255,255,255,0.3)',
+            filter: 'brightness(1)',
+            marginTop: '20px',
+            marginBottom: '-60px',
+            padding: '0',
+            boxSizing: 'border-box'
+        }}
+        onMouseEnter={(e) => {
+            e.target.style.transform = 'scale(1.05)';
+            e.target.style.filter = 'brightness(1.15)';
+        }}
+        onMouseLeave={(e) => {
+            e.target.style.transform = 'scale(1)';
+            e.target.style.filter = 'brightness(1)';
+        }}
+        onMouseDown={(e) => {
+            e.target.style.transform = 'scale(0.95)';
+            e.target.style.filter = 'brightness(0.9)';
+        }}
+        onMouseUp={(e) => {
+            e.target.style.transform = 'scale(1.05)';
+            e.target.style.filter = 'brightness(1.15)';
+        }}
+        >
+            BACK
+        </button>
+    );
+}
+
 // Weapon icon mapping - returns image path or text
 const getWeaponIcon = (weaponType) => {
     const icons = {
@@ -391,10 +452,11 @@ function GameUI() {
             <div className="main-menu-container">
                 <div className="main-menu">
                     {currentMenuView === 'main' && (
-                        <div style={{
+                        <div className="main-menu-box" style={{
                             position: 'relative',
-                            width: '500px',
-                            height: '800px',
+                            width: 'min(500px, 90vw)',
+                            height: '850px',
+                            maxHeight: '95vh',
                             backgroundImage: 'url(assets/MainMenuBoxGame.png)',
                             backgroundSize: '100% 100%',
                             backgroundPosition: 'center',
@@ -408,9 +470,20 @@ function GameUI() {
                             flexDirection: 'column',
                             justifyContent: 'flex-start',
                             alignItems: 'center',
-                            gap: '5px',
-                            padding: '150px 40px 40px 40px'
+                            padding: '150px 40px 60px 40px',
+                            overflow: 'hidden'
                         }}>
+                            <div style={{
+                                width: '100%',
+                                height: '100%',
+                                overflowY: 'auto',
+                                overflowX: 'hidden',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                gap: '5px',
+                                paddingRight: '10px'
+                            }}>
                             <button onClick={startGame} style={{
                                 width: '280px',
                                 height: '145px',
@@ -531,46 +604,6 @@ function GameUI() {
                                 SKILL TREE
                             </button>
 
-                            <button onClick={() => setCurrentMenuView('shop')} style={{
-                                width: '300px',
-                                height: '145px',
-                                backgroundImage: 'url(assets/KNAPP1.png)',
-                                backgroundSize: '100% 100%',
-                                backgroundPosition: 'center',
-                                backgroundRepeat: 'no-repeat',
-                                border: 'none',
-                                cursor: 'pointer',
-                                imageRendering: 'pixelated',
-                                transition: 'transform 0.15s ease, filter 0.15s ease',
-                                backgroundColor: 'transparent',
-                                fontFamily: '"Press Start 2P", monospace',
-                                fontSize: '24px',
-                                color: '#2a1810',
-                                fontWeight: 'bold',
-                                textShadow: '2px 2px 0 rgba(255,255,255,0.3)',
-                                filter: 'brightness(1)',
-                                marginBottom: '-60px'
-                            }}
-                            onMouseEnter={(e) => {
-                                e.target.style.transform = 'scale(1.05)';
-                                e.target.style.filter = 'brightness(1.15)';
-                            }}
-                            onMouseLeave={(e) => {
-                                e.target.style.transform = 'scale(1)';
-                                e.target.style.filter = 'brightness(1)';
-                            }}
-                            onMouseDown={(e) => {
-                                e.target.style.transform = 'scale(0.95)';
-                                e.target.style.filter = 'brightness(0.9)';
-                            }}
-                            onMouseUp={(e) => {
-                                e.target.style.transform = 'scale(1.05)';
-                                e.target.style.filter = 'brightness(1.15)';
-                            }}
-                            >
-                                SHOP
-                            </button>
-
                             <button onClick={() => setCurrentMenuView('achievements')} style={{
                                 width: '300px',
                                 height: '145px',
@@ -610,6 +643,7 @@ function GameUI() {
                             >
                                 ACHIEVEMENTS
                             </button>
+                            </div>
                         </div>
                     )}
 
@@ -620,29 +654,36 @@ function GameUI() {
                         right: '20px',
                         width: '80px',
                         height: '80px',
-                        backgroundColor: '#1a1a1a',
-                        border: '3px solid #5fb571',
-                        borderRadius: '50%',
-                        cursor: 'pointer',
+                        backgroundImage: 'url(assets/WeaponSlotTestGame.png)',
+                        backgroundSize: '100% 100%',
+                        backgroundPosition: 'center',
+                        backgroundRepeat: 'no-repeat',
+                        border: 'none',
+                        backgroundColor: 'transparent',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        fontSize: '32px',
-                        color: '#5fb571',
-                        transition: 'all 0.2s ease',
-                        boxShadow: '0 4px 8px rgba(0,0,0,0.3)',
-                        zIndex: 3000
+                        cursor: 'pointer',
+                        imageRendering: 'pixelated',
+                        transition: 'transform 0.1s',
+                        zIndex: 3000,
+                        padding: 0
                     }}
-                    onMouseEnter={(e) => {
-                        e.target.style.transform = 'scale(1.1)';
-                        e.target.style.boxShadow = '0 6px 12px rgba(95, 181, 113, 0.4)';
-                    }}
-                    onMouseLeave={(e) => {
-                        e.target.style.transform = 'scale(1)';
-                        e.target.style.boxShadow = '0 4px 8px rgba(0,0,0,0.3)';
-                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                    onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
                     >
-                        🎵
+                        <span style={{
+                            fontSize: '24px',
+                            color: 'white',
+                            fontFamily: '"Press Start 2P", monospace',
+                            textShadow: '2px 2px 0 rgba(0,0,0,0.5)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            lineHeight: 1
+                        }}>
+                            ♪
+                        </span>
                     </button>
 
                     {currentMenuView === 'main' && null}
@@ -657,14 +698,6 @@ function GameUI() {
 
                     {currentMenuView === 'skills' && (
                         <SkillTreeMenu
-                            playerData={playerData}
-                            setPlayerData={setPlayerData}
-                            onBack={() => setCurrentMenuView('main')}
-                        />
-                    )}
-
-                    {currentMenuView === 'shop' && (
-                        <ShopMenu
                             playerData={playerData}
                             setPlayerData={setPlayerData}
                             onBack={() => setCurrentMenuView('main')}
@@ -747,37 +780,58 @@ function GameUI() {
                             </div>
                         </div>
                     </div>
-
-
-                    {/* Music Mute/Unmute Button */}
-                    <div
-                        className={`music-mute-button ${playerData.musicVolume > 0 ? 'unmuted' : 'muted'}`}
-                        onClick={() => {
-                            if (window.currentMusicAudio) {
-                                if (window.currentMusicAudio.volume > 0) {
-                                    window.currentMusicAudio.volume = 0;
-                                    setPlayerData({...playerData, musicVolume: 0});
-                                } else {
-                                    window.currentMusicAudio.volume = 0.5;
-                                    setPlayerData({...playerData, musicVolume: 0.5});
-                                }
-                            }
-                        }}
-                    >
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M11 5L6 9H2V15H6L11 19V5Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                            {playerData.musicVolume > 0 && (
-                                <>
-                                    <path d="M15.54 8.46C16.4774 9.39764 17.0039 10.6692 17.0039 11.995C17.0039 13.3208 16.4774 14.5924 15.54 15.53" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                                    <path d="M19.07 4.93C20.9447 6.80528 21.9979 9.34836 21.9979 12C21.9979 14.6516 20.9447 17.1947 19.07 19.07" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                                </>
-                            )}
-                            {playerData.musicVolume === 0 && (
-                                <line x1="23" y1="1" x2="1" y2="23" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                            )}
-                        </svg>
-                    </div>
                 </div>
+
+                {/* Music Mute/Unmute Button */}
+                <button
+                    onClick={() => {
+                        if (window.currentMusicAudio) {
+                            if (window.currentMusicAudio.volume > 0) {
+                                window.currentMusicAudio.volume = 0;
+                                setPlayerData({...playerData, musicVolume: 0});
+                            } else {
+                                window.currentMusicAudio.volume = 0.5;
+                                setPlayerData({...playerData, musicVolume: 0.5});
+                            }
+                        }
+                    }}
+                    style={{
+                        position: 'absolute',
+                        top: '20px',
+                        right: '110px',
+                        width: '80px',
+                        height: '80px',
+                        backgroundImage: 'url(assets/WeaponSlotTestGame.png)',
+                        backgroundSize: '100% 100%',
+                        backgroundPosition: 'center',
+                        backgroundRepeat: 'no-repeat',
+                        border: 'none',
+                        backgroundColor: 'transparent',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        cursor: 'pointer',
+                        imageRendering: 'pixelated',
+                        transition: 'transform 0.1s',
+                        zIndex: 3000,
+                        padding: 0
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                    onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                >
+                    <span style={{
+                        fontSize: '24px',
+                        color: 'white',
+                        fontFamily: '"Press Start 2P", monospace',
+                        textShadow: '2px 2px 0 rgba(0,0,0,0.5)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        lineHeight: 1
+                    }}>
+                        {playerData.musicVolume > 0 ? '♪' : '✕'}
+                    </span>
+                </button>
 
                 {/* Active Weapons Display */}
                 <div className="weapons-hud">
@@ -1819,10 +1873,21 @@ function GameUI() {
     );
 }
 
-// Character/Gear Menu Component
+// Character/Gear Menu Component - Simplified Achievement-style
 function CharacterMenu({ playerData, setPlayerData, onBack }) {
     const [hoveredItem, setHoveredItem] = React.useState(null);
     const [tooltipPosition, setTooltipPosition] = React.useState({ x: 0, y: 0 });
+
+    // ESC key to go back
+    React.useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === 'Escape') {
+                onBack();
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [onBack]);
 
     const equipGear = (slot, item) => {
         const newEquippedGear = {...playerData.equippedGear};
@@ -1988,16 +2053,49 @@ function CharacterMenu({ playerData, setPlayerData, onBack }) {
     };
 
     return (
-        <div className="submenu gear-menu" style={{width: '100%', maxWidth: '1600px', margin: '0 auto'}}>
-            <h2 style={{
-                marginBottom: '20px',
-                fontSize: '24px',
-                color: '#2a5840',
-                textAlign: 'center',
-                fontFamily: '"Press Start 2P", monospace',
-                textShadow: '2px 2px 0px #8b6f47',
-                letterSpacing: '2px'
-            }}>EQUIPMENT</h2>
+        <div className="submenu" style={{ position: 'relative' }}>
+            {/* Back button */}
+            <button
+                onClick={onBack}
+                style={{
+                    position: 'absolute',
+                    left: '20px',
+                    top: '20px',
+                    width: '80px',
+                    height: '80px',
+                    backgroundImage: 'url(assets/WeaponSlotTestGame.png)',
+                    backgroundSize: '100% 100%',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    border: 'none',
+                    cursor: 'pointer',
+                    imageRendering: 'pixelated',
+                    transition: 'transform 0.15s ease, filter 0.15s ease',
+                    backgroundColor: 'transparent',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '20px',
+                    color: 'white',
+                    fontWeight: 'bold',
+                    padding: 0,
+                    paddingBottom: '2px',
+                    textShadow: '2px 2px 4px rgba(0,0,0,0.5)',
+                    zIndex: 10
+                }}
+                onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'scale(1.1)';
+                    e.currentTarget.style.filter = 'brightness(1.2)';
+                }}
+                onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'scale(1)';
+                    e.currentTarget.style.filter = 'brightness(1)';
+                }}
+            >
+                ←
+            </button>
+
+            <h2>EQUIPMENT</h2>
 
             {/* Main Grid: Character on Left, Inventory on Right */}
             <div style={{
@@ -2275,29 +2373,7 @@ function CharacterMenu({ playerData, setPlayerData, onBack }) {
             </div>
             </div>
 
-            <button onClick={onBack} style={{
-                marginTop: '20px',
-                width: '100%',
-                maxWidth: '400px',
-                padding: '14px 20px',
-                background: 'linear-gradient(180deg, #8b7355 0%, #6b5545 100%)',
-                border: '4px solid #4a3830',
-                borderRadius: '8px',
-                color: '#f5e6c8',
-                fontSize: '16px',
-                fontWeight: 'bold',
-                cursor: 'pointer',
-                textTransform: 'uppercase',
-                letterSpacing: '1px',
-                boxShadow: '0 5px 0 #4a3830, inset 0 2px 0 #a89070',
-                imageRendering: 'pixelated',
-                fontFamily: '"Press Start 2P", monospace',
-                transition: 'transform 0.1s'
-            }}
-            onMouseDown={(e) => e.target.style.transform = 'translateY(2px)'}
-            onMouseUp={(e) => e.target.style.transform = 'translateY(0)'}
-            onMouseLeave={(e) => e.target.style.transform = 'translateY(0)'}
-            >BACK</button>
+            <BackButton onClick={onBack} />
 
             {/* Comparison Tooltip */}
             {hoveredItem && (
@@ -2420,151 +2496,232 @@ function CharacterMenu({ playerData, setPlayerData, onBack }) {
     );
 }
 
-// Skill Tree Menu Component
+// Skill Tree Menu Component (same layout as main menu)
 function SkillTreeMenu({ playerData, setPlayerData, onBack }) {
-    const skills = [
-        { id: 'maxHp', name: 'Max HP', icon: 'HP', desc: '+10 HP per level', maxLevel: 10 },
-        { id: 'damage', name: 'Damage', icon: 'DMG', desc: '+5% damage per level', maxLevel: 10 },
-        { id: 'speed', name: 'Speed', icon: 'SPD', desc: '+3% speed per level', maxLevel: 10 },
-        { id: 'xpGain', name: 'XP Gain', icon: 'XP', desc: '+10% XP per level', maxLevel: 5 },
-        { id: 'luck', name: 'Luck', icon: 'LCK', desc: '+5% better drops', maxLevel: 5 }
+    // ESC key to go back
+    React.useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === 'Escape') {
+                onBack();
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [onBack]);
+
+    // Skill tree data - each tree has multiple skills
+    const skillTrees = [
+        {
+            name: 'Combat',
+            skills: [
+                { id: 'atk1', name: 'Attack I', icon: '⚔️', desc: '+5% Damage' },
+                { id: 'atk2', name: 'Attack II', icon: '⚔️', desc: '+10% Damage' },
+                { id: 'atk3', name: 'Attack III', icon: '⚔️', desc: '+15% Damage' },
+                { id: 'atk4', name: 'Attack IV', icon: '⚔️', desc: '+20% Damage' },
+                { id: 'crit1', name: 'Critical I', icon: '💥', desc: '+5% Crit' },
+                { id: 'crit2', name: 'Critical II', icon: '💥', desc: '+10% Crit' },
+                { id: 'crit3', name: 'Critical III', icon: '💥', desc: '+15% Crit' },
+                { id: 'speed1', name: 'Speed I', icon: '⚡', desc: '+5% Speed' },
+                { id: 'speed2', name: 'Speed II', icon: '⚡', desc: '+10% Speed' },
+                { id: 'rage1', name: 'Rage I', icon: '😡', desc: '+10% Dmg' },
+                { id: 'rage2', name: 'Rage II', icon: '😡', desc: '+20% Dmg' },
+                { id: 'pierce1', name: 'Pierce I', icon: '🎯', desc: '+5% Pierce' },
+                { id: 'pierce2', name: 'Pierce II', icon: '🎯', desc: '+10% Pierce' },
+                { id: 'fury1', name: 'Fury I', icon: '🔥', desc: '+Attack Spd' },
+                { id: 'fury2', name: 'Fury II', icon: '🔥', desc: '++Attack Spd' },
+            ]
+        },
+        {
+            name: 'Defense',
+            skills: [
+                { id: 'hp1', name: 'Health I', icon: '❤️', desc: '+10 HP' },
+                { id: 'hp2', name: 'Health II', icon: '❤️', desc: '+20 HP' },
+                { id: 'hp3', name: 'Health III', icon: '❤️', desc: '+30 HP' },
+                { id: 'hp4', name: 'Health IV', icon: '❤️', desc: '+50 HP' },
+                { id: 'armor1', name: 'Armor I', icon: '🛡️', desc: '+5% Defense' },
+                { id: 'armor2', name: 'Armor II', icon: '🛡️', desc: '+10% Defense' },
+                { id: 'armor3', name: 'Armor III', icon: '🛡️', desc: '+15% Defense' },
+                { id: 'regen1', name: 'Regen I', icon: '💚', desc: '+1 HP/s' },
+                { id: 'regen2', name: 'Regen II', icon: '💚', desc: '+2 HP/s' },
+                { id: 'regen3', name: 'Regen III', icon: '💚', desc: '+3 HP/s' },
+                { id: 'resist1', name: 'Resist I', icon: '🔰', desc: '+5% Resist' },
+                { id: 'resist2', name: 'Resist II', icon: '🔰', desc: '+10% Resist' },
+                { id: 'tough1', name: 'Tough I', icon: '💪', desc: '+Toughness' },
+                { id: 'tough2', name: 'Tough II', icon: '💪', desc: '++Toughness' },
+                { id: 'block1', name: 'Block I', icon: '🚫', desc: '+5% Block' },
+            ]
+        },
+        {
+            name: 'Magic',
+            skills: [
+                { id: 'mag1', name: 'Magic I', icon: '✨', desc: '+5% Magic' },
+                { id: 'mag2', name: 'Magic II', icon: '✨', desc: '+10% Magic' },
+                { id: 'mag3', name: 'Magic III', icon: '✨', desc: '+15% Magic' },
+                { id: 'mag4', name: 'Magic IV', icon: '✨', desc: '+20% Magic' },
+                { id: 'mana1', name: 'Mana I', icon: '🔮', desc: '+10 Mana' },
+                { id: 'mana2', name: 'Mana II', icon: '🔮', desc: '+20 Mana' },
+                { id: 'mana3', name: 'Mana III', icon: '🔮', desc: '+30 Mana' },
+                { id: 'cool1', name: 'Cooldown I', icon: '⏱️', desc: '-10% CD' },
+                { id: 'cool2', name: 'Cooldown II', icon: '⏱️', desc: '-20% CD' },
+                { id: 'spell1', name: 'Spell I', icon: '🌟', desc: '+Spell Dmg' },
+                { id: 'spell2', name: 'Spell II', icon: '🌟', desc: '++Spell Dmg' },
+                { id: 'wisdom1', name: 'Wisdom I', icon: '📖', desc: '+5% XP' },
+                { id: 'wisdom2', name: 'Wisdom II', icon: '📖', desc: '+10% XP' },
+                { id: 'arcane1', name: 'Arcane I', icon: '🔯', desc: '+Magic Find' },
+                { id: 'arcane2', name: 'Arcane II', icon: '🔯', desc: '++Magic Find' },
+            ]
+        }
     ];
 
-    const upgradeSkill = (skillId) => {
-        const currentLevel = playerData.skills[skillId] || 0;
-        const skill = skills.find(s => s.id === skillId);
-
-        if (playerData.skillPoints > 0 && currentLevel < skill.maxLevel) {
-            setPlayerData({
-                ...playerData,
-                skillPoints: playerData.skillPoints - 1,
-                skills: {
-                    ...playerData.skills,
-                    [skillId]: currentLevel + 1
-                }
-            });
-        }
-    };
-
     return (
-        <div className="submenu">
-            <h2>SKILL TREE</h2>
-            <div className="skill-points-display">
-                Available Points: <span className="highlight">{playerData.skillPoints}</span>
-            </div>
-            <div className="skills-grid">
-                {skills.map(skill => {
-                    const currentLevel = playerData.skills[skill.id] || 0;
-                    const maxed = currentLevel >= skill.maxLevel;
+        <div style={{
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: '20px',
+            padding: '40px',
+            position: 'relative'
+        }}>
+            {/* Back button */}
+            <button
+                onClick={onBack}
+                style={{
+                    position: 'absolute',
+                    left: '40px',
+                    top: '40px',
+                    width: '80px',
+                    height: '80px',
+                    backgroundImage: 'url(assets/WeaponSlotTestGame.png)',
+                    backgroundSize: '100% 100%',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    border: 'none',
+                    cursor: 'pointer',
+                    imageRendering: 'pixelated',
+                    transition: 'transform 0.15s ease, filter 0.15s ease',
+                    backgroundColor: 'transparent',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '20px',
+                    color: 'white',
+                    fontWeight: 'bold',
+                    padding: 0,
+                    paddingBottom: '2px',
+                    textShadow: '2px 2px 4px rgba(0,0,0,0.5)'
+                }}
+                onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'scale(1.1)';
+                    e.currentTarget.style.filter = 'brightness(1.2)';
+                }}
+                onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'scale(1)';
+                    e.currentTarget.style.filter = 'brightness(1)';
+                }}
+            >
+                ←
+            </button>
 
-                    return (
-                        <div key={skill.id} className="skill-card">
-                            <div className="skill-icon">{skill.icon}</div>
-                            <h3>{skill.name}</h3>
-                            <p>{skill.desc}</p>
-                            <div className="skill-level">
-                                Level: {currentLevel}/{skill.maxLevel}
-                            </div>
-                            <div className="skill-progress">
+            {skillTrees.map((tree, treeIndex) => (
+                <div key={treeIndex} className="main-menu-box" style={{
+                    position: 'relative',
+                    width: '350px',
+                    height: '700px',
+                    backgroundImage: 'url(assets/MainMenuBoxGame.png)',
+                    backgroundSize: '100% 100%',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    border: 'none',
+                    borderRadius: '0',
+                    boxShadow: 'none',
+                    imageRendering: 'pixelated',
+                    fontFamily: '"Press Start 2P", monospace',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'flex-start',
+                    alignItems: 'center',
+                    padding: '0',
+                    overflow: 'hidden',
+                    boxSizing: 'border-box'
+                }}>
+                    <div style={{
+                        position: 'absolute',
+                        top: '110px',
+                        left: '45px',
+                        right: '45px',
+                        bottom: '110px',
+                        overflowY: 'auto',
+                        overflowX: 'hidden',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        gap: '15px',
+                        paddingTop: '20px',
+                        paddingBottom: '20px',
+                        paddingLeft: '10px',
+                        paddingRight: '20px'
+                    }}>
+                        {/* Tree Title */}
+                        <h3 style={{
+                            color: '#6fb880',
+                            fontSize: '18px',
+                            textAlign: 'center',
+                            marginBottom: '10px',
+                            textShadow: '2px 2px 0 #2a5840',
+                            fontFamily: '"Press Start 2P", monospace',
+                            textTransform: 'uppercase'
+                        }}>{tree.name}</h3>
+
+                        {/* Skill Slots */}
+                        <div style={{
+                            display: 'grid',
+                            gridTemplateColumns: 'repeat(2, 1fr)',
+                            gap: '15px',
+                            width: '100%'
+                        }}>
+                            {tree.skills.map((skill) => (
                                 <div
-                                    className="skill-progress-bar"
-                                    style={{width: `${(currentLevel / skill.maxLevel) * 100}%`}}
-                                />
-                            </div>
-                            <button
-                                className="upgrade-skill-btn"
-                                onClick={() => upgradeSkill(skill.id)}
-                                disabled={maxed || playerData.skillPoints === 0}
-                            >
-                                {maxed ? 'MAXED' : 'UPGRADE'}
-                            </button>
+                                    key={skill.id}
+                                    style={{
+                                        width: '80px',
+                                        height: '80px',
+                                        backgroundImage: 'url(assets/WeaponSlotTestGame.png)',
+                                        backgroundSize: '100% 100%',
+                                        backgroundPosition: 'center',
+                                        backgroundRepeat: 'no-repeat',
+                                        border: 'none',
+                                        cursor: 'pointer',
+                                        imageRendering: 'pixelated',
+                                        transition: 'transform 0.15s ease, filter 0.15s ease',
+                                        backgroundColor: 'transparent',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        padding: 0,
+                                        position: 'relative',
+                                        justifySelf: 'center'
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.transform = 'scale(1.1)';
+                                        e.currentTarget.style.filter = 'brightness(1.2)';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.transform = 'scale(1)';
+                                        e.currentTarget.style.filter = 'brightness(1)';
+                                    }}
+                                >
+                                    <div style={{
+                                        fontSize: '32px',
+                                        filter: 'drop-shadow(2px 2px 0px rgba(0,0,0,0.5))'
+                                    }}>{skill.icon}</div>
+                                </div>
+                            ))}
                         </div>
-                    );
-                })}
-            </div>
-            <button className="back-button" onClick={onBack}>BACK</button>
-        </div>
-    );
-}
-
-// Shop Menu Component
-function ShopMenu({ playerData, setPlayerData, onBack }) {
-    const [showMysteryBox, setShowMysteryBox] = useState(false);
-
-    const shopItems = [
-        { id: 'mysterybox', name: 'Mystery Box', icon: 'BOX', cost: 100, desc: 'Spin for random rewards!', special: true },
-        { id: 'skillpoint', name: 'Skill Point', icon: 'SP', cost: 200, desc: 'Get 1 skill point' },
-        { id: 'xpboost', name: 'XP Boost', icon: 'XP', cost: 150, desc: '+50% XP for next game' },
-        { id: 'startweapon', name: 'Extra Start Weapon', icon: 'WPN', cost: 300, desc: 'Start with 2 weapons' },
-        { id: 'goldboost', name: 'Gold Boost', icon: 'GLD', cost: 100, desc: '+50% gold for next game' },
-        { id: 'revive', name: 'Revive Token', icon: 'REV', cost: 250, desc: 'Revive once when you die' }
-    ];
-
-    const buyItem = (item) => {
-        if (playerData.coins >= item.cost) {
-            // Special handling for mystery box
-            if (item.id === 'mysterybox') {
-                setPlayerData({
-                    ...playerData,
-                    coins: playerData.coins - item.cost
-                });
-                setShowMysteryBox(true);
-                return;
-            }
-
-            let newPlayerData = {
-                ...playerData,
-                coins: playerData.coins - item.cost
-            };
-
-            // Apply item effect
-            if (item.id === 'skillpoint') {
-                newPlayerData.skillPoints += 1;
-            } else {
-                newPlayerData.shopItems = [...(playerData.shopItems || []), item.id];
-            }
-
-            setPlayerData(newPlayerData);
-        }
-    };
-
-    if (showMysteryBox) {
-        return (
-            <MysteryBoxSpinner
-                playerData={playerData}
-                setPlayerData={setPlayerData}
-                onClose={() => setShowMysteryBox(false)}
-            />
-        );
-    }
-
-    return (
-        <div className="submenu">
-            <h2>SHOP</h2>
-            <div className="coins-display">
-                Your Coins: <span className="highlight">{playerData.coins}</span>
-            </div>
-            <div className="shop-grid">
-                {shopItems.map(item => (
-                    <div key={item.id} className={`shop-item-card ${item.special ? 'special-item' : ''}`}>
-                        <div className="shop-item-icon" style={{fontSize: item.special ? '48px' : '32px'}}>{item.icon}</div>
-                        <h3>{item.name}</h3>
-                        <p>{item.desc}</p>
-                        <button
-                            className="buy-button"
-                            onClick={() => buyItem(item)}
-                            disabled={playerData.coins < item.cost}
-                            style={{
-                                background: item.special ? 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)' : '',
-                                border: item.special ? '3px solid #FFD700' : ''
-                            }}
-                        >
-                            {item.special ? '🎰 ' : ''}BUY - {item.cost} 💰
-                        </button>
                     </div>
-                ))}
-            </div>
-            <button className="back-button" onClick={onBack}>BACK</button>
+                </div>
+            ))}
         </div>
     );
 }
@@ -2922,6 +3079,17 @@ function MysteryBoxSpinner({ playerData, setPlayerData, onClose }) {
 
 // Achievements Menu Component
 function AchievementsMenu({ playerData, onBack }) {
+    // ESC key to go back
+    React.useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === 'Escape') {
+                onBack();
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [onBack]);
+
     const achievements = [
         { id: 'firstkill', name: 'First Blood', icon: 'FB', desc: 'Kill your first enemy', reward: '50 coins', unlocked: playerData.totalKills > 0 },
         { id: 'kills100', name: 'Slayer', icon: 'SLY', desc: 'Kill 100 enemies', reward: '100 coins', unlocked: playerData.totalKills >= 100 },
@@ -2932,7 +3100,48 @@ function AchievementsMenu({ playerData, onBack }) {
     ];
 
     return (
-        <div className="submenu">
+        <div className="submenu" style={{ position: 'relative' }}>
+            {/* Back button */}
+            <button
+                onClick={onBack}
+                style={{
+                    position: 'absolute',
+                    left: '20px',
+                    top: '20px',
+                    width: '80px',
+                    height: '80px',
+                    backgroundImage: 'url(assets/WeaponSlotTestGame.png)',
+                    backgroundSize: '100% 100%',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    border: 'none',
+                    cursor: 'pointer',
+                    imageRendering: 'pixelated',
+                    transition: 'transform 0.15s ease, filter 0.15s ease',
+                    backgroundColor: 'transparent',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '20px',
+                    color: 'white',
+                    fontWeight: 'bold',
+                    padding: 0,
+                    paddingBottom: '2px',
+                    textShadow: '2px 2px 4px rgba(0,0,0,0.5)',
+                    zIndex: 10
+                }}
+                onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'scale(1.1)';
+                    e.currentTarget.style.filter = 'brightness(1.2)';
+                }}
+                onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'scale(1)';
+                    e.currentTarget.style.filter = 'brightness(1)';
+                }}
+            >
+                ←
+            </button>
+
             <h2>ACHIEVEMENTS</h2>
             <div className="achievements-grid">
                 {achievements.map(ach => (
@@ -2947,7 +3156,7 @@ function AchievementsMenu({ playerData, onBack }) {
                     </div>
                 ))}
             </div>
-            <button className="back-button" onClick={onBack}>BACK</button>
+            <BackButton onClick={onBack} />
         </div>
     );
 }
@@ -3016,9 +3225,20 @@ function MusicMenu({ playerData, setPlayerData, onBack }) {
         <div className="submenu">
             <h2>MUSIC</h2>
 
-            <div className="music-controls">
-                <div className="volume-control">
-                    <label>Volume: {Math.round(playerData.musicVolume * 100)}%</label>
+            <div style={{
+                textAlign: 'center',
+                marginBottom: '30px'
+            }}>
+                <div className="volume-control" style={{
+                    marginBottom: '20px'
+                }}>
+                    <label style={{
+                        fontFamily: '"Press Start 2P", monospace',
+                        fontSize: '14px',
+                        color: '#6fb880',
+                        display: 'block',
+                        marginBottom: '10px'
+                    }}>Volume: {Math.round(playerData.musicVolume * 100)}%</label>
                     <input
                         type="range"
                         min="0"
@@ -3029,40 +3249,104 @@ function MusicMenu({ playerData, setPlayerData, onBack }) {
                         className="volume-slider"
                     />
                 </div>
-                {currentlyPlaying && (
-                    <button className="stop-music-button" onClick={stopAllMusic}>
-                        STOP MUSIC
-                    </button>
-                )}
             </div>
 
-            <div className="music-tracks-list">
+            <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+                gap: '20px',
+                maxWidth: '1000px',
+                margin: '0 auto'
+            }}>
                 {MUSIC_TRACKS && MUSIC_TRACKS.length > 0 ? (
                     MUSIC_TRACKS.map(track => (
                         <div
                             key={track.id}
-                            className={`music-track-item ${currentlyPlaying === track.id ? 'playing' : ''}`}
+                            style={{
+                                background: currentlyPlaying === track.id ? '#b8a586' : 'rgba(139, 111, 71, 0.5)',
+                                border: currentlyPlaying === track.id ? '4px solid #6fb880' : '4px solid #8b6f47',
+                                borderRadius: '8px',
+                                padding: '20px',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                position: 'relative',
+                                boxShadow: currentlyPlaying === track.id ? '0 4px 0 #5a4530, inset 0 2px 0 rgba(245, 230, 200, 0.3)' : '0 3px 0 #5a4530',
+                                imageRendering: 'pixelated',
+                                fontFamily: '"Press Start 2P", monospace',
+                                cursor: 'pointer',
+                                transition: 'transform 0.1s'
+                            }}
                             onClick={() => playTrack(track)}
+                            onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+                            onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
                         >
-                            <div className="track-icon">🎵</div>
-                            <div className="track-info">
-                                <div className="track-name">{track.name}</div>
-                                <div className="track-artist">{track.artist || 'Unknown Artist'}</div>
+                            <div style={{
+                                fontSize: '48px',
+                                marginBottom: '15px'
+                            }}>🎵</div>
+
+                            <div style={{
+                                fontSize: '10px',
+                                color: currentlyPlaying === track.id ? '#2a5840' : '#8b6f47',
+                                fontWeight: 'bold',
+                                textAlign: 'center',
+                                marginBottom: '8px',
+                                lineHeight: '1.4'
+                            }}>
+                                {track.name}
                             </div>
+
+                            <div style={{
+                                fontSize: '8px',
+                                color: currentlyPlaying === track.id ? '#6b5545' : '#6b5545',
+                                textAlign: 'center',
+                                marginBottom: '12px',
+                                opacity: 0.8
+                            }}>
+                                {track.artist || 'Unknown'}
+                            </div>
+
                             {currentlyPlaying === track.id && (
-                                <div className="playing-indicator">▶ PLAYING</div>
+                                <div style={{
+                                    position: 'absolute',
+                                    top: '10px',
+                                    right: '10px',
+                                    width: '24px',
+                                    height: '24px',
+                                    borderRadius: '50%',
+                                    background: '#6fb880',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    fontSize: '12px',
+                                    fontWeight: 'bold',
+                                    color: '#fff',
+                                    border: '2px solid #5a4530',
+                                    boxShadow: '0 2px 0 #2a1a0a'
+                                }}>
+                                    ▶
+                                </div>
                             )}
                         </div>
                     ))
                 ) : (
-                    <div className="no-tracks-message">
+                    <div style={{
+                        gridColumn: '1 / -1',
+                        textAlign: 'center',
+                        padding: '40px',
+                        color: '#ccc',
+                        fontFamily: '"Press Start 2P", monospace',
+                        fontSize: '12px'
+                    }}>
                         <p>No music tracks available yet.</p>
-                        <p>Add music files to your game folder to see them here!</p>
+                        <p style={{marginTop: '10px'}}>Add music files to see them here!</p>
                     </div>
                 )}
             </div>
 
-            <button className="back-button" onClick={onBack}>BACK</button>
+            <BackButton onClick={onBack} />
         </div>
     );
 }

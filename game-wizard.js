@@ -910,7 +910,7 @@ magicMissileSprite.src = 'assets/MagicMisileGame.png';
 
 // Load Background Texture
 const backgroundTexture = new Image();
-backgroundTexture.src = 'assets/Background3TestGame.png';
+backgroundTexture.src = 'assets/IceBackgroundGame.png';
 
 // LPC Spritesheet has all animations in one image
 const wizardSprites = {
