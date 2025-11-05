@@ -3100,14 +3100,23 @@ function AchievementsMenu({ playerData, onBack }) {
     ];
 
     return (
-        <div className="submenu" style={{ position: 'relative' }}>
+        <div style={{
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: '20px',
+            padding: '40px',
+            position: 'relative'
+        }}>
             {/* Back button */}
             <button
                 onClick={onBack}
                 style={{
                     position: 'absolute',
-                    left: '20px',
-                    top: '20px',
+                    left: '40px',
+                    top: '40px',
                     width: '80px',
                     height: '80px',
                     backgroundImage: 'url(assets/WeaponSlotTestGame.png)',
@@ -3127,8 +3136,7 @@ function AchievementsMenu({ playerData, onBack }) {
                     fontWeight: 'bold',
                     padding: 0,
                     paddingBottom: '2px',
-                    textShadow: '2px 2px 4px rgba(0,0,0,0.5)',
-                    zIndex: 10
+                    textShadow: '2px 2px 4px rgba(0,0,0,0.5)'
                 }}
                 onMouseEnter={(e) => {
                     e.currentTarget.style.transform = 'scale(1.1)';
@@ -3142,21 +3150,117 @@ function AchievementsMenu({ playerData, onBack }) {
                 ←
             </button>
 
-            <h2>ACHIEVEMENTS</h2>
-            <div className="achievements-grid">
-                {achievements.map(ach => (
-                    <div key={ach.id} className={`achievement-card ${ach.unlocked ? 'unlocked' : 'locked'}`}>
-                        <div className="achievement-icon">{ach.icon}</div>
-                        <h3>{ach.name}</h3>
-                        <p>{ach.desc}</p>
-                        <div className="achievement-reward">
-                            Reward: {ach.reward}
-                        </div>
-                        {ach.unlocked && <div className="unlocked-badge">UNLOCKED</div>}
+            {/* Single large box with all achievements */}
+            <div className="main-menu-box" style={{
+                position: 'relative',
+                width: '600px',
+                height: '700px',
+                backgroundImage: 'url(assets/MainMenuBoxGame.png)',
+                backgroundSize: '100% 100%',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+                border: 'none',
+                borderRadius: '0',
+                boxShadow: 'none',
+                imageRendering: 'pixelated',
+                fontFamily: '"Press Start 2P", monospace',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'flex-start',
+                alignItems: 'center',
+                padding: '0',
+                overflow: 'hidden',
+                boxSizing: 'border-box'
+            }}>
+                <div style={{
+                    position: 'absolute',
+                    top: '110px',
+                    left: '45px',
+                    right: '45px',
+                    bottom: '110px',
+                    overflowY: 'auto',
+                    overflowX: 'hidden',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: '20px',
+                    paddingTop: '20px',
+                    paddingBottom: '20px',
+                    paddingLeft: '20px',
+                    paddingRight: '30px'
+                }}>
+                    {/* Achievement Slots */}
+                    <div style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '0px',
+                        width: '100%',
+                        margin: 0,
+                        padding: 0
+                    }}>
+                        {achievements.map((ach) => (
+                            <div
+                                key={ach.id}
+                                style={{
+                                    width: '100%',
+                                    height: '170px',
+                                    backgroundImage: 'url(assets/KNAPP1.png)',
+                                    backgroundSize: '100% 100%',
+                                    backgroundPosition: 'center',
+                                    backgroundRepeat: 'no-repeat',
+                                    border: 'none',
+                                    imageRendering: 'pixelated',
+                                    backgroundColor: 'transparent',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    padding: '15px',
+                                    position: 'relative',
+                                    margin: 0,
+                                    marginBottom: '-60px'
+                                }}
+                            >
+                                <div style={{
+                                    fontSize: '16px',
+                                    fontWeight: 'bold',
+                                    color: '#1a1410',
+                                    marginBottom: '5px',
+                                    textShadow: '1px 1px 0 rgba(0,0,0,0.3)',
+                                    fontFamily: '"Press Start 2P", monospace'
+                                }}>{ach.icon} {ach.name}</div>
+                                <div style={{
+                                    fontSize: '8px',
+                                    color: '#1a1410',
+                                    textAlign: 'center',
+                                    marginBottom: '3px',
+                                    fontFamily: '"Press Start 2P", monospace'
+                                }}>{ach.desc}</div>
+                                <div style={{
+                                    fontSize: '7px',
+                                    color: '#1a1410',
+                                    fontWeight: 'bold',
+                                    fontFamily: '"Press Start 2P", monospace'
+                                }}>Reward: {ach.reward}</div>
+                                {ach.unlocked && (
+                                    <div style={{
+                                        position: 'absolute',
+                                        top: '5px',
+                                        right: '5px',
+                                        fontSize: '8px',
+                                        color: '#6fb880',
+                                        fontWeight: 'bold',
+                                        backgroundColor: 'rgba(47, 79, 79, 0.8)',
+                                        padding: '3px 6px',
+                                        borderRadius: '3px',
+                                        fontFamily: '"Press Start 2P", monospace'
+                                    }}>✓ UNLOCKED</div>
+                                )}
+                            </div>
+                        ))}
                     </div>
-                ))}
+                </div>
             </div>
-            <BackButton onClick={onBack} />
         </div>
     );
 }
