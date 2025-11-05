@@ -1,130 +1,94 @@
-# 🧙‍♂️ Wizard Survivors
+# Wizard Survivors 🧙‍♂️
 
-A vampire-survivors-style game built with vanilla JavaScript and HTML5 Canvas.
+A Vampire Survivors-inspired roguelike game built with HTML5 Canvas and React.
 
-## 🎮 Features
+## 🎮 Game Features
 
-- **Wave-based survival gameplay** - Fight endless waves of enemies
-- **Multiple weapons** - Magic missiles, lightning, fireballs, ice shards, and more
-- **Level-up system** - Upgrade your weapons and stats as you level up
-- **Skill tree** - Permanent progression system with skill points
-- **Equipment system** - Collect and equip gear with different rarities
-- **Shop** - Spend coins on permanent upgrades
-- **Music system** - 9 original tracks with volume control
-- **Achievements** - Track your progress and unlock rewards
-
-## 🎵 Music Tracks
-
-1. Arcane Awakening
-2. Mystic Journey
-3. Crystal Caverns
-4. Wizard's Quest
-5. Enchanted Forest
-6. Ethereal Winds
-7. Spellbound Skies
-8. Moonlight Sorcery
-9. Ancient Ruins
-
-All tracks composed by Fabian Kjaergaard.
-
-## 🚀 How to Play
-
-1. Open `index.html` in a web browser
-2. Click "PLAY GAME" to start
-3. Use **WASD** or **Arrow Keys** to move
-4. Weapons fire automatically at nearby enemies
-5. Collect XP gems to level up
-6. Press **ESC** to pause and access music controls
-
-## 🎯 Controls
-
-- **Movement**: WASD or Arrow Keys
-- **Pause**: ESC
-- **Debug Menu**: D (during gameplay)
-
-## 🛠️ Tech Stack
-
-- Vanilla JavaScript
-- HTML5 Canvas
-- React (for UI components)
-- CSS3 (animations and styling)
+- **Top-down survival gameplay** - Fight waves of enemies
+- **Skill Tree System** - Upgrade your wizard with Combat, Defense, and Magic skills
+- **Equipment System** - Collect and equip gear with different rarities
+- **Achievement System** - Unlock achievements and earn rewards
+- **Multiple Weapons** - Unlock and upgrade different weapons
+- **Music Controls** - Toggle background music
 
 ## 📁 Project Structure
 
 ```
-wizard-game-clean/
-├── index.html          # Main HTML file
-├── game-wizard.js      # Game logic and canvas rendering
-├── ui.jsx             # React UI components
-├── style.css          # Styling
-├── assets/            # Game sprites and images
-└── music/             # Music tracks (WAV files)
+wizard-survivors/
+├── index.html              # Main HTML file
+├── assets/                 # Game assets (images, sprites, sounds)
+│   ├── Background*.png     # Background textures
+│   ├── IceBackgroundGame.png
+│   ├── *Game.png          # Game sprites and UI elements
+│   └── sounds/            # Audio files
+├── src/
+│   ├── components/
+│   │   └── UI.jsx         # React UI components (menus, HUD)
+│   ├── game/
+│   │   └── game.js        # Core game logic and Canvas rendering
+│   ├── utils/             # Helper functions (future)
+│   └── constants/         # Game constants (future)
+└── styles/
+    └── main.css           # All CSS styles
 ```
 
-## 🎨 Game Features
+## 🚀 Getting Started
 
-### Weapons
-- Magic Missile
-- Lightning Bolt
-- Fireball (with explosion)
-- Ice Shard (slows enemies)
-- Arcane Beam
-- Homing Missiles
-- Chain Lightning
-- Spirit Wolf
-- Black Hole (ultimate ability)
+### Running Locally
 
-### Enemy Types
-- Goblin (basic enemy)
-- Orc (tankier)
-- Ghost (fast)
-- Boss enemies (challenging encounters)
+1. Clone the repository:
+```bash
+git clone https://github.com/fabiankjaergaard/wizard-survivors.git
+cd wizard-survivors
+```
 
-### Progression
-- **XP System**: Kill enemies to gain XP and level up
-- **Skill Tree**: Permanent upgrades for HP, damage, speed, XP gain, and luck
-- **Equipment**: 8 gear slots with common, rare, and legendary items
-- **Shop**: Purchase boosts, extra weapons, and revive tokens
+2. Open `index.html` in a modern browser, or use a local server:
+```bash
+# Using Python
+python3 -m http.server 5500
 
-## 🎭 Game Modes
+# Using Node.js
+npx http-server -p 5500
+```
 
-### Main Menu
-- Play Game
-- Gear (equipment management)
-- Skill Tree (permanent upgrades)
-- Shop (purchase items)
-- Achievements
-- Music (track selection)
+3. Navigate to `http://localhost:5500`
 
-### In-Game UI
-- HP bar with visual feedback
-- XP progress bar
-- Level counter
-- Kill counter
-- Timer
-- Weapon slots display
-- Ultimate ability indicator
-- Mute/unmute music button
+## 🎯 Controls
 
-## 📝 Credits
+- **WASD** or **Arrow Keys** - Move wizard
+- **ESC** - Go back / Open menu
+- **Mouse** - Navigate menus
 
-**Developer**: Fabian Kjaergaard
-**Music**: Fabian Kjaergaard
-**Game Design**: Inspired by Vampire Survivors
+## 🛠️ Technology Stack
 
-## 🌟 Future Features
+- **Vanilla JavaScript** - Game logic and Canvas rendering
+- **React 18** - UI components and state management
+- **HTML5 Canvas** - Game rendering
+- **CSS3** - Styling
 
-- [ ] More enemy types
-- [ ] Additional weapons
-- [ ] New playable characters
-- [ ] More ultimate abilities
-- [ ] Leaderboard system
-- [ ] Save/load game progress
+## 📦 Packaging for Distribution
 
-## 📜 License
+### Steam / Desktop
 
-This project is for personal/educational use.
+Use **Electron** or **Tauri** to package as a desktop app.
+
+### Web
+
+Deploy to **Itch.io**, **GitHub Pages**, or **Vercel/Netlify**.
+
+## 📝 Development
+
+### Adding New Features
+
+1. **New UI Components** - Add to `src/components/`
+2. **Game Logic** - Modify `src/game/game.js`
+3. **Styles** - Update `styles/main.css`
+4. **Assets** - Add to `assets/`
+
+## 📄 License
+
+Copyright © 2025 Fabian Kjærgaard
 
 ---
 
-Enjoy the game! 🎮✨
+🤖 Built with Claude Code
