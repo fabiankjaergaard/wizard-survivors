@@ -20,14 +20,19 @@ const MUSIC_TRACKS = [
 const getWeaponIcon = (weaponType) => {
     const icons = {
         'magic_missile': { type: 'image', src: 'assets/MagicMisileGame.png' },
-        'lightning': { type: 'text', value: 'LTG' },
-        'fireball': { type: 'text', value: 'FIR' },
-        'ice': { type: 'text', value: 'ICE' },
-        'arcane': { type: 'text', value: 'ARC' },
+        'lightning': { type: 'image', src: 'assets/TornadoProjectileGame.png' },
+        'fireball': { type: 'image', src: 'assets/FireBallProjectileGame.png' },
+        'ice': { type: 'image', src: 'assets/IceSpikeGame.png' },
+        'arcane': { type: 'image', src: 'assets/OrbProjectileGame.png' },
         'homing_missile': { type: 'text', value: 'HMS' },
-        'chain_lightning': { type: 'text', value: 'CLG' },
-        'spirit_wolf': { type: 'text', value: 'WLF' },
-        'black_hole': { type: 'text', value: 'BHO' }
+        'chain_lightning': { type: 'image', src: 'assets/TornadoProjectileGame.png' },
+        'spirit_wolf': { type: 'image', src: 'assets/GhostWolfGame.png' },
+        'black_hole': { type: 'text', value: 'BHO' },
+        'poison_cloud': { type: 'text', value: 'PSN' },
+        'crystal_shard': { type: 'text', value: 'CRY' },
+        'frost_nova': { type: 'image', src: 'assets/IceSpikeGame.png' },
+        'thunder_hammer': { type: 'image', src: 'assets/TornadoProjectileGame.png' },
+        'shadow_clone': { type: 'text', value: 'SHD' }
     };
     return icons[weaponType] || { type: 'text', value: 'WPN' };
 };
@@ -43,6 +48,16 @@ const getUltimateIcon = (ultimateType) => {
         'cosmic_storm': { type: 'text', value: 'CSM' }
     };
     return icons[ultimateType] || { type: 'text', value: 'ULT' };
+};
+
+// Get icon for upgrade based on upgrade type and weaponType
+const getUpgradeIcon = (upgrade) => {
+    // Check if it's a new weapon upgrade
+    if (upgrade.weaponType) {
+        return getWeaponIcon(upgrade.weaponType);
+    }
+    // For stat upgrades, return null (no icon)
+    return null;
 };
 
 function GameUI() {
@@ -164,7 +179,7 @@ function GameUI() {
                     window.gameState.openingMysteryBox = null;
                 }
             }
-        }, 100);
+        }, 50); // Update more frequently for smoother progressbar animation
 
         return () => clearInterval(interval);
     }, []);
@@ -181,26 +196,36 @@ function GameUI() {
     const addWeapon = (weaponType) => {
         if (window.gameState && window.gameState.player) {
             const weaponConfigs = {
-                magic_missile: { type: 'magic_missile', damage: 10, cooldown: 500, range: 300, lastFired: 0 },
-                lightning: { type: 'lightning', damage: 15, cooldown: 1000, range: 300, lastFired: 0 },
-                fireball: { type: 'fireball', damage: 25, cooldown: 1500, range: 300, explosionRadius: 50, lastFired: 0 },
-                ice: { type: 'ice', damage: 12, cooldown: 800, range: 300, lastFired: 0 },
-                arcane: { type: 'arcane', damage: 8, cooldown: 100, lastFired: 0 },
-                homing_missile: { type: 'homing_missile', damage: 15, cooldown: 800, lastFired: 0 },
-                tornado: { type: 'tornado', damage: 20, cooldown: 2000, lastFired: 0 },
-                spinning_blade: { type: 'spinning_blade', damage: 18, cooldown: 1200, lastFired: 0 },
-                meteor: { type: 'meteor', damage: 35, cooldown: 2500, lastFired: 0 },
-                sword_spin: { type: 'sword_spin', damage: 12, cooldown: 3000, lastFired: 0 },
-                chain_lightning: { type: 'chain_lightning', name: 'Chain Lightning', damage: 20, range: 200, cooldown: 2000, level: 1, lastFired: 0 },
-                spirit_wolf: { type: 'spirit_wolf', name: 'Spirit Wolf', damage: 18, range: 0, cooldown: 5000, level: 1, lastFired: 0 },
-                black_hole: { type: 'black_hole', name: 'Black Hole', damage: 100, range: 250, cooldown: 8000, level: 1, lastFired: 0 }
+                magic_missile: { type: 'magic_missile', name: 'Magic Missile', damage: 10, cooldown: 500, range: 500, level: 1 },
+                lightning: { type: 'lightning', name: 'Lightning Bolt', damage: 15, cooldown: 1000, range: 500, level: 1 },
+                fireball: { type: 'fireball', name: 'Fireball', damage: 25, cooldown: 1500, range: 500, explosionRadius: 50, level: 1 },
+                ice: { type: 'ice', name: 'Ice Spike', damage: 12, cooldown: 800, range: 500, level: 1 },
+                arcane: { type: 'arcane', name: 'Arcane Orbs', damage: 8, cooldown: 100, level: 1 },
+                homing_missile: { type: 'homing_missile', name: 'Homing Missiles', damage: 15, cooldown: 800, level: 1 },
+                tornado: { type: 'tornado', name: 'Tornado', damage: 20, cooldown: 2000, level: 1 },
+                spinning_blade: { type: 'spinning_blade', name: 'Spinning Blade', damage: 18, cooldown: 1200, level: 1 },
+                meteor: { type: 'meteor', name: 'Meteor Strike', damage: 35, cooldown: 2500, level: 1 },
+                sword_spin: { type: 'sword_spin', name: 'Sword Spin', damage: 12, cooldown: 3000, level: 1 },
+                chain_lightning: { type: 'chain_lightning', name: 'Chain Lightning', damage: 20, range: 200, cooldown: 2000, level: 1 },
+                spirit_wolf: { type: 'spirit_wolf', name: 'Spirit Wolf', damage: 18, range: 0, cooldown: 5000, level: 1 },
+                black_hole: { type: 'black_hole', name: 'Black Hole', damage: 100, range: 250, cooldown: 8000, level: 1 },
+                poison_cloud: { type: 'poison_cloud', name: 'Poison Cloud', damage: 30, range: 250, cooldown: 3000, level: 1 },
+                crystal_shard: { type: 'crystal_shard', name: 'Crystal Shard', damage: 20, range: 300, cooldown: 1500, level: 1 },
+                frost_nova: { type: 'frost_nova', name: 'Frost Nova', damage: 40, range: 200, cooldown: 4000, level: 1 },
+                thunder_hammer: { type: 'thunder_hammer', name: 'Thunder Hammer', damage: 50, range: 120, cooldown: 3500, level: 1 },
+                shadow_clone: { type: 'shadow_clone', name: 'Shadow Clone', damage: 15, range: 0, cooldown: 15000, level: 1 }
             };
 
-            const newWeapon = weaponConfigs[weaponType];
-            if (newWeapon) {
+            const weaponConfig = weaponConfigs[weaponType];
+            if (weaponConfig) {
                 // Check if weapon already exists
                 const hasWeapon = window.gameState.player.weapons.some(w => w.type === weaponType);
                 if (!hasWeapon) {
+                    // Create a NEW copy of the weapon config
+                    const newWeapon = { ...weaponConfig };
+                    // Set lastFired so weapon starts ready (use game's currentTime)
+                    const currentTime = window.gameState.currentTime || 0;
+                    newWeapon.lastFired = currentTime - (newWeapon.cooldown * 2);
                     window.gameState.player.weapons.push(newWeapon);
                     console.log(`✅ Added weapon: ${weaponType}`);
 
@@ -365,42 +390,262 @@ function GameUI() {
         return (
             <div className="main-menu-container">
                 <div className="main-menu">
-                    <h1 className="game-title">[GAME TITLE]</h1>
-
                     {currentMenuView === 'main' && (
-                        <div className="menu-content">
-                            <button className="menu-button primary-menu-button" onClick={startGame}>
-                                PLAY GAME
+                        <div style={{
+                            position: 'relative',
+                            width: '500px',
+                            height: '800px',
+                            backgroundImage: 'url(assets/MainMenuBoxGame.png)',
+                            backgroundSize: '100% 100%',
+                            backgroundPosition: 'center',
+                            backgroundRepeat: 'no-repeat',
+                            border: 'none',
+                            borderRadius: '0',
+                            boxShadow: 'none',
+                            imageRendering: 'pixelated',
+                            fontFamily: '"Press Start 2P", monospace',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'flex-start',
+                            alignItems: 'center',
+                            gap: '5px',
+                            padding: '150px 40px 40px 40px'
+                        }}>
+                            <button onClick={startGame} style={{
+                                width: '280px',
+                                height: '145px',
+                                backgroundImage: 'url(assets/dffgdfgdf.png)',
+                                backgroundSize: '100% 100%',
+                                backgroundPosition: 'center',
+                                backgroundRepeat: 'no-repeat',
+                                border: 'none',
+                                cursor: 'pointer',
+                                imageRendering: 'pixelated',
+                                transition: 'transform 0.15s ease, filter 0.15s ease',
+                                backgroundColor: 'transparent',
+                                fontFamily: '"Press Start 2P", monospace',
+                                fontSize: '24px',
+                                color: '#ffffff',
+                                fontWeight: 'bold',
+                                textShadow: '2px 2px 0 rgba(0,0,0,0.3)',
+                                filter: 'brightness(1)',
+                                marginBottom: '-60px'
+                            }}
+                            onMouseEnter={(e) => {
+                                e.target.style.transform = 'scale(1.05)';
+                                e.target.style.filter = 'brightness(1.15)';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.target.style.transform = 'scale(1)';
+                                e.target.style.filter = 'brightness(1)';
+                            }}
+                            onMouseDown={(e) => {
+                                e.target.style.transform = 'scale(0.95)';
+                                e.target.style.filter = 'brightness(0.9)';
+                            }}
+                            onMouseUp={(e) => {
+                                e.target.style.transform = 'scale(1.05)';
+                                e.target.style.filter = 'brightness(1.15)';
+                            }}
+                            >
+                                PLAY
                             </button>
-                            <button className="menu-button" onClick={() => setCurrentMenuView('character')}>
+
+                            <button onClick={() => setCurrentMenuView('character')} style={{
+                                width: '300px',
+                                height: '145px',
+                                backgroundImage: 'url(assets/KNAPP1.png)',
+                                backgroundSize: '100% 100%',
+                                backgroundPosition: 'center',
+                                backgroundRepeat: 'no-repeat',
+                                border: 'none',
+                                cursor: 'pointer',
+                                imageRendering: 'pixelated',
+                                transition: 'transform 0.15s ease, filter 0.15s ease',
+                                backgroundColor: 'transparent',
+                                fontFamily: '"Press Start 2P", monospace',
+                                fontSize: '24px',
+                                color: '#2a1810',
+                                fontWeight: 'bold',
+                                textShadow: '2px 2px 0 rgba(255,255,255,0.3)',
+                                filter: 'brightness(1)',
+                                marginBottom: '-60px'
+                            }}
+                            onMouseEnter={(e) => {
+                                e.target.style.transform = 'scale(1.05)';
+                                e.target.style.filter = 'brightness(1.15)';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.target.style.transform = 'scale(1)';
+                                e.target.style.filter = 'brightness(1)';
+                            }}
+                            onMouseDown={(e) => {
+                                e.target.style.transform = 'scale(0.95)';
+                                e.target.style.filter = 'brightness(0.9)';
+                            }}
+                            onMouseUp={(e) => {
+                                e.target.style.transform = 'scale(1.05)';
+                                e.target.style.filter = 'brightness(1.15)';
+                            }}
+                            >
                                 GEAR
                             </button>
-                            <button className="menu-button" onClick={() => setCurrentMenuView('skills')}>
+
+                            <button onClick={() => setCurrentMenuView('skills')} style={{
+                                width: '300px',
+                                height: '145px',
+                                backgroundImage: 'url(assets/KNAPP1.png)',
+                                backgroundSize: '100% 100%',
+                                backgroundPosition: 'center',
+                                backgroundRepeat: 'no-repeat',
+                                border: 'none',
+                                cursor: 'pointer',
+                                imageRendering: 'pixelated',
+                                transition: 'transform 0.15s ease, filter 0.15s ease',
+                                backgroundColor: 'transparent',
+                                fontFamily: '"Press Start 2P", monospace',
+                                fontSize: '24px',
+                                color: '#2a1810',
+                                fontWeight: 'bold',
+                                textShadow: '2px 2px 0 rgba(255,255,255,0.3)',
+                                filter: 'brightness(1)',
+                                marginBottom: '-60px'
+                            }}
+                            onMouseEnter={(e) => {
+                                e.target.style.transform = 'scale(1.05)';
+                                e.target.style.filter = 'brightness(1.15)';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.target.style.transform = 'scale(1)';
+                                e.target.style.filter = 'brightness(1)';
+                            }}
+                            onMouseDown={(e) => {
+                                e.target.style.transform = 'scale(0.95)';
+                                e.target.style.filter = 'brightness(0.9)';
+                            }}
+                            onMouseUp={(e) => {
+                                e.target.style.transform = 'scale(1.05)';
+                                e.target.style.filter = 'brightness(1.15)';
+                            }}
+                            >
                                 SKILL TREE
                             </button>
-                            <button className="menu-button" onClick={() => setCurrentMenuView('shop')}>
+
+                            <button onClick={() => setCurrentMenuView('shop')} style={{
+                                width: '300px',
+                                height: '145px',
+                                backgroundImage: 'url(assets/KNAPP1.png)',
+                                backgroundSize: '100% 100%',
+                                backgroundPosition: 'center',
+                                backgroundRepeat: 'no-repeat',
+                                border: 'none',
+                                cursor: 'pointer',
+                                imageRendering: 'pixelated',
+                                transition: 'transform 0.15s ease, filter 0.15s ease',
+                                backgroundColor: 'transparent',
+                                fontFamily: '"Press Start 2P", monospace',
+                                fontSize: '24px',
+                                color: '#2a1810',
+                                fontWeight: 'bold',
+                                textShadow: '2px 2px 0 rgba(255,255,255,0.3)',
+                                filter: 'brightness(1)',
+                                marginBottom: '-60px'
+                            }}
+                            onMouseEnter={(e) => {
+                                e.target.style.transform = 'scale(1.05)';
+                                e.target.style.filter = 'brightness(1.15)';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.target.style.transform = 'scale(1)';
+                                e.target.style.filter = 'brightness(1)';
+                            }}
+                            onMouseDown={(e) => {
+                                e.target.style.transform = 'scale(0.95)';
+                                e.target.style.filter = 'brightness(0.9)';
+                            }}
+                            onMouseUp={(e) => {
+                                e.target.style.transform = 'scale(1.05)';
+                                e.target.style.filter = 'brightness(1.15)';
+                            }}
+                            >
                                 SHOP
                             </button>
-                            <button className="menu-button" onClick={() => setCurrentMenuView('achievements')}>
+
+                            <button onClick={() => setCurrentMenuView('achievements')} style={{
+                                width: '300px',
+                                height: '145px',
+                                backgroundImage: 'url(assets/KNAPP1.png)',
+                                backgroundSize: '100% 100%',
+                                backgroundPosition: 'center',
+                                backgroundRepeat: 'no-repeat',
+                                border: 'none',
+                                cursor: 'pointer',
+                                imageRendering: 'pixelated',
+                                transition: 'transform 0.15s ease, filter 0.15s ease',
+                                backgroundColor: 'transparent',
+                                fontFamily: '"Press Start 2P", monospace',
+                                fontSize: '24px',
+                                color: '#2a1810',
+                                fontWeight: 'bold',
+                                textShadow: '2px 2px 0 rgba(255,255,255,0.3)',
+                                filter: 'brightness(1)',
+                                marginBottom: '-60px'
+                            }}
+                            onMouseEnter={(e) => {
+                                e.target.style.transform = 'scale(1.05)';
+                                e.target.style.filter = 'brightness(1.15)';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.target.style.transform = 'scale(1)';
+                                e.target.style.filter = 'brightness(1)';
+                            }}
+                            onMouseDown={(e) => {
+                                e.target.style.transform = 'scale(0.95)';
+                                e.target.style.filter = 'brightness(0.9)';
+                            }}
+                            onMouseUp={(e) => {
+                                e.target.style.transform = 'scale(1.05)';
+                                e.target.style.filter = 'brightness(1.15)';
+                            }}
+                            >
                                 ACHIEVEMENTS
                             </button>
-                            <button className="menu-button" onClick={() => setCurrentMenuView('music')}>
-                                MUSIC
-                            </button>
-
-                            <div className="player-stats-summary">
-                                <div className="stat-summary-item">
-                                    {playerData.coins} Coins
-                                </div>
-                                <div className="stat-summary-item">
-                                    {playerData.skillPoints} Skill Points
-                                </div>
-                                <div className="stat-summary-item">
-                                    {playerData.gamesPlayed} Games Played
-                                </div>
-                            </div>
                         </div>
                     )}
+
+                    {/* Music Play Button - Top Right Corner */}
+                    <button onClick={() => setCurrentMenuView('music')} style={{
+                        position: 'absolute',
+                        top: '20px',
+                        right: '20px',
+                        width: '80px',
+                        height: '80px',
+                        backgroundColor: '#1a1a1a',
+                        border: '3px solid #5fb571',
+                        borderRadius: '50%',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '32px',
+                        color: '#5fb571',
+                        transition: 'all 0.2s ease',
+                        boxShadow: '0 4px 8px rgba(0,0,0,0.3)',
+                        zIndex: 3000
+                    }}
+                    onMouseEnter={(e) => {
+                        e.target.style.transform = 'scale(1.1)';
+                        e.target.style.boxShadow = '0 6px 12px rgba(95, 181, 113, 0.4)';
+                    }}
+                    onMouseLeave={(e) => {
+                        e.target.style.transform = 'scale(1)';
+                        e.target.style.boxShadow = '0 4px 8px rgba(0,0,0,0.3)';
+                    }}
+                    >
+                        🎵
+                    </button>
+
+                    {currentMenuView === 'main' && null}
 
                     {currentMenuView === 'character' && (
                         <CharacterMenu
@@ -503,21 +748,6 @@ function GameUI() {
                         </div>
                     </div>
 
-                    {/* Other Stats */}
-                    <div className="stat-row">
-                        <div className="stat-item">
-                            <span className="stat-icon"></span>
-                            <span>{gameStats.kills} Kills</span>
-                        </div>
-                        <div className="stat-item">
-                            <span className="stat-icon"></span>
-                            <span>{gameStats.time}</span>
-                        </div>
-                        <div className="stat-item">
-                            <span className="stat-icon"></span>
-                            <span>{coins} Coins</span>
-                        </div>
-                    </div>
 
                     {/* Music Mute/Unmute Button */}
                     <div
@@ -552,21 +782,76 @@ function GameUI() {
                 {/* Active Weapons Display */}
                 <div className="weapons-hud">
                     {window.gameState && window.gameState.player.weapons.map((weapon, index) => {
-                        const cooldownPercent = ((Date.now() - weapon.lastFired) / weapon.cooldown) * 100;
+                        // Magic Missile doesn't need cooldown progressbar (fires too fast)
+                        const showProgressbar = weapon.type !== 'magic_missile';
+
+                        // Calculate cooldown progress (0-100%) using game's currentTime
+                        const currentTime = window.gameState.currentTime || 0;
+                        const rawCooldownPercent = ((currentTime - weapon.lastFired) / weapon.cooldown) * 100;
+                        const cooldownPercent = Math.min(rawCooldownPercent, 100);
                         const isReady = cooldownPercent >= 100;
 
                         const weaponIcon = getWeaponIcon(weapon.type);
 
+                        // Show cooldown remaining (inverted) - full circle when just fired, empties as cooldown finishes
+                        const cooldownRemainingPercent = 100 - cooldownPercent;
+                        const remainingDegrees = (cooldownRemainingPercent / 100) * 360;
+
                         return (
                             <div
                                 key={index}
-                                className={`weapon-slot ${isReady ? 'ready' : 'cooldown'}`}
+                                className="weapon-slot-custom"
                                 style={{
-                                    borderColor: isReady ? '#00ff88' : `rgba(255, 165, 0, ${Math.min(cooldownPercent / 100, 1)})`,
-                                    boxShadow: isReady ? '0 0 15px rgba(0, 255, 136, 0.3)' : 'none'
+                                    position: 'relative',
+                                    width: '80px',
+                                    height: '80px',
+                                    backgroundImage: 'url(assets/WeaponSlotTestGame.png)',
+                                    backgroundSize: 'cover',
+                                    backgroundPosition: 'center',
+                                    imageRendering: 'pixelated',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    padding: '12px',
+                                    border: 'none !important',
+                                    outline: 'none !important',
+                                    boxShadow: 'none !important'
                                 }}
                             >
-                                <div className="weapon-icon-display">
+                                {/* Cooldown Progress Bar - Below slot */}
+                                {showProgressbar && !isReady && (
+                                    <div style={{
+                                        position: 'absolute',
+                                        bottom: '-4px',
+                                        left: '8px',
+                                        right: '8px',
+                                        height: '6px',
+                                        background: '#5a4530',
+                                        borderRadius: '2px',
+                                        overflow: 'hidden',
+                                        border: '1px solid #3a2820',
+                                        pointerEvents: 'none'
+                                    }}>
+                                        <div style={{
+                                            width: `${100 - cooldownPercent}%`,
+                                            height: '100%',
+                                            background: 'linear-gradient(90deg, #6fb880, #4a9860)',
+                                            transition: 'width 0.1s linear',
+                                            imageRendering: 'pixelated'
+                                        }} />
+                                    </div>
+                                )}
+
+                                {/* Weapon Icon */}
+                                <div style={{
+                                    width: '40px',
+                                    height: '40px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    position: 'relative',
+                                    zIndex: 1
+                                }}>
                                     {weaponIcon.type === 'image' ? (
                                         <img
                                             src={weaponIcon.src}
@@ -574,40 +859,79 @@ function GameUI() {
                                             style={{
                                                 width: '100%',
                                                 height: '100%',
-                                                objectFit: 'contain'
+                                                objectFit: 'contain',
+                                                imageRendering: 'pixelated',
+                                                filter: isReady ? 'none' : 'brightness(0.5)'
                                             }}
                                         />
                                     ) : (
-                                        weaponIcon.value
+                                        <span style={{
+                                            fontSize: '20px',
+                                            color: '#6fb880',
+                                            filter: isReady ? 'none' : 'brightness(0.5)'
+                                        }}>{weaponIcon.value}</span>
                                     )}
                                 </div>
-                                <div className="weapon-info">
-                                    <div className="weapon-name">{weapon.name}</div>
-                                    <div className="weapon-level">Lv.{weapon.level}</div>
-                                    {weapon.projectileCount > 1 && (
-                                        <div className="weapon-projectiles">×{weapon.projectileCount}</div>
-                                    )}
+
+                                {/* Level Badge - Bottom Right */}
+                                <div style={{
+                                    position: 'absolute',
+                                    bottom: '4px',
+                                    right: '4px',
+                                    background: 'rgba(139, 111, 71, 0.9)',
+                                    border: '1px solid #8b6f47',
+                                    borderRadius: '3px',
+                                    padding: '2px 4px',
+                                    fontFamily: '"Press Start 2P", monospace',
+                                    fontSize: '6px',
+                                    color: '#f5e6c8',
+                                    zIndex: 2
+                                }}>
+                                    {weapon.level}
                                 </div>
-                                <div className="weapon-cooldown-bar">
-                                    <div
-                                        className="weapon-cooldown-fill"
-                                        style={{
-                                            width: `${Math.min(cooldownPercent, 100)}%`,
-                                            backgroundColor: isReady ? '#00ff88' : '#ffa500'
-                                        }}
-                                    />
-                                </div>
+
+                                {/* Projectile Count - Top Right */}
+                                {weapon.projectileCount > 1 && (
+                                    <div style={{
+                                        position: 'absolute',
+                                        top: '4px',
+                                        right: '4px',
+                                        background: 'rgba(74, 152, 96, 0.9)',
+                                        border: '1px solid #4a9860',
+                                        borderRadius: '3px',
+                                        padding: '2px 4px',
+                                        fontFamily: '"Press Start 2P", monospace',
+                                        fontSize: '6px',
+                                        color: '#f5e6c8',
+                                        zIndex: 2
+                                    }}>
+                                        ×{weapon.projectileCount}
+                                    </div>
+                                )}
                             </div>
                         );
                     })}
 
                     {/* Empty slots */}
                     {window.gameState && [...Array(window.gameState.player.maxWeapons - window.gameState.player.weapons.length)].map((_, index) => (
-                        <div key={`empty-${index}`} className="weapon-slot empty">
-                            <div className="weapon-icon-display">?</div>
-                            <div className="weapon-info">
-                                <div className="weapon-name">Empty Slot</div>
-                            </div>
+                        <div key={`empty-${index}`} style={{
+                            position: 'relative',
+                            width: '80px',
+                            height: '80px',
+                            backgroundImage: 'url(assets/WeaponSlotTestGame.png)',
+                            backgroundSize: 'cover',
+                            backgroundPosition: 'center',
+                            imageRendering: 'pixelated',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            opacity: 0.5
+                        }}>
+                            <div style={{
+                                fontSize: '24px',
+                                color: '#8b6f47',
+                                opacity: 0.8
+                            }}>?</div>
                         </div>
                     ))}
 
@@ -630,51 +954,98 @@ function GameUI() {
                         // We want to show progress filling from 0 to 360 degrees
                         const progressDegrees = isReady ? 360 : (360 * (1 - cooldownPercent / 100));
 
+                        // Progress goes from 0 to 360 degrees as cooldown completes
+                        const ultimateProgressDegrees = (1 - cooldownPercent / 100) * 360;
+
                         return (
                             <div
-                                className="weapon-slot ultimate-slot"
+                                className="weapon-slot-custom"
                                 style={{
                                     position: 'relative',
-                                    background: `conic-gradient(
-                                        #ec4899 0deg ${progressDegrees}deg,
-                                        rgba(236, 72, 153, 0.2) ${progressDegrees}deg 360deg
-                                    )`,
-                                    padding: '3px',
-                                    boxShadow: isReady ? '0 0 15px rgba(236, 72, 153, 0.3)' : 'none'
-                                }}
-                            >
-                                <div style={{
-                                    background: 'rgba(26, 26, 46, 0.95)',
-                                    width: '100%',
-                                    height: '100%',
-                                    borderRadius: '5px',
+                                    width: '80px',
+                                    height: '80px',
+                                    backgroundImage: 'url(assets/WeaponSlotTestGame.png)',
+                                    backgroundSize: 'cover',
+                                    backgroundPosition: 'center',
+                                    imageRendering: 'pixelated',
                                     display: 'flex',
-                                    flexDirection: 'column',
                                     alignItems: 'center',
                                     justifyContent: 'center',
-                                    gap: '3px',
-                                    position: 'relative'
+                                    padding: '12px',
+                                    border: 'none',
+                                    outline: 'none',
+                                    boxShadow: 'none'
+                                }}
+                            >
+                                {/* Ultimate Cooldown Progress Bar - Below slot */}
+                                {!isReady && (
+                                    <div style={{
+                                        position: 'absolute',
+                                        bottom: '-4px',
+                                        left: '8px',
+                                        right: '8px',
+                                        height: '6px',
+                                        background: '#5a4530',
+                                        borderRadius: '2px',
+                                        overflow: 'hidden',
+                                        border: '1px solid #3a2820',
+                                        pointerEvents: 'none'
+                                    }}>
+                                        <div style={{
+                                            width: `${cooldownPercent}%`,
+                                            height: '100%',
+                                            background: 'linear-gradient(90deg, #ec4899, #a855f7)',
+                                            transition: 'width 0.1s linear',
+                                            imageRendering: 'pixelated'
+                                        }} />
+                                    </div>
+                                )}
+
+                                {/* Ultimate Icon */}
+                                <div style={{
+                                    width: '40px',
+                                    height: '40px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    position: 'relative',
+                                    zIndex: 1
                                 }}>
-                                    <div className="weapon-keybind" style={{ position: 'absolute', top: '2px', right: '2px' }}>R</div>
-                                    <div className="weapon-icon-display ultimate-icon">
-                                        {ultimateIcon.type === 'image' ? (
-                                            <img
-                                                src={ultimateIcon.src}
-                                                alt={window.gameState.player.ultimate.name}
-                                                style={{
-                                                    width: '100%',
-                                                    height: '100%',
-                                                    objectFit: 'contain'
-                                                }}
-                                            />
-                                        ) : (
-                                            ultimateIcon.value
-                                        )}
-                                    </div>
-                                    <div className="weapon-info">
-                                        <div className="weapon-name">{window.gameState.player.ultimate.name}</div>
-                                    </div>
+                                    {ultimateIcon.type === 'image' ? (
+                                        <img
+                                            src={ultimateIcon.src}
+                                            alt={window.gameState.player.ultimate.name}
+                                            style={{
+                                                width: '100%',
+                                                height: '100%',
+                                                objectFit: 'contain',
+                                                imageRendering: 'pixelated',
+                                                filter: isReady ? 'drop-shadow(0 0 4px #d4a5c0)' : 'brightness(0.5)'
+                                            }}
+                                        />
+                                    ) : (
+                                        <span style={{
+                                            fontSize: '20px',
+                                            color: '#d4a5c0',
+                                            filter: isReady ? 'drop-shadow(0 0 4px #d4a5c0)' : 'brightness(0.5)'
+                                        }}>{ultimateIcon.value}</span>
+                                    )}
                                 </div>
+
+                                {/* "R" Badge - Top Right */}
+                                <div style={{
+                                    position: 'absolute',
+                                    top: '4px',
+                                    right: '4px',
+                                    fontFamily: '"Press Start 2P", monospace',
+                                    fontSize: '7px',
+                                    color: '#f5e6c8',
+                                    background: 'rgba(139, 42, 94, 0.9)',
+                                    padding: '2px 5px',
+                                    borderRadius: '3px',
+                                    border: '1px solid #8b2a5e',
+                                    zIndex: 2
+                                }}>R</div>
                             </div>
                         );
                     })()}
@@ -745,6 +1116,41 @@ function GameUI() {
                                 <span className="weapon-icon"></span>
                                 <span>Black Hole</span>
                             </button>
+                            <button className="weapon-btn poison-cloud" onClick={() => addWeapon('poison_cloud')} style={{
+                                background: 'linear-gradient(135deg, rgba(136, 255, 0, 0.2) 0%, rgba(80, 200, 0, 0.2) 100%)',
+                                border: '2px solid #88ff00'
+                            }}>
+                                <span className="weapon-icon">☠️</span>
+                                <span>Poison Cloud</span>
+                            </button>
+                            <button className="weapon-btn crystal-shard" onClick={() => addWeapon('crystal_shard')} style={{
+                                background: 'linear-gradient(135deg, rgba(0, 255, 255, 0.2) 0%, rgba(0, 200, 200, 0.2) 100%)',
+                                border: '2px solid #00ffff'
+                            }}>
+                                <span className="weapon-icon">💎</span>
+                                <span>Crystal Shard</span>
+                            </button>
+                            <button className="weapon-btn frost-nova" onClick={() => addWeapon('frost_nova')} style={{
+                                background: 'linear-gradient(135deg, rgba(0, 200, 255, 0.2) 0%, rgba(100, 220, 255, 0.2) 100%)',
+                                border: '2px solid #00c8ff'
+                            }}>
+                                <span className="weapon-icon">❄️</span>
+                                <span>Frost Nova</span>
+                            </button>
+                            <button className="weapon-btn thunder-hammer" onClick={() => addWeapon('thunder_hammer')} style={{
+                                background: 'linear-gradient(135deg, rgba(255, 255, 0, 0.2) 0%, rgba(255, 200, 0, 0.2) 100%)',
+                                border: '2px solid #ffff00'
+                            }}>
+                                <span className="weapon-icon">⚡</span>
+                                <span>Thunder Hammer</span>
+                            </button>
+                            <button className="weapon-btn shadow-clone" onClick={() => addWeapon('shadow_clone')} style={{
+                                background: 'linear-gradient(135deg, rgba(102, 0, 204, 0.2) 0%, rgba(153, 0, 255, 0.2) 100%)',
+                                border: '2px solid #9900ff'
+                            }}>
+                                <span className="weapon-icon">👤</span>
+                                <span>Shadow Clone</span>
+                            </button>
                         </div>
                         <hr style={{margin: '20px 0', borderColor: 'rgba(255,255,255,0.1)'}} />
                         <h3 style={{color: '#e94560', marginBottom: '12px'}}>Test Items</h3>
@@ -760,29 +1166,151 @@ function GameUI() {
                     </div>
                 )}
 
-                {/* Level Up Screen */}
+                {/* Level Up Screen - Pixel Art Style */}
                 {showLevelUp && (
                     <div className="modal-overlay">
-                        <div className="modal level-up-modal">
-                            <h2>Level Up!</h2>
-                            <div className="upgrade-options">
+                        <div style={{
+                            position: 'relative',
+                            width: '800px',
+                            maxWidth: '90vw',
+                            padding: '50px',
+                            background: '#d4c5a0',
+                            border: '12px solid #6fb880',
+                            borderRadius: '0',
+                            boxShadow: '0 0 0 6px #5a4530, inset 0 0 0 10px #f5e6c8',
+                            imageRendering: 'pixelated',
+                            fontFamily: '"Press Start 2P", monospace'
+                        }}>
+                            <h2 style={{
+                                textAlign: 'center',
+                                fontSize: '36px',
+                                color: '#6fb880',
+                                marginBottom: '40px',
+                                textShadow: '4px 4px 0px #2a5840',
+                                letterSpacing: '2px',
+                                textTransform: 'uppercase'
+                            }}>LEVEL UP!</h2>
+
+                            <div style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '15px'
+                            }}>
                                 {upgrades.map((upgrade, index) => {
-                                    const rarityClass = upgrade.rarity ? `rarity-${upgrade.rarity.key.toLowerCase()}` : '';
+                                    // Determine colors based on rarity
+                                    let borderColor = '#8b6f47'; // Always brown border
+                                    let glowColor = 'transparent';
+                                    let badgeColor = '#6b5545';
+
+                                    // Keep badge color for rarity but not border/glow
+                                    if (upgrade.rarity) {
+                                        if (upgrade.rarity.key === 'rare') {
+                                            badgeColor = '#4a9eff';
+                                        } else if (upgrade.rarity.key === 'legendary') {
+                                            badgeColor = '#ffa500';
+                                        }
+                                    }
+
+                                    const upgradeIcon = getUpgradeIcon(upgrade);
+
                                     return (
                                         <div
                                             key={index}
-                                            className={`upgrade-option ${rarityClass}`}
                                             onClick={() => window.selectUpgrade(index)}
+                                            style={{
+                                                background: '#b8a586',
+                                                padding: '20px',
+                                                borderRadius: '8px',
+                                                border: `4px solid ${borderColor}`,
+                                                boxShadow: `0 4px 0 #5a4530, 0 0 20px ${glowColor}, inset 0 2px 0 rgba(245, 230, 200, 0.3)`,
+                                                cursor: 'pointer',
+                                                transition: 'transform 0.1s, box-shadow 0.1s',
+                                                position: 'relative',
+                                                display: 'flex',
+                                                gap: '15px',
+                                                alignItems: 'center',
+                                                outline: 'none'
+                                            }}
+                                            onMouseEnter={(e) => {
+                                                e.currentTarget.style.transform = 'translateY(-2px)';
+                                                e.currentTarget.style.boxShadow = `0 6px 0 #5a4530, 0 0 30px ${glowColor}, inset 0 2px 0 rgba(245, 230, 200, 0.3)`;
+                                            }}
+                                            onMouseLeave={(e) => {
+                                                e.currentTarget.style.transform = 'translateY(0)';
+                                                e.currentTarget.style.boxShadow = `0 4px 0 #5a4530, 0 0 20px ${glowColor}, inset 0 2px 0 rgba(245, 230, 200, 0.3)`;
+                                            }}
                                         >
-                                            <h3>
-                                                {upgrade.name}
-                                                {upgrade.rarity && (
-                                                    <span className="upgrade-rarity-badge">
-                                                        {upgrade.rarity.name.toUpperCase()}
-                                                    </span>
+                                            {/* Weapon Icon - Always show slot */}
+                                            <div style={{
+                                                width: '70px',
+                                                height: '70px',
+                                                flexShrink: 0,
+                                                backgroundImage: 'url(assets/WeaponSlotTestGame.png)',
+                                                backgroundSize: 'cover',
+                                                backgroundPosition: 'center',
+                                                imageRendering: 'pixelated',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                padding: '12px',
+                                                border: 'none',
+                                                outline: 'none',
+                                                boxShadow: 'none'
+                                            }}>
+                                                {upgradeIcon && (
+                                                    <>
+                                                        {upgradeIcon.type === 'image' ? (
+                                                            <img
+                                                                src={upgradeIcon.src}
+                                                                alt={upgrade.name}
+                                                                style={{
+                                                                    width: '35px',
+                                                                    height: '35px',
+                                                                    objectFit: 'contain',
+                                                                    imageRendering: 'pixelated'
+                                                                }}
+                                                            />
+                                                        ) : (
+                                                            <span style={{
+                                                                fontSize: '20px',
+                                                                color: '#6fb880',
+                                                                fontWeight: 'bold'
+                                                            }}>{upgradeIcon.value}</span>
+                                                        )}
+                                                    </>
                                                 )}
-                                            </h3>
-                                            <p>{upgrade.desc}</p>
+                                            </div>
+
+                                            {/* Text Content */}
+                                            <div style={{ flex: 1 }}>
+                                                <h3 style={{
+                                                    fontSize: '14px',
+                                                    color: '#1a1a1a',
+                                                    marginBottom: '10px',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    gap: '10px'
+                                                }}>
+                                                    {upgrade.name}
+                                                    {upgrade.rarity && (
+                                                        <span style={{
+                                                            fontSize: '8px',
+                                                            padding: '4px 8px',
+                                                            background: badgeColor,
+                                                            color: '#1a1a1a',
+                                                            borderRadius: '4px',
+                                                            fontWeight: 'bold'
+                                                        }}>
+                                                            {upgrade.rarity.name.toUpperCase()}
+                                                        </span>
+                                                    )}
+                                                </h3>
+                                                <p style={{
+                                                    fontSize: '10px',
+                                                    color: '#4a3830',
+                                                    lineHeight: '1.5'
+                                                }}>{upgrade.desc}</p>
+                                            </div>
                                         </div>
                                     );
                                 })}
@@ -960,132 +1488,328 @@ function GameUI() {
                     />
                 )}
 
-                {/* Pause Screen */}
+                {/* Pause Screen with Pixel Art Menu */}
                 {showPaused && !showLevelUp && !showGameOver && !showChestPopup && !showMysteryBoxSpinner && (
                     <div className="modal-overlay">
-                        <div className="modal pause-modal">
-                            <h2>PAUSED</h2>
-                            <p style={{color: '#ccc', textAlign: 'center', marginBottom: '20px'}}>
-                                Press ESC to resume
-                            </p>
-
-                            {/* Music Selection in Pause Menu */}
-                            <div className="pause-music-section">
-                                <h3 style={{color: '#22c55e', fontSize: '16px', marginBottom: '15px'}}>🎵 Music</h3>
-                                <div className="pause-music-volume">
-                                    <label style={{color: '#ccc', fontSize: '12px', marginBottom: '8px', display: 'block'}}>
-                                        Volume: {Math.round(playerData.musicVolume * 100)}%
-                                    </label>
-                                    <input
-                                        type="range"
-                                        min="0"
-                                        max="1"
-                                        step="0.05"
-                                        value={playerData.musicVolume}
-                                        onChange={(e) => {
-                                            const volume = parseFloat(e.target.value);
-                                            setPlayerData({...playerData, musicVolume: volume});
-                                            if (window.currentMusicAudio) {
-                                                window.currentMusicAudio.volume = volume;
-                                            }
-                                        }}
-                                        className="volume-slider"
-                                        style={{width: '100%'}}
-                                    />
+                        <div style={{
+                            position: 'relative',
+                            width: '420px',
+                            padding: '50px',
+                            background: '#d4c5a0',
+                            border: '12px solid #8b6f47',
+                            borderRadius: '0',
+                            boxShadow: '0 0 0 6px #5a4530, inset 0 0 0 10px #f5e6c8',
+                            imageRendering: 'pixelated',
+                            fontFamily: '"Press Start 2P", monospace'
+                        }}>
+                            {/* Game Stats Display */}
+                            <div style={{
+                                display: 'flex',
+                                justifyContent: 'space-around',
+                                marginBottom: '30px',
+                                paddingBottom: '30px',
+                                borderBottom: '3px solid #8b6f47',
+                                gap: '15px'
+                            }}>
+                                <div style={{
+                                    background: 'rgba(0,0,0,0.2)',
+                                    padding: '12px 18px',
+                                    borderRadius: '6px',
+                                    border: '2px solid #8b6f47',
+                                    fontSize: '10px',
+                                    color: '#2a5840',
+                                    fontWeight: 'bold',
+                                    textAlign: 'center',
+                                    flex: 1
+                                }}>
+                                    <div style={{fontSize: '18px', marginBottom: '5px'}}>{gameStats.kills}</div>
+                                    <div>Kills</div>
                                 </div>
-                                <div className="pause-music-tracks">
-                                    {MUSIC_TRACKS.map(track => {
-                                        const isPlaying = playerData.selectedTrack === track.id;
-                                        return (
-                                            <div
-                                                key={track.id}
-                                                className={`pause-music-track ${isPlaying ? 'playing' : ''}`}
-                                                onClick={() => {
-                                                    if (window.currentMusicAudio) {
-                                                        window.currentMusicAudio.pause();
-                                                        window.currentMusicAudio = null;
-                                                    }
-                                                    if (isPlaying) {
-                                                        setPlayerData({...playerData, selectedTrack: null});
-                                                    } else {
-                                                        const audio = new Audio(track.path);
-                                                        audio.volume = playerData.musicVolume;
-                                                        audio.loop = true;
-                                                        audio.play().catch(err => console.error('Error playing music:', err));
-                                                        window.currentMusicAudio = audio;
-                                                        setPlayerData({...playerData, selectedTrack: track.id});
-                                                    }
-                                                }}
-                                            >
-                                                <span>{track.name}</span>
-                                                {isPlaying && <span style={{color: '#22c55e'}}>▶</span>}
-                                            </div>
-                                        );
-                                    })}
+                                <div style={{
+                                    background: 'rgba(0,0,0,0.2)',
+                                    padding: '12px 18px',
+                                    borderRadius: '6px',
+                                    border: '2px solid #8b6f47',
+                                    fontSize: '10px',
+                                    color: '#2a5840',
+                                    fontWeight: 'bold',
+                                    textAlign: 'center',
+                                    flex: 1
+                                }}>
+                                    <div style={{fontSize: '18px', marginBottom: '5px'}}>{gameStats.time}</div>
+                                    <div>Time</div>
                                 </div>
-                                {playerData.selectedTrack && (
-                                    <button
-                                        className="stop-music-btn"
-                                        onClick={() => {
-                                            if (window.currentMusicAudio) {
-                                                window.currentMusicAudio.pause();
-                                                window.currentMusicAudio = null;
-                                            }
-                                            setPlayerData({...playerData, selectedTrack: null});
-                                        }}
-                                        style={{width: '100%', marginTop: '10px', fontSize: '10px', padding: '8px'}}
-                                    >
-                                        STOP MUSIC
-                                    </button>
-                                )}
+                                <div style={{
+                                    background: 'rgba(0,0,0,0.2)',
+                                    padding: '12px 18px',
+                                    borderRadius: '6px',
+                                    border: '2px solid #8b6f47',
+                                    fontSize: '10px',
+                                    color: '#2a5840',
+                                    fontWeight: 'bold',
+                                    textAlign: 'center',
+                                    flex: 1
+                                }}>
+                                    <div style={{fontSize: '18px', marginBottom: '5px'}}>{coins}</div>
+                                    <div>Coins</div>
+                                </div>
                             </div>
 
-                            <button
-                                className="primary-button"
-                                onClick={() => {
-                                    if (window.gameState) {
-                                        window.gameState.isPaused = false;
-                                    }
-                                }}
-                                style={{marginBottom: '15px', marginTop: '20px'}}
-                            >
-                                Resume
-                            </button>
-                            <button
-                                className="primary-button"
-                                onClick={() => window.location.reload()}
-                                style={{background: 'linear-gradient(135deg, rgba(233, 69, 96, 0.8) 0%, rgba(255, 107, 129, 0.8) 100%)'}}
-                            >
-                                Main Menu
-                            </button>
+                            {/* Menu buttons */}
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+                                <button
+                                    onClick={() => {
+                                        if (window.gameState) {
+                                            window.gameState.isPaused = false;
+                                        }
+                                    }}
+                                    style={{
+                                        width: '100%',
+                                        padding: '18px 24px',
+                                        background: 'linear-gradient(180deg, #6fb880 0%, #4a9860 100%)',
+                                        border: '4px solid #2a5840',
+                                        borderRadius: '8px',
+                                        color: '#1a1a1a',
+                                        fontSize: '18px',
+                                        fontWeight: 'bold',
+                                        cursor: 'pointer',
+                                        textTransform: 'uppercase',
+                                        letterSpacing: '1px',
+                                        boxShadow: '0 6px 0 #2a5840, inset 0 3px 0 #8fd8a0',
+                                        imageRendering: 'pixelated',
+                                        fontFamily: '"Press Start 2P", monospace',
+                                        transition: 'transform 0.1s'
+                                    }}
+                                    onMouseDown={(e) => e.target.style.transform = 'translateY(2px)'}
+                                    onMouseUp={(e) => e.target.style.transform = 'translateY(0)'}
+                                    onMouseLeave={(e) => e.target.style.transform = 'translateY(0)'}
+                                >
+                                    RESUME
+                                </button>
+
+                                <button
+                                    onClick={() => window.location.reload()}
+                                    style={{
+                                        width: '100%',
+                                        padding: '18px 24px',
+                                        background: 'linear-gradient(180deg, #6fb880 0%, #4a9860 100%)',
+                                        border: '4px solid #2a5840',
+                                        borderRadius: '8px',
+                                        color: '#1a1a1a',
+                                        fontSize: '18px',
+                                        fontWeight: 'bold',
+                                        cursor: 'pointer',
+                                        textTransform: 'uppercase',
+                                        letterSpacing: '1px',
+                                        boxShadow: '0 6px 0 #2a5840, inset 0 3px 0 #8fd8a0',
+                                        imageRendering: 'pixelated',
+                                        fontFamily: '"Press Start 2P", monospace',
+                                        transition: 'transform 0.1s'
+                                    }}
+                                    onMouseDown={(e) => e.target.style.transform = 'translateY(2px)'}
+                                    onMouseUp={(e) => e.target.style.transform = 'translateY(0)'}
+                                    onMouseLeave={(e) => e.target.style.transform = 'translateY(0)'}
+                                >
+                                    RESTART
+                                </button>
+
+                                {/* Music controls section */}
+                                <div style={{
+                                    marginTop: '30px',
+                                    padding: '20px',
+                                    background: 'rgba(0,0,0,0.2)',
+                                    borderRadius: '8px',
+                                    border: '3px solid #8b6f47'
+                                }}>
+                                    <div style={{fontSize: '14px', color: '#2a5840', marginBottom: '15px', fontWeight: 'bold'}}>
+                                        🎵 MUSIC
+                                    </div>
+                                    <div style={{marginBottom: '15px'}}>
+                                        <label style={{color: '#2a5840', fontSize: '12px', marginBottom: '8px', display: 'block'}}>
+                                            Volume: {Math.round(playerData.musicVolume * 100)}%
+                                        </label>
+                                        <input
+                                            type="range"
+                                            min="0"
+                                            max="1"
+                                            step="0.05"
+                                            value={playerData.musicVolume}
+                                            onChange={(e) => {
+                                                const volume = parseFloat(e.target.value);
+                                                setPlayerData({...playerData, musicVolume: volume});
+                                                if (window.currentMusicAudio) {
+                                                    window.currentMusicAudio.volume = volume;
+                                                }
+                                            }}
+                                            style={{width: '100%'}}
+                                        />
+                                    </div>
+                                    <div style={{display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '15px'}}>
+                                        {MUSIC_TRACKS.map(track => {
+                                            const isPlaying = playerData.selectedTrack === track.id;
+                                            return (
+                                                <div
+                                                    key={track.id}
+                                                    onClick={() => {
+                                                        if (window.currentMusicAudio) {
+                                                            window.currentMusicAudio.pause();
+                                                            window.currentMusicAudio = null;
+                                                        }
+                                                        if (isPlaying) {
+                                                            setPlayerData({...playerData, selectedTrack: null});
+                                                        } else {
+                                                            const audio = new Audio(track.path);
+                                                            audio.volume = playerData.musicVolume;
+                                                            audio.loop = true;
+                                                            audio.play().catch(err => console.error('Error playing music:', err));
+                                                            window.currentMusicAudio = audio;
+                                                            setPlayerData({...playerData, selectedTrack: track.id});
+                                                        }
+                                                    }}
+                                                    style={{
+                                                        padding: '12px',
+                                                        background: isPlaying ? '#6fb880' : '#5a4530',
+                                                        border: '3px solid #2a5840',
+                                                        borderRadius: '4px',
+                                                        color: isPlaying ? '#1a1a1a' : '#d4c5a0',
+                                                        fontSize: '11px',
+                                                        cursor: 'pointer',
+                                                        display: 'flex',
+                                                        justifyContent: 'space-between',
+                                                        alignItems: 'center'
+                                                    }}
+                                                >
+                                                    <span>{track.name}</span>
+                                                    {isPlaying && <span>▶</span>}
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                    {playerData.selectedTrack && (
+                                        <button
+                                            onClick={() => {
+                                                if (window.currentMusicAudio) {
+                                                    window.currentMusicAudio.pause();
+                                                    window.currentMusicAudio = null;
+                                                }
+                                                setPlayerData({...playerData, selectedTrack: null});
+                                            }}
+                                            style={{
+                                                width: '100%',
+                                                padding: '12px',
+                                                background: '#c85a54',
+                                                border: '3px solid #8b3a34',
+                                                borderRadius: '4px',
+                                                color: '#fff',
+                                                fontSize: '11px',
+                                                cursor: 'pointer',
+                                                fontWeight: 'bold'
+                                            }}
+                                        >
+                                            STOP MUSIC
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 )}
 
-                {/* Game Over Screen */}
+                {/* Game Over Screen - Pixel Art Style */}
                 {showGameOver && (
                     <div className="modal-overlay">
-                        <div className="modal game-over-modal">
-                            <h2>Game Over!</h2>
-                            <div className="final-stats">
-                                <div className="final-stat">
-                                    <span>Survived</span>
-                                    <strong>{gameStats.time}</strong>
+                        <div style={{
+                            position: 'relative',
+                            width: '650px',
+                            padding: '50px 70px',
+                            background: '#d4c5a0',
+                            border: '12px solid #8b6f47',
+                            borderRadius: '0',
+                            boxShadow: '0 0 0 6px #5a4530, inset 0 0 0 10px #f5e6c8',
+                            imageRendering: 'pixelated',
+                            fontFamily: '"Press Start 2P", monospace'
+                        }}>
+                            <h2 style={{
+                                textAlign: 'center',
+                                fontSize: '36px',
+                                color: '#c85a54',
+                                marginBottom: '40px',
+                                textShadow: '4px 4px 0px #8b3a34',
+                                letterSpacing: '2px',
+                                textTransform: 'uppercase'
+                            }}>GAME OVER!</h2>
+
+                            <div style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '20px',
+                                marginBottom: '40px'
+                            }}>
+                                <div style={{
+                                    background: '#b8a586',
+                                    padding: '20px 30px',
+                                    borderRadius: '8px',
+                                    border: '3px solid #8b6f47',
+                                    boxShadow: '0 4px 0 #5a4530, inset 0 2px 0 rgba(245, 230, 200, 0.3)',
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center'
+                                }}>
+                                    <span style={{fontSize: '14px', color: '#5a4530'}}>Survived</span>
+                                    <strong style={{fontSize: '24px', color: '#6fb880'}}>{gameStats.time}</strong>
                                 </div>
-                                <div className="final-stat">
-                                    <span>Kills</span>
-                                    <strong>{gameStats.kills}</strong>
+                                <div style={{
+                                    background: '#b8a586',
+                                    padding: '20px 30px',
+                                    borderRadius: '8px',
+                                    border: '3px solid #8b6f47',
+                                    boxShadow: '0 4px 0 #5a4530, inset 0 2px 0 rgba(245, 230, 200, 0.3)',
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center'
+                                }}>
+                                    <span style={{fontSize: '14px', color: '#5a4530'}}>Kills</span>
+                                    <strong style={{fontSize: '24px', color: '#6fb880'}}>{gameStats.kills}</strong>
                                 </div>
-                                <div className="final-stat">
-                                    <span>Level Reached</span>
-                                    <strong>{gameStats.level}</strong>
+                                <div style={{
+                                    background: '#b8a586',
+                                    padding: '20px 30px',
+                                    borderRadius: '8px',
+                                    border: '3px solid #8b6f47',
+                                    boxShadow: '0 4px 0 #5a4530, inset 0 2px 0 rgba(245, 230, 200, 0.3)',
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center'
+                                }}>
+                                    <span style={{fontSize: '14px', color: '#5a4530'}}>Level Reached</span>
+                                    <strong style={{fontSize: '24px', color: '#6fb880'}}>{gameStats.level}</strong>
                                 </div>
                             </div>
+
                             <button
-                                className="primary-button"
                                 onClick={() => window.location.reload()}
+                                style={{
+                                    width: '100%',
+                                    padding: '20px 24px',
+                                    background: 'linear-gradient(180deg, #6fb880 0%, #4a9860 100%)',
+                                    border: '4px solid #2a5840',
+                                    borderRadius: '8px',
+                                    color: '#1a1a1a',
+                                    fontSize: '20px',
+                                    fontWeight: 'bold',
+                                    cursor: 'pointer',
+                                    textTransform: 'uppercase',
+                                    letterSpacing: '2px',
+                                    boxShadow: '0 6px 0 #2a5840, inset 0 3px 0 #8fd8a0',
+                                    imageRendering: 'pixelated',
+                                    fontFamily: '"Press Start 2P", monospace',
+                                    transition: 'transform 0.1s'
+                                }}
+                                onMouseDown={(e) => e.target.style.transform = 'translateY(3px)'}
+                                onMouseUp={(e) => e.target.style.transform = 'translateY(0)'}
+                                onMouseLeave={(e) => e.target.style.transform = 'translateY(0)'}
                             >
-                                Try Again
+                                TRY AGAIN
                             </button>
                         </div>
                     </div>
@@ -1192,49 +1916,69 @@ function CharacterMenu({ playerData, setPlayerData, onBack }) {
 
     const renderGearSlot = (slot) => {
         const equippedItem = playerData.equippedGear[slot.id];
+        const rarityColors = {
+            legendary: '#ffa500',
+            rare: '#4a9eff',
+            common: '#8b6f47'
+        };
+        const borderColor = equippedItem ? rarityColors[equippedItem.rarity] : '#6b5545';
+
         return (
             <div
                 key={slot.id}
                 className={`gear-slot ${equippedItem ? 'filled' : 'empty'}`}
                 style={{
                     aspectRatio: '1',
-                    width: '50px',
-                    border: equippedItem ? `2px solid ${equippedItem.rarity === 'legendary' ? '#FFD700' : equippedItem.rarity === 'rare' ? '#4169E1' : '#666'}` : '2px solid #555',
-                    borderRadius: '4px',
-                    background: equippedItem ? '#1a1a2e' : '#2a2a4a',
+                    width: '60px',
+                    border: `3px solid ${borderColor}`,
+                    borderRadius: '6px',
+                    background: equippedItem ? '#b8a586' : 'rgba(139, 111, 71, 0.3)',
+                    boxShadow: equippedItem ? '0 3px 0 #5a4530, inset 0 2px 0 rgba(245, 230, 200, 0.3)' : '0 2px 0 #5a4530',
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
                     justifyContent: 'center',
                     cursor: equippedItem ? 'pointer' : 'default',
-                    transition: 'all 0.2s',
+                    transition: 'transform 0.1s',
                     position: 'relative',
-                    padding: '4px'
+                    padding: '6px',
+                    imageRendering: 'pixelated',
+                    fontFamily: '"Press Start 2P", monospace'
                 }}
                 onClick={() => equippedItem && unequipGear(slot.id)}
-                onMouseEnter={(e) => equippedItem && (e.currentTarget.style.transform = 'scale(1.05)')}
-                onMouseLeave={(e) => equippedItem && (e.currentTarget.style.transform = 'scale(1)')}
+                onMouseEnter={(e) => equippedItem && (e.currentTarget.style.transform = 'translateY(-2px)')}
+                onMouseLeave={(e) => equippedItem && (e.currentTarget.style.transform = 'translateY(0)')}
             >
-                <div style={{fontSize: '20px'}}>{equippedItem ? equippedItem.icon : slot.icon}</div>
-                <div style={{fontSize: '7px', color: '#999', marginTop: '1px', fontWeight: '600', textAlign: 'center'}}>{slot.name}</div>
+                <div style={{
+                    fontSize: '18px',
+                    color: equippedItem ? '#2a5840' : '#8b6f47',
+                    opacity: equippedItem ? 1 : 0.5
+                }}>{equippedItem ? equippedItem.icon : slot.icon}</div>
+                <div style={{
+                    fontSize: '6px',
+                    color: equippedItem ? '#4a3830' : '#6b5545',
+                    marginTop: '3px',
+                    fontWeight: 'bold',
+                    textAlign: 'center',
+                    opacity: equippedItem ? 1 : 0.6
+                }}>{slot.name}</div>
                 {equippedItem && (
                     <div style={{
                         position: 'absolute',
-                        top: '-10px',
-                        right: '-10px',
-                        width: '26px',
-                        height: '26px',
+                        top: '-8px',
+                        right: '-8px',
+                        width: '22px',
+                        height: '22px',
                         borderRadius: '50%',
-                        background: equippedItem.rarity === 'legendary' ? '#FFD700' :
-                                   equippedItem.rarity === 'rare' ? '#4169E1' :
-                                   '#808080',
+                        background: rarityColors[equippedItem.rarity],
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        fontSize: '13px',
+                        fontSize: '10px',
                         fontWeight: 'bold',
-                        color: '#000',
-                        border: '2px solid #000'
+                        color: '#1a1a1a',
+                        border: '2px solid #5a4530',
+                        boxShadow: '0 2px 0 #2a1a0a'
                     }}>
                         {equippedItem.rarity === 'legendary' ? 'L' : equippedItem.rarity === 'rare' ? 'R' : 'C'}
                     </div>
@@ -1245,7 +1989,15 @@ function CharacterMenu({ playerData, setPlayerData, onBack }) {
 
     return (
         <div className="submenu gear-menu" style={{width: '100%', maxWidth: '1600px', margin: '0 auto'}}>
-            <h2 style={{marginBottom: '8px', fontSize: '20px'}}>EQUIPMENT</h2>
+            <h2 style={{
+                marginBottom: '20px',
+                fontSize: '24px',
+                color: '#2a5840',
+                textAlign: 'center',
+                fontFamily: '"Press Start 2P", monospace',
+                textShadow: '2px 2px 0px #8b6f47',
+                letterSpacing: '2px'
+            }}>EQUIPMENT</h2>
 
             {/* Main Grid: Character on Left, Inventory on Right */}
             <div style={{
@@ -1255,14 +2007,26 @@ function CharacterMenu({ playerData, setPlayerData, onBack }) {
             }}>
                 {/* Character Sheet - LEFT SIDE */}
                 <div style={{
-                    background: '#2a2a4a',
-                    padding: '15px',
-                    borderRadius: '6px',
-                    border: '2px solid #444',
+                    background: '#d4c5a0',
+                    padding: '20px',
+                    borderRadius: '0',
+                    border: '8px solid #8b6f47',
+                    boxShadow: '0 0 0 4px #5a4530, inset 0 0 0 6px #f5e6c8',
                     display: 'flex',
-                    flexDirection: 'column'
+                    flexDirection: 'column',
+                    imageRendering: 'pixelated',
+                    fontFamily: '"Press Start 2P", monospace'
                 }}>
-                    <h3 style={{marginBottom: '10px', color: '#fff', fontSize: '13px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1px'}}>Equipped Gear</h3>
+                    <h3 style={{
+                        marginBottom: '15px',
+                        color: '#2a5840',
+                        fontSize: '12px',
+                        fontWeight: 'bold',
+                        textTransform: 'uppercase',
+                        letterSpacing: '1px',
+                        textAlign: 'center',
+                        textShadow: '1px 1px 0px #8b6f47'
+                    }}>EQUIPPED GEAR</h3>
 
                     <div style={{
                         display: 'grid',
@@ -1282,31 +2046,33 @@ function CharacterMenu({ playerData, setPlayerData, onBack }) {
                             {leftSlots.map(slot => renderGearSlot(slot))}
                         </div>
 
-                        {/* Wizard Sprite in Center */}
+                        {/* Player Sprite in Center */}
                         <div style={{
                             display: 'flex',
                             justifyContent: 'center',
                             alignItems: 'center',
-                            padding: '0 8px'
+                            padding: '0 15px'
                         }}>
                             <div style={{
                                 position: 'relative',
-                                width: '90px',
-                                height: '90px',
+                                width: '100px',
+                                height: '100px',
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                filter: 'drop-shadow(0 0 10px rgba(74, 157, 95, 0.6))'
+                                background: 'rgba(139, 111, 71, 0.2)',
+                                border: '3px solid #8b6f47',
+                                borderRadius: '8px',
+                                boxShadow: 'inset 0 2px 0 rgba(245, 230, 200, 0.3)'
                             }}>
                                 <img
-                                    src="assets/wizard/Idle.png"
-                                    alt="Wizard"
+                                    src="assets/Download62188.png"
+                                    alt="Player"
                                     style={{
-                                        width: '231px',
-                                        height: '190px',
+                                        width: '64px',
+                                        height: '64px',
                                         objectFit: 'none',
-                                        objectPosition: '0 0',
-                                        transform: 'scale(0.55)',
+                                        objectPosition: '0 -64px',
                                         imageRendering: 'pixelated'
                                     }}
                                 />
@@ -1326,34 +2092,75 @@ function CharacterMenu({ playerData, setPlayerData, onBack }) {
 
                     {/* Total Stats Display */}
                     <div style={{
-                        padding: '10px',
-                        background: '#1a1a2e',
-                        borderRadius: '6px',
-                        border: '2px solid #4a9d5f'
+                        padding: '12px',
+                        background: 'rgba(139, 111, 71, 0.3)',
+                        borderRadius: '0',
+                        border: '3px solid #6fb880',
+                        boxShadow: '0 3px 0 #5a4530, inset 0 2px 0 rgba(245, 230, 200, 0.2)'
                     }}>
-                        <h4 style={{color: '#4a9d5f', marginBottom: '6px', textAlign: 'center', fontSize: '10px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1px'}}>Total Stats</h4>
+                        <h4 style={{
+                            color: '#2a5840',
+                            marginBottom: '10px',
+                            textAlign: 'center',
+                            fontSize: '10px',
+                            fontWeight: 'bold',
+                            textTransform: 'uppercase',
+                            letterSpacing: '1px',
+                            textShadow: '1px 1px 0px #8b6f47'
+                        }}>TOTAL STATS</h4>
                         <div style={{
                             display: 'grid',
                             gridTemplateColumns: 'repeat(2, 1fr)',
-                            gap: '5px',
-                            fontSize: '10px',
-                            color: '#fff'
+                            gap: '8px',
+                            fontSize: '10px'
                         }}>
-                            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '5px', background: 'rgba(0,0,0,0.3)', borderRadius: '4px'}}>
-                                <span style={{color: '#999', fontSize: '8px', marginBottom: '2px'}}>Damage</span>
-                                <span style={{color: '#4a9d5f', fontWeight: '700', fontSize: '12px'}}>+{totalStats.damage}</span>
+                            <div style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                padding: '8px',
+                                background: 'rgba(0,0,0,0.2)',
+                                borderRadius: '4px',
+                                border: '2px solid #8b6f47'
+                            }}>
+                                <span style={{color: '#6b5545', fontSize: '7px', marginBottom: '3px', fontWeight: 'bold'}}>Damage</span>
+                                <span style={{color: '#6fb880', fontWeight: 'bold', fontSize: '12px'}}>+{totalStats.damage}</span>
                             </div>
-                            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '5px', background: 'rgba(0,0,0,0.3)', borderRadius: '4px'}}>
-                                <span style={{color: '#999', fontSize: '8px', marginBottom: '2px'}}>Max HP</span>
-                                <span style={{color: '#4a9d5f', fontWeight: '700', fontSize: '12px'}}>+{totalStats.maxHp}</span>
+                            <div style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                padding: '8px',
+                                background: 'rgba(0,0,0,0.2)',
+                                borderRadius: '4px',
+                                border: '2px solid #8b6f47'
+                            }}>
+                                <span style={{color: '#6b5545', fontSize: '7px', marginBottom: '3px', fontWeight: 'bold'}}>Max HP</span>
+                                <span style={{color: '#6fb880', fontWeight: 'bold', fontSize: '12px'}}>+{totalStats.maxHp}</span>
                             </div>
-                            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '5px', background: 'rgba(0,0,0,0.3)', borderRadius: '4px'}}>
-                                <span style={{color: '#999', fontSize: '8px', marginBottom: '2px'}}>Speed</span>
-                                <span style={{color: '#4a9d5f', fontWeight: '700', fontSize: '12px'}}>+{totalStats.speed.toFixed(1)}</span>
+                            <div style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                padding: '8px',
+                                background: 'rgba(0,0,0,0.2)',
+                                borderRadius: '4px',
+                                border: '2px solid #8b6f47'
+                            }}>
+                                <span style={{color: '#6b5545', fontSize: '7px', marginBottom: '3px', fontWeight: 'bold'}}>Speed</span>
+                                <span style={{color: '#6fb880', fontWeight: 'bold', fontSize: '12px'}}>+{totalStats.speed.toFixed(1)}</span>
                             </div>
-                            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '5px', background: 'rgba(0,0,0,0.3)', borderRadius: '4px'}}>
-                                <span style={{color: '#999', fontSize: '8px', marginBottom: '2px'}}>Luck</span>
-                                <span style={{color: '#4a9d5f', fontWeight: '700', fontSize: '12px'}}>+{totalStats.luck}%</span>
+                            <div style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                padding: '8px',
+                                background: 'rgba(0,0,0,0.2)',
+                                borderRadius: '4px',
+                                border: '2px solid #8b6f47'
+                            }}>
+                                <span style={{color: '#6b5545', fontSize: '7px', marginBottom: '3px', fontWeight: 'bold'}}>Luck</span>
+                                <span style={{color: '#6fb880', fontWeight: 'bold', fontSize: '12px'}}>+{totalStats.luck}%</span>
                             </div>
                         </div>
                     </div>
@@ -1361,12 +2168,24 @@ function CharacterMenu({ playerData, setPlayerData, onBack }) {
 
                 {/* Inventory - RIGHT SIDE */}
                 <div style={{
-                    background: '#2a2a4a',
-                    padding: '15px',
-                    borderRadius: '6px',
-                    border: '2px solid #444'
+                    background: '#d4c5a0',
+                    padding: '20px',
+                    borderRadius: '0',
+                    border: '8px solid #8b6f47',
+                    boxShadow: '0 0 0 4px #5a4530, inset 0 0 0 6px #f5e6c8',
+                    imageRendering: 'pixelated',
+                    fontFamily: '"Press Start 2P", monospace'
                 }}>
-                    <h3 style={{marginBottom: '10px', color: '#fff', fontSize: '13px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1px'}}>Inventory ({playerData.inventory.length}/32)</h3>
+                    <h3 style={{
+                        marginBottom: '15px',
+                        color: '#2a5840',
+                        fontSize: '12px',
+                        fontWeight: 'bold',
+                        textTransform: 'uppercase',
+                        letterSpacing: '1px',
+                        textAlign: 'center',
+                        textShadow: '1px 1px 0px #8b6f47'
+                    }}>INVENTORY ({playerData.inventory.length}/32)</h3>
                     <div style={{
                         display: 'grid',
                         gridTemplateColumns: 'repeat(16, 1fr)',
@@ -1377,6 +2196,11 @@ function CharacterMenu({ playerData, setPlayerData, onBack }) {
                             const item = playerData.inventory[index];
 
                             if (item) {
+                                const rarityColors = {
+                                    legendary: '#ffa500',
+                                    rare: '#4a9eff',
+                                    common: '#8b6f47'
+                                };
                                 // Filled slot with item
                                 return (
                                     <div
@@ -1385,29 +2209,29 @@ function CharacterMenu({ playerData, setPlayerData, onBack }) {
                                         onClick={() => equipGear(item.slot, item)}
                                         style={{
                                             aspectRatio: '1',
-                                            padding: '4px',
-                                            background: '#1a1a2e',
-                                            border: `2px solid ${item.rarity === 'legendary' ? '#FFD700' : item.rarity === 'rare' ? '#4169E1' : '#666'}`,
+                                            padding: '6px',
+                                            background: '#b8a586',
+                                            border: `3px solid ${rarityColors[item.rarity]}`,
                                             borderRadius: '4px',
                                             cursor: 'pointer',
                                             textAlign: 'center',
-                                            transition: 'all 0.2s',
+                                            transition: 'transform 0.1s',
                                             position: 'relative',
                                             display: 'flex',
                                             flexDirection: 'column',
                                             alignItems: 'center',
-                                            justifyContent: 'center'
+                                            justifyContent: 'center',
+                                            boxShadow: '0 2px 0 #5a4530, inset 0 1px 0 rgba(245, 230, 200, 0.3)',
+                                            imageRendering: 'pixelated'
                                         }}
                                         onMouseEnter={(e) => {
-                                            e.currentTarget.style.transform = 'scale(1.05)';
-                                            e.currentTarget.style.borderColor = item.rarity === 'legendary' ? '#FFD700' : item.rarity === 'rare' ? '#6495ED' : '#999';
+                                            e.currentTarget.style.transform = 'translateY(-2px)';
                                             const rect = e.currentTarget.getBoundingClientRect();
                                             setTooltipPosition({ x: rect.left + rect.width / 2, y: rect.top });
                                             setHoveredItem(item);
                                         }}
                                         onMouseLeave={(e) => {
-                                            e.currentTarget.style.transform = 'scale(1)';
-                                            e.currentTarget.style.borderColor = item.rarity === 'legendary' ? '#FFD700' : item.rarity === 'rare' ? '#4169E1' : '#666';
+                                            e.currentTarget.style.transform = 'translateY(0)';
                                             setHoveredItem(null);
                                         }}
                                     >
@@ -1432,16 +2256,17 @@ function CharacterMenu({ playerData, setPlayerData, onBack }) {
                                         key={index}
                                         style={{
                                             aspectRatio: '1',
-                                            background: '#1a1a2e',
-                                            border: '2px solid #444',
+                                            background: 'rgba(139, 111, 71, 0.2)',
+                                            border: '2px dashed #8b6f47',
                                             borderRadius: '4px',
                                             display: 'flex',
                                             alignItems: 'center',
                                             justifyContent: 'center',
-                                            opacity: 0.5
+                                            opacity: 0.6,
+                                            boxShadow: 'inset 0 1px 0 rgba(90, 69, 48, 0.3)'
                                         }}
                                     >
-                                        <div style={{fontSize: '14px', color: '#333'}}>+</div>
+                                        <div style={{fontSize: '14px', color: '#8b6f47', opacity: 0.5}}>+</div>
                                     </div>
                                 );
                             }
@@ -1450,7 +2275,29 @@ function CharacterMenu({ playerData, setPlayerData, onBack }) {
             </div>
             </div>
 
-            <button className="back-button" onClick={onBack} style={{marginTop: '20px'}}>BACK</button>
+            <button onClick={onBack} style={{
+                marginTop: '20px',
+                width: '100%',
+                maxWidth: '400px',
+                padding: '14px 20px',
+                background: 'linear-gradient(180deg, #8b7355 0%, #6b5545 100%)',
+                border: '4px solid #4a3830',
+                borderRadius: '8px',
+                color: '#f5e6c8',
+                fontSize: '16px',
+                fontWeight: 'bold',
+                cursor: 'pointer',
+                textTransform: 'uppercase',
+                letterSpacing: '1px',
+                boxShadow: '0 5px 0 #4a3830, inset 0 2px 0 #a89070',
+                imageRendering: 'pixelated',
+                fontFamily: '"Press Start 2P", monospace',
+                transition: 'transform 0.1s'
+            }}
+            onMouseDown={(e) => e.target.style.transform = 'translateY(2px)'}
+            onMouseUp={(e) => e.target.style.transform = 'translateY(0)'}
+            onMouseLeave={(e) => e.target.style.transform = 'translateY(0)'}
+            >BACK</button>
 
             {/* Comparison Tooltip */}
             {hoveredItem && (

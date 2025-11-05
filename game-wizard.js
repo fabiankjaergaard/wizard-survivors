@@ -908,6 +908,9 @@ enemySprite.src = 'assets/Download67833.png';
 const magicMissileSprite = new Image();
 magicMissileSprite.src = 'assets/MagicMisileGame.png';
 
+// Load Background Texture
+const backgroundTexture = new Image();
+backgroundTexture.src = 'assets/Background3TestGame.png';
 
 // LPC Spritesheet has all animations in one image
 const wizardSprites = {
@@ -1044,6 +1047,12 @@ function initGame() {
     gameState.chainLightnings = [];
     gameState.spiritWolves = [];
     gameState.blackHoles = [];
+    gameState.poisonClouds = [];
+    gameState.crystalShards = [];
+    gameState.frostNovas = [];
+    gameState.thunderHammers = [];
+    gameState.shadowClones = [];
+    gameState.enemyProjectiles = [];
     gameState.kills = 0;
     gameState.gameTime = 0;
     gameState.isGameOver = false;
@@ -1364,6 +1373,23 @@ class Player {
             ctx.globalAlpha = 0.9;
         }
 
+        // Damage flash effect - blink white when taking damage
+        if (gameState.playerDamageFlash) {
+            const elapsed = (gameState.currentTime || 0) - gameState.playerDamageFlash.startTime;
+            if (elapsed < gameState.playerDamageFlash.duration) {
+                // Blink on/off every blinkInterval
+                const blinkCycle = Math.floor(elapsed / gameState.playerDamageFlash.blinkInterval);
+                if (blinkCycle % 2 === 0) {
+                    // Flash white
+                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = '#ffffff';
+                    ctx.filter = 'brightness(2.5)'; // Make very bright
+                }
+            } else {
+                gameState.playerDamageFlash = null;
+            }
+        }
+
         // Draw the sprite (no rotation needed - LPC has proper directional sprites!)
         ctx.drawImage(
             wizardLPCSprite,
@@ -1384,6 +1410,50 @@ class Player {
 
     takeDamage(amount) {
         gameState.player.hp -= amount;
+
+        // Screen shake
+        gameState.screenShake = {
+            intensity: Math.min(amount * 1.2, 12), // Stronger shake (max 12px)
+            duration: 250, // 250ms shake
+            startTime: gameState.currentTime || 0
+        };
+
+        // Player damage flash - blink white/red
+        gameState.playerDamageFlash = {
+            startTime: gameState.currentTime || 0,
+            duration: 400, // Blink for 400ms
+            blinkInterval: 50 // Blink every 50ms
+        };
+
+        // Red vignette effect
+        gameState.damageVignette = {
+            startTime: gameState.currentTime || 0,
+            duration: 300,
+            intensity: Math.min(amount / 20, 0.6) // Scale with damage
+        };
+
+        // Create blood particles - very small and few
+        const particleCount = Math.min(Math.floor(amount / 4) + 2, 5); // Very few particles (2-5)
+        console.log(`💥 Taking ${amount} damage! Shake intensity: ${gameState.screenShake.intensity}, Blood particles: ${particleCount}`);
+        for (let i = 0; i < particleCount; i++) {
+            const angle = (Math.PI * 2 * i) / particleCount + (Math.random() - 0.5) * 0.5;
+            const speed = 1 + Math.random() * 1.5; // Even slower
+            const size = 1.5 + Math.random() * 1.5; // Very small (1.5-3px)
+
+            gameState.particles.push({
+                x: gameState.player.x,
+                y: gameState.player.y,
+                vx: Math.cos(angle) * speed,
+                vy: Math.sin(angle) * speed - 1, // Initial upward velocity
+                size: size,
+                alpha: 1.0,
+                decay: 0.015 + Math.random() * 0.01,
+                lifetime: 60 + Math.floor(Math.random() * 30), // 60-90 frames
+                color: Math.random() > 0.5 ? '#8b0000' : '#ff0000', // Dark red or bright red
+                gravity: 0.15
+            });
+        }
+
         if (gameState.player.hp <= 0) {
             gameOver();
         }
@@ -3527,6 +3597,596 @@ class ArchDemonBoss {
     }
 }
 
+// Splitter Enemy - Splits into smaller enemies when killed
+class SplitterEnemy {
+    constructor(x, y, generation = 1) {
+        this.x = x;
+        this.y = y;
+        this.generation = generation; // 1 = big, 2 = medium, 3 = small
+        this.size = CONFIG.enemy.size + (4 - generation) * 8;
+
+        const difficulty = getDifficultyMultipliers();
+        this.speed = CONFIG.enemy.speed * (1 + generation * 0.3) * difficulty.speed;
+        this.baseHp = 15 * (4 - generation); // Reduced from 20
+        this.hp = this.baseHp * difficulty.hp;
+        this.maxHp = this.hp;
+        this.baseDamage = 6; // Reduced from 8
+        this.damage = this.baseDamage * difficulty.damage;
+        this.slowedUntil = 0;
+        this.difficultyTier = difficulty.intervals;
+
+        // Visual properties
+        this.colorPalette = ['#ff6b6b', '#ff8787', '#ffa5a5', '#ff4d4d', '#ff9999'];
+        this.pulsePhase = Math.random() * Math.PI * 2;
+    }
+
+    update() {
+        // Move towards player
+        const dx = gameState.player.x - this.x;
+        const dy = gameState.player.y - this.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        const currentSpeed = Date.now() < this.slowedUntil ? this.speed * 0.3 : this.speed;
+
+        if (distance > 0) {
+            this.x += (dx / distance) * currentSpeed;
+            this.y += (dy / distance) * currentSpeed;
+        }
+
+        this.pulsePhase += 0.1;
+
+        // Check collision with player
+        const playerDist = Math.sqrt(
+            Math.pow(this.x - gameState.player.x, 2) +
+            Math.pow(this.y - gameState.player.y, 2)
+        );
+
+        if (playerDist < CONFIG.player.size + this.size) {
+            player.takeDamage(this.damage * 0.016);
+        }
+    }
+
+    draw() {
+        const screen = toScreen(this.x, this.y);
+        const pulse = Math.sin(this.pulsePhase) * 3;
+
+        // Pulsating blob
+        ctx.fillStyle = this.colorPalette[0];
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = this.colorPalette[1];
+        ctx.beginPath();
+        ctx.arc(screen.x, screen.y, this.size + pulse, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Inner core
+        ctx.fillStyle = this.colorPalette[3];
+        ctx.beginPath();
+        ctx.arc(screen.x, screen.y, this.size * 0.5, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Eyes
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(screen.x - this.size * 0.3, screen.y - this.size * 0.2, this.size * 0.2, this.size * 0.2);
+        ctx.fillRect(screen.x + this.size * 0.1, screen.y - this.size * 0.2, this.size * 0.2, this.size * 0.2);
+
+        ctx.shadowBlur = 0;
+
+        // Health bar
+        const barWidth = this.size * 2;
+        const barHeight = 4;
+        const barX = screen.x - barWidth / 2;
+        const barY = screen.y - this.size - 10;
+
+        ctx.fillStyle = '#ff0000';
+        ctx.fillRect(barX, barY, barWidth, barHeight);
+        ctx.fillStyle = '#00ff00';
+        ctx.fillRect(barX, barY, barWidth * (this.hp / this.maxHp), barHeight);
+    }
+
+    takeDamage(amount) {
+        this.hp -= amount;
+        return this.hp <= 0;
+    }
+
+    // Called when enemy dies - splits into smaller versions
+    onDeath() {
+        if (this.generation < 3) {
+            // Split into 2 smaller enemies
+            const angleOffset = Math.PI / 3;
+            for (let i = 0; i < 2; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const spawnDist = 30;
+                gameState.enemies.push(new SplitterEnemy(
+                    this.x + Math.cos(angle) * spawnDist,
+                    this.y + Math.sin(angle) * spawnDist,
+                    this.generation + 1
+                ));
+            }
+        }
+    }
+}
+
+// Ranged Enemy - Shoots projectiles at player
+class RangedEnemy {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.size = CONFIG.enemy.size;
+
+        const difficulty = getDifficultyMultipliers();
+        this.speed = CONFIG.enemy.speed * 0.7 * difficulty.speed; // Slower
+        this.baseHp = 20; // Reduced from 25
+        this.hp = this.baseHp * difficulty.hp;
+        this.maxHp = this.hp;
+        this.baseDamage = 8; // Reduced from 12
+        this.damage = this.baseDamage * difficulty.damage;
+        this.slowedUntil = 0;
+        this.difficultyTier = difficulty.intervals;
+
+        // Ranged behavior
+        this.attackRange = 250;
+        this.keepDistance = 180;
+        this.shootCooldown = 2500; // Increased from 2000 (slower shooting)
+        this.lastShot = Date.now();
+
+        this.colorPalette = ['#9b59b6', '#8e44ad', '#af7ac5', '#7d3c98', '#bb8fce'];
+        this.projectiles = [];
+    }
+
+    update() {
+        const dx = gameState.player.x - this.x;
+        const dy = gameState.player.y - this.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        const currentSpeed = Date.now() < this.slowedUntil ? this.speed * 0.3 : this.speed;
+
+        // Keep distance from player
+        if (distance < this.keepDistance) {
+            // Move away
+            if (distance > 0) {
+                this.x -= (dx / distance) * currentSpeed;
+                this.y -= (dy / distance) * currentSpeed;
+            }
+        } else if (distance > this.attackRange) {
+            // Move closer
+            if (distance > 0) {
+                this.x += (dx / distance) * currentSpeed;
+                this.y += (dy / distance) * currentSpeed;
+            }
+        }
+
+        // Shoot at player
+        const currentTime = Date.now();
+        if (currentTime - this.lastShot > this.shootCooldown && distance < this.attackRange) {
+            this.shoot();
+            this.lastShot = currentTime;
+        }
+    }
+
+    shoot() {
+        const dx = gameState.player.x - this.x;
+        const dy = gameState.player.y - this.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance > 0) {
+            gameState.enemyProjectiles = gameState.enemyProjectiles || [];
+            gameState.enemyProjectiles.push({
+                x: this.x,
+                y: this.y,
+                vx: (dx / distance) * 4,
+                vy: (dy / distance) * 4,
+                damage: this.damage,
+                size: 6,
+                color: '#9b59b6'
+            });
+        }
+    }
+
+    draw() {
+        const screen = toScreen(this.x, this.y);
+
+        // Archer body
+        ctx.fillStyle = this.colorPalette[0];
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = this.colorPalette[1];
+        ctx.beginPath();
+        ctx.arc(screen.x, screen.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Bow
+        ctx.strokeStyle = '#654321';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(screen.x + this.size, screen.y, this.size * 0.8, -Math.PI / 4, Math.PI / 4);
+        ctx.stroke();
+
+        // Eyes
+        ctx.fillStyle = '#ffff00';
+        ctx.beginPath();
+        ctx.arc(screen.x - 5, screen.y - 3, 3, 0, Math.PI * 2);
+        ctx.arc(screen.x + 5, screen.y - 3, 3, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.shadowBlur = 0;
+
+        // Health bar
+        const barWidth = this.size * 2;
+        const barHeight = 4;
+        const barX = screen.x - barWidth / 2;
+        const barY = screen.y - this.size - 10;
+
+        ctx.fillStyle = '#330000';
+        ctx.fillRect(barX, barY, barWidth, barHeight);
+        ctx.fillStyle = '#9b59b6';
+        ctx.fillRect(barX, barY, barWidth * (this.hp / this.maxHp), barHeight);
+    }
+
+    takeDamage(amount) {
+        this.hp -= amount;
+        return this.hp <= 0;
+    }
+}
+
+// Tank Enemy - Very slow, very tanky, pushes player back
+class TankEnemy {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.size = CONFIG.enemy.size * 1.8;
+
+        const difficulty = getDifficultyMultipliers();
+        this.speed = CONFIG.enemy.speed * 0.4 * difficulty.speed; // Very slow
+        this.baseHp = 120; // Reduced from 200
+        this.hp = this.baseHp * difficulty.hp;
+        this.maxHp = this.hp;
+        this.baseDamage = 15; // Reduced from 20
+        this.damage = this.baseDamage * difficulty.damage;
+        this.slowedUntil = 0;
+        this.difficultyTier = difficulty.intervals;
+
+        // Tank properties
+        this.armor = 0.6; // Reduced from 0.5 (takes 40% damage instead of 50%)
+        this.pushStrength = 2; // Reduced from 3
+
+        this.colorPalette = ['#34495e', '#2c3e50', '#455a64', '#1c2833', '#566573'];
+    }
+
+    update() {
+        const dx = gameState.player.x - this.x;
+        const dy = gameState.player.y - this.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        const currentSpeed = Date.now() < this.slowedUntil ? this.speed * 0.3 : this.speed;
+
+        if (distance > 0) {
+            this.x += (dx / distance) * currentSpeed;
+            this.y += (dy / distance) * currentSpeed;
+        }
+
+        // Check collision with player - push back
+        const playerDist = Math.sqrt(
+            Math.pow(this.x - gameState.player.x, 2) +
+            Math.pow(this.y - gameState.player.y, 2)
+        );
+
+        if (playerDist < CONFIG.player.size + this.size) {
+            player.takeDamage(this.damage * 0.016);
+
+            // Push player back
+            if (playerDist > 0) {
+                const pushX = -(dx / playerDist) * this.pushStrength;
+                const pushY = -(dy / playerDist) * this.pushStrength;
+                gameState.player.x += pushX;
+                gameState.player.y += pushY;
+
+                // Keep player in bounds
+                gameState.player.x = Math.max(CONFIG.player.size, Math.min(CONFIG.world.width - CONFIG.player.size, gameState.player.x));
+                gameState.player.y = Math.max(CONFIG.player.size, Math.min(CONFIG.world.height - CONFIG.player.size, gameState.player.y));
+            }
+        }
+    }
+
+    draw() {
+        const screen = toScreen(this.x, this.y);
+
+        // Tank body - large and armored
+        ctx.fillStyle = this.colorPalette[0];
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = '#000000';
+
+        // Main body (rectangle)
+        ctx.fillRect(screen.x - this.size, screen.y - this.size * 0.8, this.size * 2, this.size * 1.6);
+
+        // Armor plating lines
+        ctx.strokeStyle = this.colorPalette[1];
+        ctx.lineWidth = 3;
+        for (let i = -1; i <= 1; i++) {
+            ctx.beginPath();
+            ctx.moveTo(screen.x - this.size, screen.y + i * this.size * 0.4);
+            ctx.lineTo(screen.x + this.size, screen.y + i * this.size * 0.4);
+            ctx.stroke();
+        }
+
+        // Eyes (glowing red)
+        ctx.fillStyle = '#ff0000';
+        ctx.beginPath();
+        ctx.arc(screen.x - this.size * 0.4, screen.y - this.size * 0.3, 5, 0, Math.PI * 2);
+        ctx.arc(screen.x + this.size * 0.4, screen.y - this.size * 0.3, 5, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.shadowBlur = 0;
+
+        // Health bar
+        const barWidth = this.size * 2.5;
+        const barHeight = 6;
+        const barX = screen.x - barWidth / 2;
+        const barY = screen.y - this.size * 1.2;
+
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(barX, barY, barWidth, barHeight);
+        ctx.fillStyle = '#00ff00';
+        ctx.fillRect(barX, barY, barWidth * (this.hp / this.maxHp), barHeight);
+
+        // Armor indicator
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '10px monospace';
+        ctx.fillText('🛡️', screen.x - 8, screen.y + this.size + 10);
+    }
+
+    takeDamage(amount) {
+        // Apply armor reduction
+        this.hp -= amount * this.armor;
+        return this.hp <= 0;
+    }
+}
+
+// Healer Enemy - Heals nearby enemies
+class HealerEnemy {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.size = CONFIG.enemy.size * 0.9;
+
+        const difficulty = getDifficultyMultipliers();
+        this.speed = CONFIG.enemy.speed * 0.6 * difficulty.speed;
+        this.baseHp = 30;
+        this.hp = this.baseHp * difficulty.hp;
+        this.maxHp = this.hp;
+        this.baseDamage = 5;
+        this.damage = this.baseDamage * difficulty.damage;
+        this.slowedUntil = 0;
+        this.difficultyTier = difficulty.intervals;
+
+        // Healer properties
+        this.healRange = 150;
+        this.healAmount = 2;
+        this.healCooldown = 1000;
+        this.lastHeal = Date.now();
+
+        this.colorPalette = ['#2ecc71', '#27ae60', '#52d273', '#229954', '#7dcea0'];
+        this.healPulse = 0;
+    }
+
+    update() {
+        const dx = gameState.player.x - this.x;
+        const dy = gameState.player.y - this.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        const currentSpeed = Date.now() < this.slowedUntil ? this.speed * 0.3 : this.speed;
+
+        // Stay at medium distance
+        const preferredDistance = 200;
+        if (distance < preferredDistance - 50) {
+            // Move away
+            if (distance > 0) {
+                this.x -= (dx / distance) * currentSpeed;
+                this.y -= (dy / distance) * currentSpeed;
+            }
+        } else if (distance > preferredDistance + 50) {
+            // Move closer
+            if (distance > 0) {
+                this.x += (dx / distance) * currentSpeed;
+                this.y += (dy / distance) * currentSpeed;
+            }
+        }
+
+        // Heal nearby enemies
+        const currentTime = Date.now();
+        if (currentTime - this.lastHeal > this.healCooldown) {
+            this.healNearbyEnemies();
+            this.lastHeal = currentTime;
+        }
+
+        this.healPulse += 0.2;
+
+        // Check collision with player
+        const playerDist = Math.sqrt(
+            Math.pow(this.x - gameState.player.x, 2) +
+            Math.pow(this.y - gameState.player.y, 2)
+        );
+
+        if (playerDist < CONFIG.player.size + this.size) {
+            player.takeDamage(this.damage * 0.016);
+        }
+    }
+
+    healNearbyEnemies() {
+        let healed = false;
+        gameState.enemies.forEach(enemy => {
+            if (enemy === this) return;
+
+            const dx = enemy.x - this.x;
+            const dy = enemy.y - this.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist < this.healRange && enemy.hp < enemy.maxHp) {
+                enemy.hp = Math.min(enemy.maxHp, enemy.hp + this.healAmount);
+                healed = true;
+
+                // Heal particles
+                for (let i = 0; i < 3; i++) {
+                    gameState.particles.push({
+                        x: enemy.x,
+                        y: enemy.y,
+                        vx: (Math.random() - 0.5) * 2,
+                        vy: -2 - Math.random(),
+                        size: 4,
+                        color: '#2ecc71',
+                        alpha: 1,
+                        decay: 0.02,
+                        lifetime: 30
+                    });
+                }
+            }
+        });
+
+        if (healed) {
+            this.healPulse = 0; // Reset pulse for visual feedback
+        }
+    }
+
+    draw() {
+        const screen = toScreen(this.x, this.y);
+        const pulse = Math.abs(Math.sin(this.healPulse)) * 10;
+
+        // Healing aura
+        ctx.strokeStyle = `rgba(46, 204, 113, ${0.3 + Math.sin(this.healPulse) * 0.2})`;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(screen.x, screen.y, this.healRange * 0.5 + pulse, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Healer body
+        ctx.fillStyle = this.colorPalette[0];
+        ctx.shadowBlur = 12;
+        ctx.shadowColor = this.colorPalette[1];
+        ctx.beginPath();
+        ctx.arc(screen.x, screen.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Cross symbol
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(screen.x - 3, screen.y - 10, 6, 20);
+        ctx.fillRect(screen.x - 10, screen.y - 3, 20, 6);
+
+        // Halo
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(screen.x, screen.y - this.size - 8, this.size * 0.6, 0, Math.PI * 2);
+        ctx.stroke();
+
+        ctx.shadowBlur = 0;
+
+        // Health bar
+        const barWidth = this.size * 2;
+        const barHeight = 4;
+        const barX = screen.x - barWidth / 2;
+        const barY = screen.y - this.size - 20;
+
+        ctx.fillStyle = '#003300';
+        ctx.fillRect(barX, barY, barWidth, barHeight);
+        ctx.fillStyle = '#2ecc71';
+        ctx.fillRect(barX, barY, barWidth * (this.hp / this.maxHp), barHeight);
+    }
+
+    takeDamage(amount) {
+        this.hp -= amount;
+        return this.hp <= 0;
+    }
+}
+
+// Swarm Enemy - Very fast, weak, spawns in groups
+class SwarmEnemy {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.size = CONFIG.enemy.size * 0.6;
+
+        const difficulty = getDifficultyMultipliers();
+        this.speed = CONFIG.enemy.speed * 2.2 * difficulty.speed; // Very fast
+        this.baseHp = 8;
+        this.hp = this.baseHp * difficulty.hp;
+        this.maxHp = this.hp;
+        this.baseDamage = 6;
+        this.damage = this.baseDamage * difficulty.damage;
+        this.slowedUntil = 0;
+        this.difficultyTier = difficulty.intervals;
+
+        // Swarm behavior
+        this.swarmRadius = 50;
+        this.zigzagPhase = Math.random() * Math.PI * 2;
+        this.zigzagSpeed = 0.15;
+
+        this.colorPalette = ['#e67e22', '#d35400', '#f39c12', '#ca6f1e', '#f8b740'];
+    }
+
+    update() {
+        const dx = gameState.player.x - this.x;
+        const dy = gameState.player.y - this.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        const currentSpeed = Date.now() < this.slowedUntil ? this.speed * 0.3 : this.speed;
+
+        if (distance > 0) {
+            // Zigzag movement
+            this.zigzagPhase += this.zigzagSpeed;
+            const zigzagOffset = Math.sin(this.zigzagPhase) * 20;
+
+            // Perpendicular direction for zigzag
+            const perpX = -dy / distance;
+            const perpY = dx / distance;
+
+            this.x += (dx / distance) * currentSpeed + perpX * zigzagOffset * 0.1;
+            this.y += (dy / distance) * currentSpeed + perpY * zigzagOffset * 0.1;
+        }
+
+        // Check collision with player
+        const playerDist = Math.sqrt(
+            Math.pow(this.x - gameState.player.x, 2) +
+            Math.pow(this.y - gameState.player.y, 2)
+        );
+
+        if (playerDist < CONFIG.player.size + this.size) {
+            player.takeDamage(this.damage * 0.016);
+        }
+    }
+
+    draw() {
+        const screen = toScreen(this.x, this.y);
+
+        // Small fast creature
+        ctx.fillStyle = this.colorPalette[0];
+        ctx.shadowBlur = 6;
+        ctx.shadowColor = this.colorPalette[1];
+
+        // Body (elongated)
+        ctx.beginPath();
+        ctx.ellipse(screen.x, screen.y, this.size * 1.2, this.size * 0.8, this.zigzagPhase, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Eyes (big relative to body)
+        ctx.fillStyle = '#000000';
+        ctx.beginPath();
+        ctx.arc(screen.x - 4, screen.y - 2, 2, 0, Math.PI * 2);
+        ctx.arc(screen.x + 4, screen.y - 2, 2, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Motion trail
+        ctx.strokeStyle = `rgba(230, 126, 34, 0.3)`;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(screen.x, screen.y);
+        ctx.lineTo(screen.x - Math.cos(this.zigzagPhase) * 15, screen.y - Math.sin(this.zigzagPhase) * 15);
+        ctx.stroke();
+
+        ctx.shadowBlur = 0;
+
+        // No health bar (too small and numerous)
+    }
+
+    takeDamage(amount) {
+        this.hp -= amount;
+        return this.hp <= 0;
+    }
+}
+
 // Homing Missile Class
 class HomingMissile {
     constructor(x, y, weapon) {
@@ -4248,50 +4908,41 @@ class SpiritWolf {
     draw() {
         const screen = toScreen(this.x, this.y);
 
-        // Wolf body (ghost-like)
-        const alpha = 0.6 + Math.sin(Date.now() * 0.005) * 0.2;
-        ctx.fillStyle = `rgba(139, 92, 246, ${alpha})`;
+        ctx.save();
 
-        // Body
-        ctx.beginPath();
-        ctx.ellipse(screen.x, screen.y, this.size, this.size * 0.8, 0, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Head
-        ctx.beginPath();
-        ctx.arc(screen.x + this.size * 0.5, screen.y - this.size * 0.3, this.size * 0.6, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Ears
-        ctx.beginPath();
-        ctx.moveTo(screen.x + this.size * 0.3, screen.y - this.size * 0.6);
-        ctx.lineTo(screen.x + this.size * 0.2, screen.y - this.size);
-        ctx.lineTo(screen.x + this.size * 0.5, screen.y - this.size * 0.5);
-        ctx.fill();
-
-        ctx.beginPath();
-        ctx.moveTo(screen.x + this.size * 0.7, screen.y - this.size * 0.6);
-        ctx.lineTo(screen.x + this.size * 0.8, screen.y - this.size);
-        ctx.lineTo(screen.x + this.size * 0.9, screen.y - this.size * 0.5);
-        ctx.fill();
-
-        // Eyes (glowing)
-        ctx.fillStyle = '#ffffff';
-        ctx.beginPath();
-        ctx.arc(screen.x + this.size * 0.4, screen.y - this.size * 0.4, 2, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(screen.x + this.size * 0.6, screen.y - this.size * 0.4, 2, 0, Math.PI * 2);
-        ctx.fill();
+        // Ghost effect - pulsing transparency
+        const alpha = 0.7 + Math.sin(Date.now() * 0.005) * 0.2;
+        ctx.globalAlpha = alpha;
 
         // Glow effect
-        ctx.shadowBlur = 15;
+        ctx.shadowBlur = 20;
         ctx.shadowColor = '#8b5cf6';
-        ctx.fillStyle = `rgba(139, 92, 246, ${alpha * 0.3})`;
-        ctx.beginPath();
-        ctx.arc(screen.x, screen.y, this.size * 1.3, 0, Math.PI * 2);
-        ctx.fill();
+
+        // Load and draw the ghost wolf sprite
+        if (!this.sprite) {
+            this.sprite = new Image();
+            this.sprite.src = 'assets/GhostWolfGame.png';
+        }
+
+        if (this.sprite.complete) {
+            const spriteSize = this.size * 3; // Make it bigger than the old blob
+            ctx.drawImage(
+                this.sprite,
+                screen.x - spriteSize / 2,
+                screen.y - spriteSize / 2,
+                spriteSize,
+                spriteSize
+            );
+        } else {
+            // Fallback circle while loading
+            ctx.fillStyle = '#8b5cf6';
+            ctx.beginPath();
+            ctx.arc(screen.x, screen.y, this.size, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
         ctx.shadowBlur = 0;
+        ctx.restore();
     }
 }
 
@@ -4397,6 +5048,515 @@ class BlackHole {
         ctx.arc(screen.x, screen.y, this.size * 1.2, 0, Math.PI * 2);
         ctx.stroke();
         ctx.shadowBlur = 0;
+    }
+}
+
+// Poison Cloud - Creates toxic clouds that damage enemies over time
+class PoisonCloud {
+    constructor(x, y, weapon) {
+        this.x = x;
+        this.y = y;
+        this.weapon = weapon;
+        this.size = 40;
+        this.damageRadius = 80;
+        this.damage = weapon.damage * 0.3; // DoT damage per tick
+        this.lifetime = 6000; // 6 seconds
+        this.spawnTime = Date.now();
+        this.lastDamageTick = Date.now();
+        this.damageCooldown = 500; // Damage every 0.5s
+        this.pulsation = 0;
+        this.damagedEnemies = new Set();
+    }
+
+    update() {
+        const currentTime = Date.now();
+        this.pulsation += 0.1;
+
+        // Check lifetime
+        if (currentTime - this.spawnTime > this.lifetime) {
+            return true; // Remove
+        }
+
+        // Damage enemies in radius
+        if (currentTime - this.lastDamageTick > this.damageCooldown) {
+            this.damagedEnemies.clear();
+            gameState.enemies.forEach((enemy, i) => {
+                const dx = this.x - enemy.x;
+                const dy = this.y - enemy.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist < this.damageRadius && !this.damagedEnemies.has(i)) {
+                    this.damagedEnemies.add(i);
+                    createParticles(enemy.x, enemy.y, '#88ff00');
+
+                    const isDead = enemy.takeDamage(this.damage);
+
+                    if (Math.random() < 0.2) {
+                        SoundSystem.playHit(isDead ? 'critical' : 'magic');
+                    }
+
+                    if (isDead) {
+                        handleEnemyDeath(enemy);
+                        gameState.enemies.splice(i, 1);
+                    }
+                }
+            });
+            this.lastDamageTick = currentTime;
+        }
+
+        return false;
+    }
+
+    draw() {
+        const screen = toScreen(this.x, this.y);
+        const pulse = Math.sin(this.pulsation) * 10;
+
+        // Outer gas cloud
+        const gradient = ctx.createRadialGradient(screen.x, screen.y, 0, screen.x, screen.y, this.damageRadius + pulse);
+        gradient.addColorStop(0, 'rgba(100, 255, 0, 0.6)');
+        gradient.addColorStop(0.5, 'rgba(80, 200, 0, 0.3)');
+        gradient.addColorStop(1, 'rgba(50, 150, 0, 0)');
+
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(screen.x, screen.y, this.damageRadius + pulse, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Poison bubbles
+        for (let i = 0; i < 15; i++) {
+            const angle = (i / 15) * Math.PI * 2 + this.pulsation * 0.5;
+            const radius = this.size + Math.sin(this.pulsation + i) * 20;
+            const x = screen.x + Math.cos(angle) * radius;
+            const y = screen.y + Math.sin(angle) * radius;
+
+            ctx.fillStyle = `rgba(100, 255, 0, ${0.4 + Math.sin(this.pulsation * 2 + i) * 0.2})`;
+            ctx.beginPath();
+            ctx.arc(x, y, 4, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // Core
+        ctx.fillStyle = 'rgba(80, 200, 0, 0.8)';
+        ctx.beginPath();
+        ctx.arc(screen.x, screen.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+    }
+}
+
+// Crystal Shards - Exploding crystals that split into fragments
+class CrystalShard {
+    constructor(x, y, targetX, targetY, weapon, isFragment = false) {
+        this.x = x;
+        this.y = y;
+        this.weapon = weapon;
+        this.isFragment = isFragment;
+        this.size = isFragment ? 8 : 15;
+        this.speed = isFragment ? 4 : 6;
+        this.damage = isFragment ? weapon.damage * 0.4 : weapon.damage;
+        this.rotation = 0;
+        this.rotationSpeed = 0.2;
+
+        // Calculate direction
+        const dx = targetX - x;
+        const dy = targetY - y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        this.vx = (dx / dist) * this.speed;
+        this.vy = (dy / dist) * this.speed;
+    }
+
+    update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.rotation += this.rotationSpeed;
+
+        // Check world bounds
+        if (this.x < 0 || this.x > CONFIG.world.width || this.y < 0 || this.y > CONFIG.world.height) {
+            return true; // Remove
+        }
+
+        // Check collision with enemies
+        for (let i = gameState.enemies.length - 1; i >= 0; i--) {
+            const enemy = gameState.enemies[i];
+            const dx = enemy.x - this.x;
+            const dy = enemy.y - this.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist < this.size + enemy.size) {
+                createParticles(this.x, this.y, '#00ffff');
+
+                const isDead = enemy.takeDamage(this.damage);
+                SoundSystem.playHit(isDead ? 'critical' : 'normal');
+
+                if (isDead) {
+                    handleEnemyDeath(enemy);
+                    gameState.enemies.splice(i, 1);
+                }
+
+                // If main shard hits, create fragments
+                if (!this.isFragment) {
+                    for (let j = 0; j < 4; j++) {
+                        const angle = (j / 4) * Math.PI * 2;
+                        const fragmentTarget = {
+                            x: this.x + Math.cos(angle) * 200,
+                            y: this.y + Math.sin(angle) * 200
+                        };
+                        gameState.crystalShards.push(new CrystalShard(
+                            this.x, this.y, fragmentTarget.x, fragmentTarget.y, this.weapon, true
+                        ));
+                    }
+                }
+
+                return true; // Remove this shard
+            }
+        }
+
+        return false;
+    }
+
+    draw() {
+        const screen = toScreen(this.x, this.y);
+
+        ctx.save();
+        ctx.translate(screen.x, screen.y);
+        ctx.rotate(this.rotation);
+
+        // Crystal glow
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = '#00ffff';
+
+        // Draw crystal shape
+        ctx.fillStyle = this.isFragment ? '#00cccc' : '#00ffff';
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2;
+
+        ctx.beginPath();
+        for (let i = 0; i < 6; i++) {
+            const angle = (i / 6) * Math.PI * 2;
+            const radius = i % 2 === 0 ? this.size : this.size * 0.6;
+            const x = Math.cos(angle) * radius;
+            const y = Math.sin(angle) * radius;
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.shadowBlur = 0;
+        ctx.restore();
+    }
+}
+
+// Frost Nova - Freezes and damages all enemies around player
+class FrostNova {
+    constructor(weapon) {
+        this.x = gameState.player.x;
+        this.y = gameState.player.y;
+        this.weapon = weapon;
+        this.radius = 0;
+        this.maxRadius = 200;
+        this.expansionSpeed = 15;
+        this.damage = weapon.damage;
+        this.hitEnemies = new Set();
+        this.freezeDuration = 2000; // Freeze enemies for 2s
+    }
+
+    update() {
+        this.radius += this.expansionSpeed;
+
+        // Check collision with enemies
+        gameState.enemies.forEach((enemy, i) => {
+            if (this.hitEnemies.has(i)) return;
+
+            const dx = enemy.x - this.x;
+            const dy = enemy.y - this.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist <= this.radius && dist < this.maxRadius) {
+                this.hitEnemies.add(i);
+                createParticles(enemy.x, enemy.y, '#00ffff');
+
+                // Freeze enemy (slow them down)
+                if (enemy.originalSpeed === undefined) {
+                    enemy.originalSpeed = enemy.speed;
+                }
+                enemy.speed = enemy.originalSpeed * 0.2;
+                enemy.frozenUntil = Date.now() + this.freezeDuration;
+
+                const isDead = enemy.takeDamage(this.damage);
+                SoundSystem.playHit(isDead ? 'critical' : 'magic');
+
+                if (isDead) {
+                    handleEnemyDeath(enemy);
+                    gameState.enemies.splice(i, 1);
+                }
+            }
+        });
+
+        // Remove when fully expanded
+        return this.radius >= this.maxRadius;
+    }
+
+    draw() {
+        const screen = toScreen(this.x, this.y);
+
+        // Expanding frost ring
+        const alpha = 1 - (this.radius / this.maxRadius);
+        ctx.strokeStyle = `rgba(0, 200, 255, ${alpha})`;
+        ctx.lineWidth = 8;
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = '#00ffff';
+        ctx.beginPath();
+        ctx.arc(screen.x, screen.y, this.radius, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Inner glow
+        ctx.strokeStyle = `rgba(200, 255, 255, ${alpha * 0.5})`;
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.arc(screen.x, screen.y, this.radius - 5, 0, Math.PI * 2);
+        ctx.stroke();
+
+        ctx.shadowBlur = 0;
+    }
+}
+
+// Thunder Hammer - Melee AOE attack with stun
+class ThunderHammer {
+    constructor(weapon) {
+        this.x = gameState.player.x;
+        this.y = gameState.player.y;
+        this.weapon = weapon;
+        this.size = 40;
+        this.damageRadius = 120;
+        this.damage = weapon.damage;
+        this.lifetime = 400; // Short lived
+        this.spawnTime = Date.now();
+        this.hasHit = false;
+        this.stunDuration = 1500; // Stun for 1.5s
+
+        // Hammer appears in front of player
+        const keys = gameState.keys;
+        let hammerX = this.x;
+        let hammerY = this.y;
+
+        if (keys.w || keys.ArrowUp) hammerY -= 60;
+        else if (keys.s || keys.ArrowDown) hammerY += 60;
+        if (keys.a || keys.ArrowLeft) hammerX -= 60;
+        else if (keys.d || keys.ArrowRight) hammerX += 60;
+
+        this.targetX = hammerX;
+        this.targetY = hammerY;
+    }
+
+    update() {
+        const currentTime = Date.now();
+
+        if (currentTime - this.spawnTime > this.lifetime) {
+            return true; // Remove
+        }
+
+        // Damage enemies once
+        if (!this.hasHit) {
+            this.hasHit = true;
+
+            gameState.enemies.forEach((enemy, i) => {
+                const dx = this.targetX - enemy.x;
+                const dy = this.targetY - enemy.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist < this.damageRadius) {
+                    createParticles(enemy.x, enemy.y, '#ffff00');
+
+                    // Stun enemy
+                    if (enemy.originalSpeed === undefined) {
+                        enemy.originalSpeed = enemy.speed;
+                    }
+                    enemy.speed = 0;
+                    enemy.stunnedUntil = currentTime + this.stunDuration;
+
+                    const isDead = enemy.takeDamage(this.damage);
+                    SoundSystem.playHit(isDead ? 'explosion' : 'critical');
+
+                    if (isDead) {
+                        handleEnemyDeath(enemy);
+                        gameState.enemies.splice(i, 1);
+                    }
+                }
+            });
+        }
+
+        return false;
+    }
+
+    draw() {
+        const screen = toScreen(this.targetX, this.targetY);
+        const progress = (Date.now() - this.spawnTime) / this.lifetime;
+
+        // Lightning effect
+        ctx.save();
+        ctx.shadowBlur = 30;
+        ctx.shadowColor = '#ffff00';
+
+        // Hammer impact
+        const impactRadius = this.damageRadius * (1 - progress);
+        const alpha = 1 - progress;
+
+        ctx.strokeStyle = `rgba(255, 255, 0, ${alpha})`;
+        ctx.lineWidth = 6;
+        ctx.beginPath();
+        ctx.arc(screen.x, screen.y, impactRadius, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Lightning bolts
+        for (let i = 0; i < 8; i++) {
+            const angle = (i / 8) * Math.PI * 2;
+            const length = this.damageRadius * (1 - progress * 0.5);
+
+            ctx.strokeStyle = `rgba(255, 255, 100, ${alpha * 0.8})`;
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(screen.x, screen.y);
+            ctx.lineTo(
+                screen.x + Math.cos(angle) * length,
+                screen.y + Math.sin(angle) * length
+            );
+            ctx.stroke();
+        }
+
+        // Hammer (only visible at start)
+        if (progress < 0.5) {
+            const hammerAlpha = 1 - progress * 2;
+
+            // Hammer head
+            ctx.fillStyle = `rgba(150, 150, 150, ${hammerAlpha})`;
+            ctx.fillRect(screen.x - 20, screen.y - 15, 40, 30);
+
+            // Hammer glow
+            ctx.fillStyle = `rgba(255, 255, 0, ${hammerAlpha * 0.5})`;
+            ctx.fillRect(screen.x - 22, screen.y - 17, 44, 34);
+
+            // Handle
+            ctx.fillStyle = `rgba(101, 67, 33, ${hammerAlpha})`;
+            ctx.fillRect(screen.x - 3, screen.y + 15, 6, 30);
+        }
+
+        ctx.shadowBlur = 0;
+        ctx.restore();
+    }
+}
+
+// Shadow Clone - Creates a clone that mimics player attacks
+class ShadowClone {
+    constructor(weapon) {
+        this.weapon = weapon;
+        this.x = gameState.player.x;
+        this.y = gameState.player.y;
+        this.offsetX = (Math.random() - 0.5) * 100;
+        this.offsetY = (Math.random() - 0.5) * 100;
+        this.size = 30;
+        this.lifetime = 10000; // 10 seconds
+        this.spawnTime = Date.now();
+        this.attackCooldown = 1000;
+        this.lastAttack = Date.now();
+        this.alpha = 0;
+        this.fadeInDuration = 500;
+    }
+
+    update() {
+        const currentTime = Date.now();
+        const age = currentTime - this.spawnTime;
+
+        // Fade in
+        if (age < this.fadeInDuration) {
+            this.alpha = age / this.fadeInDuration;
+        } else {
+            this.alpha = 1;
+        }
+
+        // Check lifetime
+        if (age > this.lifetime) {
+            return true; // Remove
+        }
+
+        // Follow player with offset
+        const targetX = gameState.player.x + this.offsetX;
+        const targetY = gameState.player.y + this.offsetY;
+        this.x += (targetX - this.x) * 0.1;
+        this.y += (targetY - this.y) * 0.1;
+
+        // Attack nearest enemy
+        if (currentTime - this.lastAttack > this.attackCooldown) {
+            let nearestEnemy = null;
+            let nearestDist = 300;
+
+            gameState.enemies.forEach(enemy => {
+                const dx = enemy.x - this.x;
+                const dy = enemy.y - this.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist < nearestDist) {
+                    nearestDist = dist;
+                    nearestEnemy = enemy;
+                }
+            });
+
+            if (nearestEnemy) {
+                // Create shadow projectile
+                gameState.projectiles.push(new Projectile(
+                    this.x,
+                    this.y,
+                    nearestEnemy.x,
+                    nearestEnemy.y,
+                    { ...this.weapon, type: 'shadow_bolt', damage: this.weapon.damage * 0.5 }
+                ));
+                this.lastAttack = currentTime;
+            }
+        }
+
+        return false;
+    }
+
+    draw() {
+        const screen = toScreen(this.x, this.y);
+
+        ctx.save();
+
+        // Shadow effect - more transparent and darker
+        ctx.globalAlpha = this.alpha * 0.4;
+        ctx.shadowBlur = 25;
+        ctx.shadowColor = '#000088';
+
+        // Draw player sprite but darker/shadow version
+        if (gameState.player.sprite && gameState.player.sprite.complete) {
+            const spriteX = gameState.player.spriteX || 0;
+            const spriteY = gameState.player.spriteY || 0;
+            const spriteSize = gameState.player.spriteSize || 64;
+
+            // Apply dark tint for shadow effect
+            ctx.filter = 'brightness(0.3) saturate(0.5) hue-rotate(240deg)';
+
+            ctx.drawImage(
+                gameState.player.sprite,
+                spriteX, spriteY,
+                spriteSize, spriteSize,
+                screen.x - this.size,
+                screen.y - this.size,
+                this.size * 2,
+                this.size * 2
+            );
+
+            ctx.filter = 'none';
+        } else {
+            // Fallback to circle if sprite not loaded
+            ctx.fillStyle = '#220066';
+            ctx.beginPath();
+            ctx.arc(screen.x, screen.y, this.size, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        ctx.shadowBlur = 0;
+        ctx.restore();
     }
 }
 
@@ -5632,6 +6792,11 @@ function handleEnemyDeath(enemy) {
     const enemyColorPalette = enemy.colorPalette || ['#4a9d5f', '#5fb571', '#6ed47f', '#3d8a4f', '#7be58d'];
     createDeathExplosion(enemy.x, enemy.y, enemy.isBoss || enemy.isMajorBoss, enemyColorPalette);
 
+    // Call onDeath handler if enemy has one (e.g., Splitter splits)
+    if (enemy.onDeath) {
+        enemy.onDeath();
+    }
+
     gameState.kills++;
 }
 
@@ -5877,17 +7042,91 @@ function spawnEnemy() {
     x = Math.max(0, Math.min(x, CONFIG.world.width));
     y = Math.max(0, Math.min(y, CONFIG.world.height));
 
-    // Random enemy type selection
+    // Random enemy type selection with weighted probabilities
+    // Enemy types unlock based on game time to progressively increase difficulty
+    const gameTimeMinutes = gameState.gameTime / 60000; // Convert to minutes
     const roll = Math.random();
-    if (roll < 0.2) {
-        // 20% chance to spawn a Teleporter enemy
-        gameState.enemies.push(new TeleporterEnemy(x, y));
-    } else if (roll < 0.5) {
-        // 30% chance to spawn a Charger enemy
-        gameState.enemies.push(new ChargerEnemy(x, y));
-    } else {
-        // 50% chance to spawn a normal enemy
-        gameState.enemies.push(new Enemy(x, y));
+
+    // Phase 1 (0-1 min): Only normal enemies and occasional chargers
+    if (gameTimeMinutes < 1) {
+        if (roll < 0.2) {
+            gameState.enemies.push(new ChargerEnemy(x, y));
+        } else {
+            gameState.enemies.push(new Enemy(x, y));
+        }
+    }
+    // Phase 2 (1-2 min): Introduce Swarm and Teleporter
+    else if (gameTimeMinutes < 2) {
+        if (roll < 0.1) {
+            // Swarm enemies spawn in groups of 3-5
+            const swarmSize = 3 + Math.floor(Math.random() * 3);
+            for (let i = 0; i < swarmSize; i++) {
+                const angle = (Math.PI * 2 / swarmSize) * i + Math.random() * 0.5;
+                const offsetDist = 30;
+                gameState.enemies.push(new SwarmEnemy(
+                    x + Math.cos(angle) * offsetDist,
+                    y + Math.sin(angle) * offsetDist
+                ));
+            }
+        } else if (roll < 0.25) {
+            gameState.enemies.push(new TeleporterEnemy(x, y));
+        } else if (roll < 0.4) {
+            gameState.enemies.push(new ChargerEnemy(x, y));
+        } else {
+            gameState.enemies.push(new Enemy(x, y));
+        }
+    }
+    // Phase 3 (2-4 min): Add Splitter and Ranged
+    else if (gameTimeMinutes < 4) {
+        if (roll < 0.12) {
+            const swarmSize = 3 + Math.floor(Math.random() * 3);
+            for (let i = 0; i < swarmSize; i++) {
+                const angle = (Math.PI * 2 / swarmSize) * i + Math.random() * 0.5;
+                const offsetDist = 30;
+                gameState.enemies.push(new SwarmEnemy(
+                    x + Math.cos(angle) * offsetDist,
+                    y + Math.sin(angle) * offsetDist
+                ));
+            }
+        } else if (roll < 0.22) {
+            gameState.enemies.push(new TeleporterEnemy(x, y));
+        } else if (roll < 0.32) {
+            gameState.enemies.push(new ChargerEnemy(x, y));
+        } else if (roll < 0.42) {
+            gameState.enemies.push(new SplitterEnemy(x, y, 1));
+        } else if (roll < 0.52) {
+            gameState.enemies.push(new RangedEnemy(x, y));
+        } else {
+            gameState.enemies.push(new Enemy(x, y));
+        }
+    }
+    // Phase 4 (4+ min): Full roster including Tank and Healer
+    else {
+        if (roll < 0.15) {
+            const swarmSize = 3 + Math.floor(Math.random() * 3);
+            for (let i = 0; i < swarmSize; i++) {
+                const angle = (Math.PI * 2 / swarmSize) * i + Math.random() * 0.5;
+                const offsetDist = 30;
+                gameState.enemies.push(new SwarmEnemy(
+                    x + Math.cos(angle) * offsetDist,
+                    y + Math.sin(angle) * offsetDist
+                ));
+            }
+        } else if (roll < 0.25) {
+            gameState.enemies.push(new TeleporterEnemy(x, y));
+        } else if (roll < 0.35) {
+            gameState.enemies.push(new ChargerEnemy(x, y));
+        } else if (roll < 0.45) {
+            gameState.enemies.push(new SplitterEnemy(x, y, 1));
+        } else if (roll < 0.55) {
+            gameState.enemies.push(new RangedEnemy(x, y));
+        } else if (roll < 0.60) {
+            gameState.enemies.push(new TankEnemy(x, y));
+        } else if (roll < 0.65) {
+            gameState.enemies.push(new HealerEnemy(x, y));
+        } else {
+            gameState.enemies.push(new Enemy(x, y));
+        }
     }
 }
 
@@ -6039,6 +7278,77 @@ function autoAttack(currentTime) {
                 return;
             }
 
+            // Poison Cloud - create toxic cloud
+            if (weapon.type === 'poison_cloud') {
+                if (gameState.enemies.length > 0) {
+                    const randomEnemy = gameState.enemies[Math.floor(Math.random() * gameState.enemies.length)];
+                    gameState.poisonClouds.push(new PoisonCloud(
+                        randomEnemy.x,
+                        randomEnemy.y,
+                        weapon
+                    ));
+                    weapon.lastFired = currentTime;
+                }
+                return;
+            }
+
+            // Crystal Shard - exploding projectile
+            if (weapon.type === 'crystal_shard') {
+                if (gameState.enemies.length > 0) {
+                    let nearestEnemy = gameState.enemies[0];
+                    let nearestDist = Infinity;
+                    gameState.enemies.forEach(enemy => {
+                        const dist = Math.sqrt(
+                            Math.pow(enemy.x - gameState.player.x, 2) +
+                            Math.pow(enemy.y - gameState.player.y, 2)
+                        );
+                        if (dist < nearestDist) {
+                            nearestDist = dist;
+                            nearestEnemy = enemy;
+                        }
+                    });
+
+                    gameState.crystalShards.push(new CrystalShard(
+                        gameState.player.x,
+                        gameState.player.y,
+                        nearestEnemy.x,
+                        nearestEnemy.y,
+                        weapon,
+                        false
+                    ));
+                    weapon.lastFired = currentTime;
+                }
+                return;
+            }
+
+            // Frost Nova - freeze all nearby enemies
+            if (weapon.type === 'frost_nova') {
+                if (gameState.enemies.length > 0) {
+                    gameState.frostNovas.push(new FrostNova(weapon));
+                    weapon.lastFired = currentTime;
+                }
+                return;
+            }
+
+            // Thunder Hammer - melee AOE
+            if (weapon.type === 'thunder_hammer') {
+                if (gameState.enemies.length > 0) {
+                    gameState.thunderHammers.push(new ThunderHammer(weapon));
+                    weapon.lastFired = currentTime;
+                }
+                return;
+            }
+
+            // Shadow Clone - summon clone
+            if (weapon.type === 'shadow_clone') {
+                // Max 2 clones at a time
+                if (gameState.shadowClones.length < 2) {
+                    gameState.shadowClones.push(new ShadowClone(weapon));
+                    weapon.lastFired = currentTime;
+                }
+                return;
+            }
+
             // Regular projectile weapons - find nearest enemy
             let nearestEnemy = null;
             let nearestDist = weapon.range;
@@ -6171,6 +7481,7 @@ function levelUp() {
             name: '⚡ Lightning Bolt',
             desc: 'NEW WEAPON: Chain lightning that jumps between enemies',
             type: 'new_weapon',
+            weaponType: 'lightning',
             apply: () => {
                 gameState.player.weapons.push({
                     type: 'lightning',
@@ -6191,6 +7502,7 @@ function levelUp() {
             name: '🔥 Fireball',
             desc: 'NEW WEAPON: Explosive fireballs that damage multiple enemies',
             type: 'new_weapon',
+            weaponType: 'fireball',
             apply: () => {
                 gameState.player.weapons.push({
                     type: 'fireball',
@@ -6212,6 +7524,7 @@ function levelUp() {
             name: 'Ice Spikes',
             desc: 'NEW WEAPON: Freezing spikes that slow enemies',
             type: 'new_weapon',
+            weaponType: 'ice',
             apply: () => {
                 gameState.player.weapons.push({
                     type: 'ice',
@@ -6232,6 +7545,7 @@ function levelUp() {
             name: '🌀 Arcane Orb',
             desc: 'NEW WEAPON: Three orbiting orbs that protect you and damage enemies',
             type: 'new_weapon',
+            weaponType: 'arcane',
             apply: () => {
                 const weapon = {
                     type: 'arcane',
@@ -6276,6 +7590,7 @@ function levelUp() {
             name: '⚡ Chain Lightning',
             desc: 'NEW WEAPON: Lightning that jumps between 5 enemies',
             type: 'new_weapon',
+            weaponType: 'chain_lightning',
             apply: () => {
                 gameState.player.weapons.push({
                     type: 'chain_lightning',
@@ -6296,6 +7611,7 @@ function levelUp() {
             name: '🐺 Spirit Wolf',
             desc: 'NEW WEAPON: Summon ghost wolves that attack enemies (max 3)',
             type: 'new_weapon',
+            weaponType: 'spirit_wolf',
             apply: () => {
                 gameState.player.weapons.push({
                     type: 'spirit_wolf',
@@ -6316,6 +7632,7 @@ function levelUp() {
             name: 'Black Hole',
             desc: 'NEW WEAPON: Create a gravity well that pulls and damages enemies',
             type: 'new_weapon',
+            weaponType: 'black_hole',
             apply: () => {
                 gameState.player.weapons.push({
                     type: 'black_hole',
@@ -6327,6 +7644,118 @@ function levelUp() {
                     projectileCount: 1,
                     lastFired: 0
                 });
+            }
+        });
+    }
+
+    if (canAddWeapon() && !hasWeapon('poison_cloud')) {
+        allUpgrades.push({
+            name: '☠️ Poison Cloud',
+            desc: 'NEW WEAPON: Toxic clouds that damage enemies over time',
+            type: 'new_weapon',
+            weaponType: 'poison_cloud',
+            apply: () => {
+                const weapon = {
+                    type: 'poison_cloud',
+                    name: 'Poison Cloud',
+                    damage: 30,
+                    range: 250,
+                    cooldown: 3000,
+                    level: 1,
+                    projectileCount: 1,
+                    lastFired: 0
+                };
+                weapon.lastFired = Date.now() - weapon.cooldown; // Start ready
+                gameState.player.weapons.push(weapon);
+            }
+        });
+    }
+
+    if (canAddWeapon() && !hasWeapon('crystal_shard')) {
+        allUpgrades.push({
+            name: '💎 Crystal Shard',
+            desc: 'NEW WEAPON: Exploding crystals that split into fragments',
+            type: 'new_weapon',
+            apply: () => {
+                const weapon = {
+                    type: 'crystal_shard',
+                    name: 'Crystal Shard',
+                    damage: 20,
+                    range: 300,
+                    cooldown: 1500,
+                    level: 1,
+                    projectileCount: 1,
+                    lastFired: 0
+                };
+                weapon.lastFired = Date.now() - weapon.cooldown; // Start ready
+                gameState.player.weapons.push(weapon);
+            }
+        });
+    }
+
+    if (canAddWeapon() && !hasWeapon('frost_nova')) {
+        allUpgrades.push({
+            name: '❄️ Frost Nova',
+            desc: 'NEW WEAPON: Freezes and damages all nearby enemies',
+            type: 'new_weapon',
+            apply: () => {
+                const weapon = {
+                    type: 'frost_nova',
+                    name: 'Frost Nova',
+                    damage: 40,
+                    range: 200,
+                    cooldown: 4000,
+                    level: 1,
+                    projectileCount: 1,
+                    lastFired: 0
+                };
+                weapon.lastFired = Date.now() - weapon.cooldown; // Start ready
+                gameState.player.weapons.push(weapon);
+            }
+        });
+    }
+
+    if (canAddWeapon() && !hasWeapon('thunder_hammer')) {
+        allUpgrades.push({
+            name: '⚡ Thunder Hammer',
+            desc: 'NEW WEAPON: Melee AOE attack with stun effect',
+            type: 'new_weapon',
+            apply: () => {
+                const weapon = {
+                    type: 'thunder_hammer',
+                    name: 'Thunder Hammer',
+                    damage: 50,
+                    range: 120,
+                    cooldown: 3500,
+                    level: 1,
+                    projectileCount: 1,
+                    lastFired: 0
+                };
+                weapon.lastFired = Date.now() - weapon.cooldown; // Start ready
+                gameState.player.weapons.push(weapon);
+            }
+        });
+    }
+
+    if (canAddWeapon() && !hasWeapon('shadow_clone')) {
+        allUpgrades.push({
+            name: '👤 Shadow Clone',
+            desc: 'NEW WEAPON: Summon clones that mimic your attacks',
+            type: 'new_weapon',
+            weaponType: 'shadow_clone',
+            apply: () => {
+                const weapon = {
+                    type: 'shadow_clone',
+                    name: 'Shadow Clone',
+                    damage: 15,
+                    range: 0,
+                    cooldown: 15000,
+                    level: 1,
+                    projectileCount: 1,
+                    lastFired: 0
+                };
+                weapon.lastFired = Date.now() - weapon.cooldown; // Start ready
+                gameState.player.weapons.push(weapon);
             }
         });
     }
@@ -6425,30 +7854,46 @@ function gameOver() {
 
 // Draw background/map
 function drawBackground() {
-    const tileSize = 64;
+    // If background texture is loaded, use it; otherwise fall back to grid
+    if (backgroundTexture.complete && backgroundTexture.naturalWidth > 0) {
+        const tileSize = backgroundTexture.width; // Use actual image size
 
-    // Calculate visible tiles
-    const startX = Math.floor(camera.x / tileSize) * tileSize;
-    const startY = Math.floor(camera.y / tileSize) * tileSize;
-    const endX = camera.x + canvas.width + tileSize;
-    const endY = camera.y + canvas.height + tileSize;
+        // Calculate visible tiles
+        const startX = Math.floor(camera.x / tileSize) * tileSize;
+        const startY = Math.floor(camera.y / tileSize) * tileSize;
+        const endX = camera.x + canvas.width + tileSize;
+        const endY = camera.y + canvas.height + tileSize;
 
-    // Draw tiled grid pattern
-    for (let x = startX; x < endX; x += tileSize) {
-        for (let y = startY; y < endY; y += tileSize) {
-            // Screen position
-            const screenX = x - camera.x;
-            const screenY = y - camera.y;
+        // Enable pixelated rendering for crisp pixel art
+        ctx.imageSmoothingEnabled = false;
 
-            // Checkerboard pattern with dark fantasy theme
-            const isDark = (Math.floor(x / tileSize) + Math.floor(y / tileSize)) % 2;
-            ctx.fillStyle = isDark ? '#1a2332' : '#2a3142';
-            ctx.fillRect(screenX, screenY, tileSize, tileSize);
+        // Draw tiled background texture
+        for (let x = startX; x < endX; x += tileSize) {
+            for (let y = startY; y < endY; y += tileSize) {
+                const screenX = x - camera.x;
+                const screenY = y - camera.y;
+                ctx.drawImage(backgroundTexture, screenX, screenY, tileSize, tileSize);
+            }
+        }
+    } else {
+        // Fallback: Original grid pattern
+        const tileSize = 64;
+        const startX = Math.floor(camera.x / tileSize) * tileSize;
+        const startY = Math.floor(camera.y / tileSize) * tileSize;
+        const endX = camera.x + canvas.width + tileSize;
+        const endY = camera.y + canvas.height + tileSize;
 
-            // Add subtle border
-            ctx.strokeStyle = 'rgba(100, 100, 150, 0.1)';
-            ctx.lineWidth = 1;
-            ctx.strokeRect(screenX, screenY, tileSize, tileSize);
+        for (let x = startX; x < endX; x += tileSize) {
+            for (let y = startY; y < endY; y += tileSize) {
+                const screenX = x - camera.x;
+                const screenY = y - camera.y;
+                const isDark = (Math.floor(x / tileSize) + Math.floor(y / tileSize)) % 2;
+                ctx.fillStyle = isDark ? '#1a2332' : '#2a3142';
+                ctx.fillRect(screenX, screenY, tileSize, tileSize);
+                ctx.strokeStyle = 'rgba(100, 100, 150, 0.1)';
+                ctx.lineWidth = 1;
+                ctx.strokeRect(screenX, screenY, tileSize, tileSize);
+            }
         }
     }
 
@@ -6500,6 +7945,9 @@ function gameLoop(currentTime) {
     // Calculate deltaTime, but cap it to prevent huge jumps
     const deltaTime = lastTime ? Math.min(currentTime - lastTime, 100) : 16.67;
     lastTime = currentTime;
+
+    // Store currentTime in gameState for UI to use
+    gameState.currentTime = currentTime;
 
     // Debug: Log if we get a big deltaTime spike
     if (deltaTime > 50) {
@@ -6586,6 +8034,21 @@ function gameLoop(currentTime) {
 
     // Always draw the game
     if (true) { // Changed from if (!gameState.isPaused) to always draw
+
+        // Apply screen shake effect
+        ctx.save();
+        if (gameState.screenShake) {
+            const elapsed = currentTime - gameState.screenShake.startTime;
+            if (elapsed < gameState.screenShake.duration) {
+                // Shake decreases over time
+                const shakeProgress = 1 - (elapsed / gameState.screenShake.duration);
+                const shakeX = (Math.random() - 0.5) * gameState.screenShake.intensity * shakeProgress;
+                const shakeY = (Math.random() - 0.5) * gameState.screenShake.intensity * shakeProgress;
+                ctx.translate(shakeX, shakeY);
+            } else {
+                gameState.screenShake = null;
+            }
+        }
 
         // Clear canvas
         ctx.fillStyle = '#0f1419';
@@ -6947,6 +8410,89 @@ function gameLoop(currentTime) {
             missile.draw();
         }
 
+        // Update and draw poison clouds
+        for (let i = gameState.poisonClouds.length - 1; i >= 0; i--) {
+            const cloud = gameState.poisonClouds[i];
+            if (!gameState.isPaused && !gameState.isGameOver) {
+                if (cloud.update()) {
+                    gameState.poisonClouds.splice(i, 1);
+                    continue;
+                }
+            }
+            cloud.draw();
+        }
+
+        // Update and draw crystal shards
+        for (let i = gameState.crystalShards.length - 1; i >= 0; i--) {
+            const shard = gameState.crystalShards[i];
+            if (!gameState.isPaused && !gameState.isGameOver) {
+                if (shard.update()) {
+                    gameState.crystalShards.splice(i, 1);
+                    continue;
+                }
+            }
+            shard.draw();
+        }
+
+        // Update and draw frost novas
+        for (let i = gameState.frostNovas.length - 1; i >= 0; i--) {
+            const nova = gameState.frostNovas[i];
+            if (!gameState.isPaused && !gameState.isGameOver) {
+                if (nova.update()) {
+                    gameState.frostNovas.splice(i, 1);
+                    continue;
+                }
+            }
+            nova.draw();
+        }
+
+        // Update and draw thunder hammers
+        for (let i = gameState.thunderHammers.length - 1; i >= 0; i--) {
+            const hammer = gameState.thunderHammers[i];
+            if (!gameState.isPaused && !gameState.isGameOver) {
+                if (hammer.update()) {
+                    gameState.thunderHammers.splice(i, 1);
+                    continue;
+                }
+            }
+            hammer.draw();
+        }
+
+        // Update and draw shadow clones
+        for (let i = gameState.shadowClones.length - 1; i >= 0; i--) {
+            const clone = gameState.shadowClones[i];
+            if (!gameState.isPaused && !gameState.isGameOver) {
+                if (clone.update()) {
+                    gameState.shadowClones.splice(i, 1);
+                    continue;
+                }
+            }
+            clone.draw();
+        }
+
+        // Update enemy frozen/stunned states
+        if (!gameState.isPaused && !gameState.isGameOver) {
+            const currentTime = Date.now();
+            gameState.enemies.forEach(enemy => {
+                // Restore speed from frozen state
+                if (enemy.frozenUntil && currentTime > enemy.frozenUntil) {
+                    if (enemy.originalSpeed !== undefined) {
+                        enemy.speed = enemy.originalSpeed;
+                        delete enemy.originalSpeed;
+                        delete enemy.frozenUntil;
+                    }
+                }
+                // Restore speed from stunned state
+                if (enemy.stunnedUntil && currentTime > enemy.stunnedUntil) {
+                    if (enemy.originalSpeed !== undefined) {
+                        enemy.speed = enemy.originalSpeed;
+                        delete enemy.originalSpeed;
+                        delete enemy.stunnedUntil;
+                    }
+                }
+            });
+        }
+
         // Update and draw particles
         for (let i = gameState.particles.length - 1; i >= 0; i--) {
             const particle = gameState.particles[i];
@@ -6959,9 +8505,15 @@ function gameLoop(currentTime) {
                         continue;
                     }
                 } else if (particle.lifetime !== undefined) {
-                    // Plain object particle (dash trail)
+                    // Plain object particle (dash trail, blood particles, etc)
                     particle.x += particle.vx;
                     particle.y += particle.vy;
+
+                    // Apply gravity if particle has it (blood particles)
+                    if (particle.gravity) {
+                        particle.vy += particle.gravity;
+                    }
+
                     particle.alpha -= particle.decay;
                     particle.lifetime--;
 
@@ -6985,6 +8537,42 @@ function gameLoop(currentTime) {
                 ctx.fill();
                 ctx.globalAlpha = 1;
             }
+        }
+
+        // Update and draw enemy projectiles
+        for (let i = gameState.enemyProjectiles.length - 1; i >= 0; i--) {
+            const proj = gameState.enemyProjectiles[i];
+            if (!gameState.isPaused && !gameState.isGameOver) {
+                proj.x += proj.vx;
+                proj.y += proj.vy;
+
+                // Check world bounds
+                if (proj.x < 0 || proj.x > CONFIG.world.width || proj.y < 0 || proj.y > CONFIG.world.height) {
+                    gameState.enemyProjectiles.splice(i, 1);
+                    continue;
+                }
+
+                // Check collision with player
+                const dx = gameState.player.x - proj.x;
+                const dy = gameState.player.y - proj.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist < CONFIG.player.size + proj.size) {
+                    player.takeDamage(proj.damage);
+                    gameState.enemyProjectiles.splice(i, 1);
+                    continue;
+                }
+            }
+
+            // Draw projectile
+            const screen = toScreen(proj.x, proj.y);
+            ctx.fillStyle = proj.color;
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = proj.color;
+            ctx.beginPath();
+            ctx.arc(screen.x, screen.y, proj.size, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.shadowBlur = 0;
         }
 
         // Update and draw damage numbers
@@ -7036,6 +8624,36 @@ function gameLoop(currentTime) {
                 box.draw();
             }
         }
+
+        // Red vignette damage effect
+        if (gameState.damageVignette) {
+            const elapsed = currentTime - gameState.damageVignette.startTime;
+            if (elapsed < gameState.damageVignette.duration) {
+                // Fade out over duration
+                const progress = elapsed / gameState.damageVignette.duration;
+                const currentIntensity = gameState.damageVignette.intensity * (1 - progress);
+
+                // Create radial gradient from center to edges
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height / 2;
+                const maxRadius = Math.sqrt(centerX * centerX + centerY * centerY);
+
+                const gradient = ctx.createRadialGradient(
+                    centerX, centerY, maxRadius * 0.3,
+                    centerX, centerY, maxRadius
+                );
+                gradient.addColorStop(0, 'rgba(255, 0, 0, 0)');
+                gradient.addColorStop(1, `rgba(255, 0, 0, ${currentIntensity})`);
+
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            } else {
+                gameState.damageVignette = null;
+            }
+        }
+
+        // Restore context after screen shake
+        ctx.restore();
 
         // UI is updated automatically by React
     }
