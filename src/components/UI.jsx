@@ -1272,26 +1272,38 @@ function GameUI() {
                                             key={index}
                                             onClick={() => window.selectUpgrade(index)}
                                             style={{
-                                                background: '#b8a586',
-                                                padding: '20px',
-                                                borderRadius: '8px',
-                                                border: `4px solid ${borderColor}`,
-                                                boxShadow: `0 4px 0 #5a4530, 0 0 20px ${glowColor}, inset 0 2px 0 rgba(245, 230, 200, 0.3)`,
+                                                backgroundImage: 'url(assets/KNAPP1.png)',
+                                                backgroundSize: '100% 100%',
+                                                backgroundPosition: 'center',
+                                                backgroundRepeat: 'no-repeat',
+                                                backgroundColor: 'transparent',
+                                                padding: '30px 35px',
+                                                border: 'none',
                                                 cursor: 'default',
-                                                transition: 'transform 0.1s, box-shadow 0.1s',
+                                                transition: 'transform 0.15s ease, filter 0.15s ease',
                                                 position: 'relative',
                                                 display: 'flex',
                                                 gap: '15px',
                                                 alignItems: 'center',
-                                                outline: 'none'
+                                                outline: 'none',
+                                                imageRendering: 'pixelated',
+                                                filter: 'brightness(1)'
                                             }}
                                             onMouseEnter={(e) => {
-                                                e.currentTarget.style.transform = 'translateY(-2px)';
-                                                e.currentTarget.style.boxShadow = `0 6px 0 #5a4530, 0 0 30px ${glowColor}, inset 0 2px 0 rgba(245, 230, 200, 0.3)`;
+                                                e.currentTarget.style.transform = 'scale(1.02)';
+                                                e.currentTarget.style.filter = 'brightness(1.1)';
                                             }}
                                             onMouseLeave={(e) => {
-                                                e.currentTarget.style.transform = 'translateY(0)';
-                                                e.currentTarget.style.boxShadow = `0 4px 0 #5a4530, 0 0 20px ${glowColor}, inset 0 2px 0 rgba(245, 230, 200, 0.3)`;
+                                                e.currentTarget.style.transform = 'scale(1)';
+                                                e.currentTarget.style.filter = 'brightness(1)';
+                                            }}
+                                            onMouseDown={(e) => {
+                                                e.currentTarget.style.transform = 'scale(0.98)';
+                                                e.currentTarget.style.filter = 'brightness(0.9)';
+                                            }}
+                                            onMouseUp={(e) => {
+                                                e.currentTarget.style.transform = 'scale(1.02)';
+                                                e.currentTarget.style.filter = 'brightness(1.1)';
                                             }}
                                         >
                                             {/* Weapon Icon - Always show slot */}
