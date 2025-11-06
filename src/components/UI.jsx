@@ -1288,43 +1288,16 @@ function GameUI() {
                                             key={index}
                                             onClick={() => window.selectUpgrade(index)}
                                             style={{
-                                                backgroundImage: 'url(assets/KNAPP1.png)',
-                                                backgroundSize: '100% 100%',
-                                                backgroundPosition: 'center',
-                                                backgroundRepeat: 'no-repeat',
-                                                backgroundColor: 'transparent',
-                                                padding: '30px 35px',
-                                                border: 'none',
-                                                cursor: 'default',
-                                                transition: 'transform 0.15s ease, filter 0.15s ease',
                                                 position: 'relative',
                                                 display: 'flex',
                                                 gap: '15px',
                                                 alignItems: 'center',
-                                                outline: 'none',
-                                                imageRendering: 'pixelated',
-                                                filter: 'brightness(1)',
-                                                maxWidth: '600px',
-                                                width: '100%'
-                                            }}
-                                            onMouseEnter={(e) => {
-                                                e.currentTarget.style.transform = 'scale(1.02)';
-                                                e.currentTarget.style.filter = 'brightness(1.1)';
-                                            }}
-                                            onMouseLeave={(e) => {
-                                                e.currentTarget.style.transform = 'scale(1)';
-                                                e.currentTarget.style.filter = 'brightness(1)';
-                                            }}
-                                            onMouseDown={(e) => {
-                                                e.currentTarget.style.transform = 'scale(0.98)';
-                                                e.currentTarget.style.filter = 'brightness(0.9)';
-                                            }}
-                                            onMouseUp={(e) => {
-                                                e.currentTarget.style.transform = 'scale(1.02)';
-                                                e.currentTarget.style.filter = 'brightness(1.1)';
+                                                maxWidth: '500px',
+                                                width: '100%',
+                                                cursor: 'default'
                                             }}
                                         >
-                                            {/* Weapon Icon - Always show slot */}
+                                            {/* Weapon Icon - Outside on the left */}
                                             <div style={{
                                                 width: '70px',
                                                 height: '70px',
@@ -1336,10 +1309,7 @@ function GameUI() {
                                                 display: 'flex',
                                                 alignItems: 'center',
                                                 justifyContent: 'center',
-                                                padding: '12px',
-                                                border: 'none',
-                                                outline: 'none',
-                                                boxShadow: 'none'
+                                                padding: '12px'
                                             }}>
                                                 {upgradeIcon && (
                                                     <>
@@ -1365,6 +1335,44 @@ function GameUI() {
                                                 )}
                                             </div>
 
+                                            {/* Button */}
+                                            <div
+                                                style={{
+                                                    backgroundImage: 'url(assets/KNAPP1.png)',
+                                                    backgroundSize: '100% 100%',
+                                                    backgroundPosition: 'center',
+                                                    backgroundRepeat: 'no-repeat',
+                                                    backgroundColor: 'transparent',
+                                                    padding: '30px 35px',
+                                                    border: 'none',
+                                                    cursor: 'default',
+                                                    transition: 'transform 0.15s ease, filter 0.15s ease',
+                                                    position: 'relative',
+                                                    display: 'flex',
+                                                    gap: '15px',
+                                                    alignItems: 'center',
+                                                    outline: 'none',
+                                                    imageRendering: 'pixelated',
+                                                    filter: 'brightness(1)',
+                                                    flex: 1
+                                                }}
+                                            onMouseEnter={(e) => {
+                                                e.currentTarget.style.transform = 'scale(1.02)';
+                                                e.currentTarget.style.filter = 'brightness(1.1)';
+                                            }}
+                                            onMouseLeave={(e) => {
+                                                e.currentTarget.style.transform = 'scale(1)';
+                                                e.currentTarget.style.filter = 'brightness(1)';
+                                            }}
+                                            onMouseDown={(e) => {
+                                                e.currentTarget.style.transform = 'scale(0.98)';
+                                                e.currentTarget.style.filter = 'brightness(0.9)';
+                                            }}
+                                            onMouseUp={(e) => {
+                                                e.currentTarget.style.transform = 'scale(1.02)';
+                                                e.currentTarget.style.filter = 'brightness(1.1)';
+                                            }}
+                                        >
                                             {/* Text Content */}
                                             <div style={{ flex: 1 }}>
                                                 <h3 style={{
@@ -1395,6 +1403,7 @@ function GameUI() {
                                                     lineHeight: '1.5'
                                                 }}>{upgrade.desc}</p>
                                             </div>
+                                        </div>
                                         </div>
                                     );
                                 })}
