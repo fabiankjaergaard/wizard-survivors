@@ -1,35 +1,5 @@
 const { useState, useEffect } = React;
 
-// Custom Cursor Component
-function CustomCursor() {
-    const [pos, setPos] = useState({ x: 0, y: 0 });
-
-    useEffect(() => {
-        const move = (e) => setPos({ x: e.clientX, y: e.clientY });
-        window.addEventListener('mousemove', move);
-        return () => window.removeEventListener('mousemove', move);
-    }, []);
-
-    return (
-        <div
-            style={{
-                position: 'fixed',
-                top: pos.y,
-                left: pos.x,
-                width: '32px',
-                height: '32px',
-                backgroundImage: "url('assets/wand-cursor-small.png')",
-                backgroundSize: 'contain',
-                backgroundRepeat: 'no-repeat',
-                imageRendering: 'pixelated',
-                pointerEvents: 'none',
-                transform: 'translate(-8px, -8px)',
-                zIndex: 9999,
-            }}
-        />
-    );
-}
-
 // Music tracks - moved outside component to prevent re-renders
 const MUSIC_TRACKS = [
     {
@@ -480,7 +450,6 @@ function GameUI() {
     if (!gameStarted) {
         return (
             <div className="main-menu-container">
-                <CustomCursor />
                 <div className="main-menu">
                     {currentMenuView === 'main' && (
                         <div className="main-menu-box" style={{
@@ -757,8 +726,6 @@ function GameUI() {
     // Game is running - show game UI
     return (
         <div className="game-ui-container">
-            <CustomCursor />
-
             <div id="game-container">
                 <canvas id="gameCanvas"></canvas>
 
