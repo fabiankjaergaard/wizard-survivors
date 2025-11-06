@@ -124,37 +124,6 @@ const getUpgradeIcon = (upgrade) => {
 function GameUI() {
     const [gameStarted, setGameStarted] = useState(false);
     const [currentMenuView, setCurrentMenuView] = useState('main'); // main, shop, skills, achievements, character
-    const [cursorTrail, setCursorTrail] = useState([]);
-
-    // Track mouse position for pixel trail effect
-    useEffect(() => {
-        const handleMouseMove = (e) => {
-            const newTrail = {
-                x: e.clientX,
-                y: e.clientY,
-                id: Date.now() + Math.random()
-            };
-
-            setCursorTrail(prev => {
-                const updated = [...prev, newTrail];
-                // Keep only last 15 trail points
-                return updated.slice(-15);
-            });
-        };
-
-        document.addEventListener('mousemove', handleMouseMove);
-        return () => document.removeEventListener('mousemove', handleMouseMove);
-    }, []);
-
-    // Fade out trail particles
-    useEffect(() => {
-        if (cursorTrail.length > 0) {
-            const timeout = setTimeout(() => {
-                setCursorTrail(prev => prev.slice(1));
-            }, 50);
-            return () => clearTimeout(timeout);
-        }
-    }, [cursorTrail]);
 
     const [gameStats, setGameStats] = useState({
         hp: 100,
@@ -480,30 +449,8 @@ function GameUI() {
     // If game hasn't started, show main menu
     if (!gameStarted) {
         return (
-            <div className="main-menu-container" style={{ cursor: 'url(assets/wand-cursor-small.png) 8 8, auto' }}>
-                {/* Pixel Trail Effect */}
-                {cursorTrail.map((point, index) => (
-                    <div
-                        key={point.id}
-                        style={{
-                            position: 'fixed',
-                            left: point.x,
-                            top: point.y,
-                            width: '8px',
-                            height: '8px',
-                            backgroundColor: '#f5e6c8',
-                            border: '1px solid #8b6f47',
-                            transform: 'translate(-50%, -50%)',
-                            pointerEvents: 'none',
-                            zIndex: 999998,
-                            opacity: (index / cursorTrail.length) * 0.8,
-                            transition: 'opacity 0.05s ease-out',
-                            imageRendering: 'pixelated'
-                        }}
-                    />
-                ))}
-
-                <div className="main-menu" style={{ cursor: 'url(assets/wand-cursor-small.png) 8 8, auto' }}>
+            <div className="main-menu-container">
+                <div className="main-menu">
                     {currentMenuView === 'main' && (
                         <div className="main-menu-box" style={{
                             position: 'relative',
