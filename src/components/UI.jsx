@@ -1263,7 +1263,8 @@ function GameUI() {
                             <div style={{
                                 display: 'flex',
                                 flexDirection: 'column',
-                                gap: '15px'
+                                gap: '15px',
+                                alignItems: 'center'
                             }}>
                                 {upgrades.map((upgrade, index) => {
                                     // Determine colors based on rarity
@@ -1302,7 +1303,9 @@ function GameUI() {
                                                 alignItems: 'center',
                                                 outline: 'none',
                                                 imageRendering: 'pixelated',
-                                                filter: 'brightness(1)'
+                                                filter: 'brightness(1)',
+                                                maxWidth: '600px',
+                                                width: '100%'
                                             }}
                                             onMouseEnter={(e) => {
                                                 e.currentTarget.style.transform = 'scale(1.02)';
