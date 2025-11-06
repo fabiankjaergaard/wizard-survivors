@@ -3101,23 +3101,79 @@ function AchievementsMenu({ playerData, onBack }) {
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [onBack, selectedAchievement]);
 
+    // Calculate current tier for multi-tier achievements
+    const getKillTier = () => {
+        const kills = playerData.totalKills;
+        if (kills >= 10000) return 7;
+        if (kills >= 5000) return 6;
+        if (kills >= 2500) return 5;
+        if (kills >= 1000) return 4;
+        if (kills >= 500) return 3;
+        if (kills >= 100) return 2;
+        if (kills >= 1) return 1;
+        return 0;
+    };
+
+    const getKillTarget = () => {
+        const tier = getKillTier();
+        const targets = [1, 100, 500, 1000, 2500, 5000, 10000];
+        return targets[Math.min(tier, 6)];
+    };
+
     const achievements = [
-        { id: 'firstkill', name: 'First Blood', desc: 'Kill your first enemy', reward: '50 coins', current: playerData.totalKills, target: 1, unlocked: playerData.totalKills > 0 },
-        { id: 'kills100', name: 'Slayer', desc: 'Kill 100 enemies', reward: '100 coins', current: playerData.totalKills, target: 100, unlocked: playerData.totalKills >= 100 },
-        { id: 'kills500', name: 'Destroyer', desc: 'Kill 500 enemies', reward: '250 coins', current: playerData.totalKills, target: 500, unlocked: playerData.totalKills >= 500 },
-        { id: 'kills1000', name: 'Executioner', desc: 'Kill 1000 enemies', reward: '500 coins', current: playerData.totalKills, target: 1000, unlocked: playerData.totalKills >= 1000 },
-        { id: 'kills2500', name: 'Annihilator', desc: 'Kill 2500 enemies', reward: '1000 coins', current: playerData.totalKills, target: 2500, unlocked: playerData.totalKills >= 2500 },
-        { id: 'kills5000', name: 'Legendary Slayer', desc: 'Kill 5000 enemies', reward: '2000 coins', current: playerData.totalKills, target: 5000, unlocked: playerData.totalKills >= 5000 },
-        { id: 'kills10000', name: 'God of War', desc: 'Kill 10000 enemies', reward: '5000 coins', current: playerData.totalKills, target: 10000, unlocked: playerData.totalKills >= 10000 },
-        { id: 'level10', name: 'Experienced', desc: 'Reach level 10', reward: '1 skill point', current: 0, target: 10, unlocked: false },
-        { id: 'level25', name: 'Expert', desc: 'Reach level 25', reward: '2 skill points', current: 0, target: 25, unlocked: false },
-        { id: 'level50', name: 'Master', desc: 'Reach level 50', reward: '5 skill points', current: 0, target: 50, unlocked: false },
-        { id: 'level75', name: 'Grand Master', desc: 'Reach level 75', reward: '10 skill points', current: 0, target: 75, unlocked: false },
-        { id: 'level100', name: 'Legend', desc: 'Reach level 100', reward: '20 skill points', current: 0, target: 100, unlocked: false },
-        { id: 'survive5min', name: 'Endurance', desc: 'Survive for 5 minutes', reward: '100 coins', current: 0, target: 300, unlocked: false },
-        { id: 'survive10min', name: 'Survivor', desc: 'Survive for 10 minutes', reward: '200 coins', current: 0, target: 600, unlocked: false },
-        { id: 'survive20min', name: 'Immortal', desc: 'Survive for 20 minutes', reward: '500 coins', current: 0, target: 1200, unlocked: false },
-        { id: 'survive30min', name: 'Eternal', desc: 'Survive for 30 minutes', reward: '1000 coins', current: 0, target: 1800, unlocked: false },
+        // Multi-tier Kill Achievement
+        {
+            id: 'kills',
+            name: `Enemy Slayer ${getKillTier() > 0 ? '★'.repeat(getKillTier()) : ''}`,
+            desc: `Kill enemies (Tier ${getKillTier()}/7)`,
+            reward: 'Coins & Glory',
+            current: playerData.totalKills,
+            target: getKillTarget(),
+            unlocked: playerData.totalKills >= getKillTarget(),
+            tiers: [
+                { target: 1, name: 'First Blood', reward: '50 coins' },
+                { target: 100, name: 'Slayer', reward: '100 coins' },
+                { target: 500, name: 'Destroyer', reward: '250 coins' },
+                { target: 1000, name: 'Executioner', reward: '500 coins' },
+                { target: 2500, name: 'Annihilator', reward: '1000 coins' },
+                { target: 5000, name: 'Legendary', reward: '2000 coins' },
+                { target: 10000, name: 'God of War', reward: '5000 coins' }
+            ]
+        },
+        // Multi-tier Level Achievement
+        {
+            id: 'levels',
+            name: 'Level Progress',
+            desc: 'Reach higher levels',
+            reward: 'Skill Points',
+            current: 0,
+            target: 10,
+            unlocked: false,
+            tiers: [
+                { target: 10, name: 'Experienced', reward: '1 skill point' },
+                { target: 25, name: 'Expert', reward: '2 skill points' },
+                { target: 50, name: 'Master', reward: '5 skill points' },
+                { target: 75, name: 'Grand Master', reward: '10 skill points' },
+                { target: 100, name: 'Legend', reward: '20 skill points' }
+            ]
+        },
+        // Multi-tier Survival Achievement
+        {
+            id: 'survival',
+            name: 'Survival Time',
+            desc: 'Survive longer',
+            reward: 'Coins',
+            current: 0,
+            target: 300,
+            unlocked: false,
+            tiers: [
+                { target: 300, name: 'Endurance', reward: '100 coins' },
+                { target: 600, name: 'Survivor', reward: '200 coins' },
+                { target: 1200, name: 'Immortal', reward: '500 coins' },
+                { target: 1800, name: 'Eternal', reward: '1000 coins' }
+            ]
+        },
+        // Special achievements
         { id: 'allweapons', name: 'Arsenal', desc: 'Unlock all weapons in one game', reward: '300 coins', current: 0, target: 6, unlocked: false },
         { id: 'nodamage5min', name: 'Untouchable', desc: 'Survive 5 min without damage', reward: '400 coins', current: 0, target: 1, unlocked: false },
         { id: 'ultimate10', name: 'Ultimate Master', desc: 'Use ultimate 10 times', reward: '250 coins', current: 0, target: 10, unlocked: false },
