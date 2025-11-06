@@ -1217,8 +1217,12 @@ function GameUI() {
                                 <span>Spawn Chest</span>
                             </button>
                             <button className="weapon-btn level-up-test" onClick={() => {
-                                if (window.game && window.game.player) {
-                                    window.game.player.gainXP(window.game.player.xpToNextLevel);
+                                if (window.gameState && window.gameState.player) {
+                                    // Set XP to exactly what's needed to level up
+                                    window.gameState.player.xp = window.gameState.player.xpToLevel;
+                                    console.log('Player will level up! XP:', window.gameState.player.xp, '/', window.gameState.player.xpToLevel);
+                                } else {
+                                    console.error('Game not started yet! Start the game first.');
                                 }
                             }} style={{
                                 background: 'linear-gradient(135deg, rgba(107, 185, 128, 0.8) 0%, rgba(42, 88, 64, 0.8) 100%)',
