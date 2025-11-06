@@ -3077,6 +3077,7 @@ function MysteryBoxSpinner({ playerData, setPlayerData, onClose }) {
 // Achievements Menu Component
 function AchievementsMenu({ playerData, onBack }) {
     const [selectedAchievement, setSelectedAchievement] = React.useState(null);
+    const [selectedTier, setSelectedTier] = React.useState(0); // For multi-tier achievements
     const scrollContainerRef = React.useRef(null);
 
     // Set initial scroll position when component mounts
@@ -3411,7 +3412,10 @@ function AchievementsMenu({ playerData, onBack }) {
                         backgroundColor: 'rgba(0, 0, 0, 0.4)',
                         backdropFilter: 'blur(4px)',
                         zIndex: 999
-                    }} onClick={() => setSelectedAchievement(null)}></div>
+                    }} onClick={() => {
+                        setSelectedAchievement(null);
+                        setSelectedTier(0);
+                    }}></div>
 
                     <div style={{
                         position: 'fixed',
@@ -3429,100 +3433,194 @@ function AchievementsMenu({ playerData, onBack }) {
                         alignItems: 'center',
                         justifyContent: 'center',
                         gap: '15px',
-                        zIndex: 1000
+                        zIndex: 1000,
+                        position: 'relative'
                     }}>
-                    {/* Icon Circle */}
-                    <div style={{
-                        width: '100px',
-                        height: '100px',
-                        backgroundColor: selectedAchievement.unlocked ? '#6fb880' : '#6b5545',
-                        border: '4px solid #3a2820',
-                        borderRadius: '50%',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        boxShadow: 'inset 0 4px 8px rgba(0,0,0,0.5)'
-                    }}>
-                        {/* Icon will go here later */}
-                    </div>
-
-                    {/* Title */}
-                    <div style={{
-                        fontSize: '18px',
-                        fontWeight: 'bold',
-                        color: '#1a1410',
-                        fontFamily: '"Press Start 2P", monospace',
-                        textAlign: 'center'
-                    }}>{selectedAchievement.name}</div>
-
-                    {/* Description */}
-                    <div style={{
-                        fontSize: '10px',
-                        color: '#4a3830',
-                        fontFamily: '"Press Start 2P", monospace',
-                        textAlign: 'center',
-                        lineHeight: '1.6',
-                        maxWidth: '80%'
-                    }}>{selectedAchievement.desc}</div>
-
-                    {/* Progress Bar */}
-                    <div style={{
-                        width: '80%',
-                        height: '28px',
-                        backgroundColor: '#5a4530',
-                        border: '2px solid #3a2820',
-                        borderRadius: '4px',
-                        overflow: 'hidden',
-                        position: 'relative',
-                        boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.6)'
-                    }}>
-                        <div style={{
-                            width: `${Math.min((selectedAchievement.current / selectedAchievement.target) * 100, 100)}%`,
-                            height: '100%',
-                            backgroundColor: selectedAchievement.unlocked ? '#6fb880' : '#8b6f47',
-                            transition: 'width 0.3s ease',
-                            boxShadow: 'inset 0 1px 2px rgba(255,255,255,0.2)'
-                        }}></div>
-
-                        <div style={{
-                            position: 'absolute',
-                            top: '50%',
-                            left: '50%',
-                            transform: 'translate(-50%, -50%)',
-                            fontSize: '11px',
-                            fontWeight: 'bold',
-                            color: '#f5e6c8',
-                            fontFamily: '"Press Start 2P", monospace',
-                            textShadow: '1px 1px 2px rgba(0,0,0,0.8)',
-                            pointerEvents: 'none'
-                        }}>{Math.min(selectedAchievement.current, selectedAchievement.target)} / {selectedAchievement.target}</div>
-                    </div>
-
-                    {/* Reward */}
-                    <div style={{
-                        fontSize: '11px',
-                        color: '#D4AF37',
-                        fontWeight: 'bold',
-                        fontFamily: '"Press Start 2P", monospace',
-                        backgroundColor: 'rgba(0,0,0,0.2)',
-                        padding: '8px 16px',
-                        borderRadius: '8px'
-                    }}>Reward: {selectedAchievement.reward}</div>
-
-                    {/* Unlocked Status */}
-                    {selectedAchievement.unlocked && (
-                        <div style={{
-                            fontSize: '14px',
-                            color: '#6fb880',
-                            fontWeight: 'bold',
-                            fontFamily: '"Press Start 2P", monospace',
-                            textShadow: '2px 2px 0 #2a5840'
-                        }}>UNLOCKED</div>
+                    {/* Left Arrow (for multi-tier achievements) */}
+                    {selectedAchievement.tiers && selectedTier > 0 && (
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedTier(selectedTier - 1);
+                            }}
+                            style={{
+                                position: 'absolute',
+                                left: '20px',
+                                top: '50%',
+                                transform: 'translateY(-50%)',
+                                width: '60px',
+                                height: '60px',
+                                fontSize: '32px',
+                                backgroundColor: '#8b6f47',
+                                border: '3px solid #3a2820',
+                                borderRadius: '8px',
+                                color: '#f5e6c8',
+                                cursor: 'pointer',
+                                fontFamily: '"Press Start 2P", monospace',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                boxShadow: '2px 2px 4px rgba(0,0,0,0.5)',
+                                transition: 'all 0.15s ease'
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)';
+                                e.currentTarget.style.backgroundColor = '#6fb880';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
+                                e.currentTarget.style.backgroundColor = '#8b6f47';
+                            }}
+                        >←</button>
                     )}
+
+                    {/* Right Arrow (for multi-tier achievements) */}
+                    {selectedAchievement.tiers && selectedTier < selectedAchievement.tiers.length - 1 && (
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedTier(selectedTier + 1);
+                            }}
+                            style={{
+                                position: 'absolute',
+                                right: '20px',
+                                top: '50%',
+                                transform: 'translateY(-50%)',
+                                width: '60px',
+                                height: '60px',
+                                fontSize: '32px',
+                                backgroundColor: '#8b6f47',
+                                border: '3px solid #3a2820',
+                                borderRadius: '8px',
+                                color: '#f5e6c8',
+                                cursor: 'pointer',
+                                fontFamily: '"Press Start 2P", monospace',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                boxShadow: '2px 2px 4px rgba(0,0,0,0.5)',
+                                transition: 'all 0.15s ease'
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)';
+                                e.currentTarget.style.backgroundColor = '#6fb880';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
+                                e.currentTarget.style.backgroundColor = '#8b6f47';
+                            }}
+                        >→</button>
+                    )}
+
+                    {(() => {
+                        // Get current tier data for multi-tier achievements
+                        const tierData = selectedAchievement.tiers ? selectedAchievement.tiers[selectedTier] : null;
+                        const displayName = tierData ? tierData.name : selectedAchievement.name;
+                        const displayDesc = tierData ? `Kill ${tierData.target} enemies (Tier ${selectedTier + 1}/${selectedAchievement.tiers.length})` : selectedAchievement.desc;
+                        const displayReward = tierData ? tierData.reward : selectedAchievement.reward;
+                        const displayTarget = tierData ? tierData.target : selectedAchievement.target;
+                        const isUnlocked = selectedAchievement.current >= displayTarget;
+
+                        return (
+                            <>
+                                {/* Icon Circle */}
+                                <div style={{
+                                    width: '100px',
+                                    height: '100px',
+                                    backgroundColor: isUnlocked ? '#6fb880' : '#6b5545',
+                                    border: '4px solid #3a2820',
+                                    borderRadius: '50%',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    boxShadow: 'inset 0 4px 8px rgba(0,0,0,0.5)'
+                                }}>
+                                    {/* Icon will go here later */}
+                                </div>
+
+                                {/* Title */}
+                                <div style={{
+                                    fontSize: '18px',
+                                    fontWeight: 'bold',
+                                    color: '#1a1410',
+                                    fontFamily: '"Press Start 2P", monospace',
+                                    textAlign: 'center'
+                                }}>{displayName}</div>
+
+                                {/* Description */}
+                                <div style={{
+                                    fontSize: '10px',
+                                    color: '#4a3830',
+                                    fontFamily: '"Press Start 2P", monospace',
+                                    textAlign: 'center',
+                                    lineHeight: '1.6',
+                                    maxWidth: '80%'
+                                }}>{displayDesc}</div>
+
+                                {/* Progress Bar */}
+                                <div style={{
+                                    width: '80%',
+                                    height: '28px',
+                                    backgroundColor: '#5a4530',
+                                    border: '2px solid #3a2820',
+                                    borderRadius: '4px',
+                                    overflow: 'hidden',
+                                    position: 'relative',
+                                    boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.6)'
+                                }}>
+                                    <div style={{
+                                        width: `${Math.min((selectedAchievement.current / displayTarget) * 100, 100)}%`,
+                                        height: '100%',
+                                        backgroundColor: isUnlocked ? '#6fb880' : '#8b6f47',
+                                        transition: 'width 0.3s ease',
+                                        boxShadow: 'inset 0 1px 2px rgba(255,255,255,0.2)'
+                                    }}></div>
+
+                                    <div style={{
+                                        position: 'absolute',
+                                        top: '50%',
+                                        left: '50%',
+                                        transform: 'translate(-50%, -50%)',
+                                        fontSize: '11px',
+                                        fontWeight: 'bold',
+                                        color: '#f5e6c8',
+                                        fontFamily: '"Press Start 2P", monospace',
+                                        textShadow: '1px 1px 2px rgba(0,0,0,0.8)',
+                                        pointerEvents: 'none'
+                                    }}>{Math.min(selectedAchievement.current, displayTarget)} / {displayTarget}</div>
+                                </div>
+
+                                {/* Reward */}
+                                <div style={{
+                                    fontSize: '11px',
+                                    color: '#D4AF37',
+                                    fontWeight: 'bold',
+                                    fontFamily: '"Press Start 2P", monospace',
+                                    backgroundColor: 'rgba(0,0,0,0.2)',
+                                    padding: '8px 16px',
+                                    borderRadius: '8px'
+                                }}>Reward: {displayReward}</div>
+
+                                {/* Unlocked Status */}
+                                {isUnlocked && (
+                                    <div style={{
+                                        fontSize: '14px',
+                                        color: '#6fb880',
+                                        fontWeight: 'bold',
+                                        fontFamily: '"Press Start 2P", monospace',
+                                        textShadow: '2px 2px 0 #2a5840'
+                                    }}>UNLOCKED</div>
+                                )}
+                            </>
+                        );
+                    })()}
 
                     {/* Close Button */}
                     <button
-                        onClick={() => setSelectedAchievement(null)}
+                        onClick={() => {
+                            setSelectedAchievement(null);
+                            setSelectedTier(0);
+                        }}
                         style={{
                             marginTop: '10px',
                             width: '220px',
