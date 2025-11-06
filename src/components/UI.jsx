@@ -3443,7 +3443,7 @@ function AchievementsMenu({ playerData, onBack }) {
                         {/* Debug: Show if tiers exist */}
                         {console.log('Selected achievement:', selectedAchievement.name, 'Has tiers:', !!selectedAchievement.tiers, 'Tier count:', selectedAchievement.tiers?.length, 'Current tier:', selectedTier)}
 
-                        {/* Left Arrow (for multi-tier achievements) */}
+                        {/* Left Arrow (for multi-tier achievements) - OUTSIDE the box */}
                         {selectedAchievement.tiers && selectedTier > 0 && (
                         <button
                             onClick={(e) => {
@@ -3452,7 +3452,7 @@ function AchievementsMenu({ playerData, onBack }) {
                             }}
                             style={{
                                 position: 'absolute',
-                                left: '20px',
+                                left: '-80px',
                                 top: '50%',
                                 transform: 'translateY(-50%)',
                                 width: '60px',
@@ -3481,7 +3481,7 @@ function AchievementsMenu({ playerData, onBack }) {
                         >←</button>
                     )}
 
-                    {/* Right Arrow (for multi-tier achievements) */}
+                    {/* Right Arrow (for multi-tier achievements) - OUTSIDE the box */}
                     {selectedAchievement.tiers && selectedTier < selectedAchievement.tiers.length - 1 && (
                         <button
                             onClick={(e) => {
@@ -3490,7 +3490,7 @@ function AchievementsMenu({ playerData, onBack }) {
                             }}
                             style={{
                                 position: 'absolute',
-                                right: '20px',
+                                right: '-80px',
                                 top: '50%',
                                 transform: 'translateY(-50%)',
                                 width: '60px',
