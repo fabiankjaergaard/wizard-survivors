@@ -40,7 +40,7 @@ function BackButton({ onClick }) {
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
             border: 'none',
-            cursor: 'pointer',
+            cursor: 'url(assets/wand-cursor-small.png) 8 8, auto',
             imageRendering: 'pixelated',
             transition: 'transform 0.15s ease, filter 0.15s ease',
             backgroundColor: 'transparent',
@@ -124,6 +124,37 @@ const getUpgradeIcon = (upgrade) => {
 function GameUI() {
     const [gameStarted, setGameStarted] = useState(false);
     const [currentMenuView, setCurrentMenuView] = useState('main'); // main, shop, skills, achievements, character
+    const [cursorTrail, setCursorTrail] = useState([]);
+
+    // Track mouse position for pixel trail effect
+    useEffect(() => {
+        const handleMouseMove = (e) => {
+            const newTrail = {
+                x: e.clientX,
+                y: e.clientY,
+                id: Date.now() + Math.random()
+            };
+
+            setCursorTrail(prev => {
+                const updated = [...prev, newTrail];
+                // Keep only last 15 trail points
+                return updated.slice(-15);
+            });
+        };
+
+        document.addEventListener('mousemove', handleMouseMove);
+        return () => document.removeEventListener('mousemove', handleMouseMove);
+    }, []);
+
+    // Fade out trail particles
+    useEffect(() => {
+        if (cursorTrail.length > 0) {
+            const timeout = setTimeout(() => {
+                setCursorTrail(prev => prev.slice(1));
+            }, 50);
+            return () => clearTimeout(timeout);
+        }
+    }, [cursorTrail]);
 
     const [gameStats, setGameStats] = useState({
         hp: 100,
@@ -449,8 +480,30 @@ function GameUI() {
     // If game hasn't started, show main menu
     if (!gameStarted) {
         return (
-            <div className="main-menu-container">
-                <div className="main-menu">
+            <div className="main-menu-container" style={{ cursor: 'url(assets/wand-cursor-small.png) 8 8, auto' }}>
+                {/* Pixel Trail Effect */}
+                {cursorTrail.map((point, index) => (
+                    <div
+                        key={point.id}
+                        style={{
+                            position: 'fixed',
+                            left: point.x,
+                            top: point.y,
+                            width: '8px',
+                            height: '8px',
+                            backgroundColor: '#f5e6c8',
+                            border: '1px solid #8b6f47',
+                            transform: 'translate(-50%, -50%)',
+                            pointerEvents: 'none',
+                            zIndex: 999998,
+                            opacity: (index / cursorTrail.length) * 0.8,
+                            transition: 'opacity 0.05s ease-out',
+                            imageRendering: 'pixelated'
+                        }}
+                    />
+                ))}
+
+                <div className="main-menu" style={{ cursor: 'url(assets/wand-cursor-small.png) 8 8, auto' }}>
                     {currentMenuView === 'main' && (
                         <div className="main-menu-box" style={{
                             position: 'relative',
@@ -492,7 +545,7 @@ function GameUI() {
                                 backgroundPosition: 'center',
                                 backgroundRepeat: 'no-repeat',
                                 border: 'none',
-                                cursor: 'pointer',
+                                cursor: 'default',
                                 imageRendering: 'pixelated',
                                 transition: 'transform 0.15s ease, filter 0.15s ease',
                                 backgroundColor: 'transparent',
@@ -532,7 +585,7 @@ function GameUI() {
                                 backgroundPosition: 'center',
                                 backgroundRepeat: 'no-repeat',
                                 border: 'none',
-                                cursor: 'pointer',
+                                cursor: 'default',
                                 imageRendering: 'pixelated',
                                 transition: 'transform 0.15s ease, filter 0.15s ease',
                                 backgroundColor: 'transparent',
@@ -572,7 +625,7 @@ function GameUI() {
                                 backgroundPosition: 'center',
                                 backgroundRepeat: 'no-repeat',
                                 border: 'none',
-                                cursor: 'pointer',
+                                cursor: 'default',
                                 imageRendering: 'pixelated',
                                 transition: 'transform 0.15s ease, filter 0.15s ease',
                                 backgroundColor: 'transparent',
@@ -612,7 +665,7 @@ function GameUI() {
                                 backgroundPosition: 'center',
                                 backgroundRepeat: 'no-repeat',
                                 border: 'none',
-                                cursor: 'pointer',
+                                cursor: 'default',
                                 imageRendering: 'pixelated',
                                 transition: 'transform 0.15s ease, filter 0.15s ease',
                                 backgroundColor: 'transparent',
@@ -663,7 +716,7 @@ function GameUI() {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        cursor: 'pointer',
+                        cursor: 'default',
                         imageRendering: 'pixelated',
                         transition: 'transform 0.1s',
                         zIndex: 3000,
@@ -726,6 +779,8 @@ function GameUI() {
     // Game is running - show game UI
     return (
         <div className="game-ui-container">
+            {/* No pixel trail or custom cursor in game */}
+
             <div id="game-container">
                 <canvas id="gameCanvas"></canvas>
 
@@ -810,7 +865,7 @@ function GameUI() {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        cursor: 'pointer',
+                        cursor: 'default',
                         imageRendering: 'pixelated',
                         transition: 'transform 0.1s',
                         zIndex: 3000,
@@ -1277,7 +1332,7 @@ function GameUI() {
                                                 borderRadius: '8px',
                                                 border: `4px solid ${borderColor}`,
                                                 boxShadow: `0 4px 0 #5a4530, 0 0 20px ${glowColor}, inset 0 2px 0 rgba(245, 230, 200, 0.3)`,
-                                                cursor: 'pointer',
+                                                cursor: 'default',
                                                 transition: 'transform 0.1s, box-shadow 0.1s',
                                                 position: 'relative',
                                                 display: 'flex',
@@ -1626,7 +1681,7 @@ function GameUI() {
                                         color: '#1a1a1a',
                                         fontSize: '18px',
                                         fontWeight: 'bold',
-                                        cursor: 'pointer',
+                                        cursor: 'default',
                                         textTransform: 'uppercase',
                                         letterSpacing: '1px',
                                         boxShadow: '0 6px 0 #2a5840, inset 0 3px 0 #8fd8a0',
@@ -1652,7 +1707,7 @@ function GameUI() {
                                         color: '#1a1a1a',
                                         fontSize: '18px',
                                         fontWeight: 'bold',
-                                        cursor: 'pointer',
+                                        cursor: 'default',
                                         textTransform: 'uppercase',
                                         letterSpacing: '1px',
                                         boxShadow: '0 6px 0 #2a5840, inset 0 3px 0 #8fd8a0',
@@ -1727,7 +1782,7 @@ function GameUI() {
                                                         borderRadius: '4px',
                                                         color: isPlaying ? '#1a1a1a' : '#d4c5a0',
                                                         fontSize: '11px',
-                                                        cursor: 'pointer',
+                                                        cursor: 'default',
                                                         display: 'flex',
                                                         justifyContent: 'space-between',
                                                         alignItems: 'center'
@@ -1756,7 +1811,7 @@ function GameUI() {
                                                 borderRadius: '4px',
                                                 color: '#fff',
                                                 fontSize: '11px',
-                                                cursor: 'pointer',
+                                                cursor: 'default',
                                                 fontWeight: 'bold'
                                             }}
                                         >
@@ -1851,7 +1906,7 @@ function GameUI() {
                                     color: '#1a1a1a',
                                     fontSize: '20px',
                                     fontWeight: 'bold',
-                                    cursor: 'pointer',
+                                    cursor: 'default',
                                     textTransform: 'uppercase',
                                     letterSpacing: '2px',
                                     boxShadow: '0 6px 0 #2a5840, inset 0 3px 0 #8fd8a0',
@@ -2003,7 +2058,7 @@ function CharacterMenu({ playerData, setPlayerData, onBack }) {
                     flexDirection: 'column',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    cursor: equippedItem ? 'pointer' : 'default',
+                    cursor: 'default',
                     transition: 'transform 0.1s',
                     position: 'relative',
                     padding: '6px',
@@ -2068,7 +2123,7 @@ function CharacterMenu({ playerData, setPlayerData, onBack }) {
                     backgroundPosition: 'center',
                     backgroundRepeat: 'no-repeat',
                     border: 'none',
-                    cursor: 'pointer',
+                    cursor: 'default',
                     imageRendering: 'pixelated',
                     transition: 'transform 0.15s ease, filter 0.15s ease',
                     backgroundColor: 'transparent',
@@ -2311,7 +2366,7 @@ function CharacterMenu({ playerData, setPlayerData, onBack }) {
                                             background: '#b8a586',
                                             border: `3px solid ${rarityColors[item.rarity]}`,
                                             borderRadius: '4px',
-                                            cursor: 'pointer',
+                                            cursor: 'default',
                                             textAlign: 'center',
                                             transition: 'transform 0.1s',
                                             position: 'relative',
@@ -2598,7 +2653,7 @@ function SkillTreeMenu({ playerData, setPlayerData, onBack }) {
                     backgroundPosition: 'center',
                     backgroundRepeat: 'no-repeat',
                     border: 'none',
-                    cursor: 'pointer',
+                    cursor: 'default',
                     imageRendering: 'pixelated',
                     transition: 'transform 0.15s ease, filter 0.15s ease',
                     backgroundColor: 'transparent',
@@ -2692,7 +2747,7 @@ function SkillTreeMenu({ playerData, setPlayerData, onBack }) {
                                         backgroundPosition: 'center',
                                         backgroundRepeat: 'no-repeat',
                                         border: 'none',
-                                        cursor: 'pointer',
+                                        cursor: 'default',
                                         imageRendering: 'pixelated',
                                         transition: 'transform 0.15s ease, filter 0.15s ease',
                                         backgroundColor: 'transparent',
@@ -2943,7 +2998,7 @@ function MysteryBoxSpinner({ playerData, setPlayerData, onClose }) {
                         border: 'none',
                         color: '#000',
                         fontWeight: '900',
-                        cursor: 'pointer',
+                        cursor: 'default',
                         fontFamily: 'monospace',
                         letterSpacing: '2px',
                         transition: 'all 0.2s'
@@ -3011,7 +3066,7 @@ function MysteryBoxSpinner({ playerData, setPlayerData, onClose }) {
                             border: 'none',
                             color: '#fff',
                             fontWeight: '700',
-                            cursor: 'pointer',
+                            cursor: 'default',
                             fontFamily: 'monospace',
                             letterSpacing: '2px',
                             transition: 'all 0.2s'
@@ -3065,7 +3120,7 @@ function MysteryBoxSpinner({ playerData, setPlayerData, onClose }) {
                         border: '2px solid #666',
                         borderRadius: '4px',
                         color: '#999',
-                        cursor: 'pointer',
+                        cursor: 'default',
                         fontFamily: 'monospace',
                         letterSpacing: '2px'
                     }}
@@ -3079,24 +3134,56 @@ function MysteryBoxSpinner({ playerData, setPlayerData, onClose }) {
 
 // Achievements Menu Component
 function AchievementsMenu({ playerData, onBack }) {
+    const [selectedAchievement, setSelectedAchievement] = React.useState(null);
+    const scrollContainerRef = React.useRef(null);
+
+    // Set initial scroll position when component mounts
+    React.useEffect(() => {
+        if (scrollContainerRef.current) {
+            scrollContainerRef.current.scrollTop = 60; // Scroll down 60px from start
+        }
+    }, []);
+
     // ESC key to go back
     React.useEffect(() => {
         const handleKeyDown = (e) => {
             if (e.key === 'Escape') {
-                onBack();
+                if (selectedAchievement) {
+                    setSelectedAchievement(null);
+                } else {
+                    onBack();
+                }
             }
         };
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [onBack]);
+    }, [onBack, selectedAchievement]);
 
     const achievements = [
-        { id: 'firstkill', name: 'First Blood', icon: 'FB', desc: 'Kill your first enemy', reward: '50 coins', unlocked: playerData.totalKills > 0 },
-        { id: 'kills100', name: 'Slayer', icon: 'SLY', desc: 'Kill 100 enemies', reward: '100 coins', unlocked: playerData.totalKills >= 100 },
-        { id: 'kills500', name: 'Destroyer', icon: 'DST', desc: 'Kill 500 enemies', reward: '250 coins', unlocked: playerData.totalKills >= 500 },
-        { id: 'level10', name: 'Experienced', icon: 'EXP', desc: 'Reach level 10', reward: '1 skill point', unlocked: false },
-        { id: 'survive10min', name: 'Survivor', icon: 'SRV', desc: 'Survive for 10 minutes', reward: '200 coins', unlocked: false },
-        { id: 'allweapons', name: 'Arsenal', icon: 'ARS', desc: 'Unlock all weapons in one game', reward: '300 coins', unlocked: false }
+        { id: 'firstkill', name: 'First Blood', desc: 'Kill your first enemy', reward: '50 coins', current: playerData.totalKills, target: 1, unlocked: playerData.totalKills > 0 },
+        { id: 'kills100', name: 'Slayer', desc: 'Kill 100 enemies', reward: '100 coins', current: playerData.totalKills, target: 100, unlocked: playerData.totalKills >= 100 },
+        { id: 'kills500', name: 'Destroyer', desc: 'Kill 500 enemies', reward: '250 coins', current: playerData.totalKills, target: 500, unlocked: playerData.totalKills >= 500 },
+        { id: 'kills1000', name: 'Executioner', desc: 'Kill 1000 enemies', reward: '500 coins', current: playerData.totalKills, target: 1000, unlocked: playerData.totalKills >= 1000 },
+        { id: 'kills2500', name: 'Annihilator', desc: 'Kill 2500 enemies', reward: '1000 coins', current: playerData.totalKills, target: 2500, unlocked: playerData.totalKills >= 2500 },
+        { id: 'kills5000', name: 'Legendary Slayer', desc: 'Kill 5000 enemies', reward: '2000 coins', current: playerData.totalKills, target: 5000, unlocked: playerData.totalKills >= 5000 },
+        { id: 'kills10000', name: 'God of War', desc: 'Kill 10000 enemies', reward: '5000 coins', current: playerData.totalKills, target: 10000, unlocked: playerData.totalKills >= 10000 },
+        { id: 'level10', name: 'Experienced', desc: 'Reach level 10', reward: '1 skill point', current: 0, target: 10, unlocked: false },
+        { id: 'level25', name: 'Expert', desc: 'Reach level 25', reward: '2 skill points', current: 0, target: 25, unlocked: false },
+        { id: 'level50', name: 'Master', desc: 'Reach level 50', reward: '5 skill points', current: 0, target: 50, unlocked: false },
+        { id: 'level75', name: 'Grand Master', desc: 'Reach level 75', reward: '10 skill points', current: 0, target: 75, unlocked: false },
+        { id: 'level100', name: 'Legend', desc: 'Reach level 100', reward: '20 skill points', current: 0, target: 100, unlocked: false },
+        { id: 'survive5min', name: 'Endurance', desc: 'Survive for 5 minutes', reward: '100 coins', current: 0, target: 300, unlocked: false },
+        { id: 'survive10min', name: 'Survivor', desc: 'Survive for 10 minutes', reward: '200 coins', current: 0, target: 600, unlocked: false },
+        { id: 'survive20min', name: 'Immortal', desc: 'Survive for 20 minutes', reward: '500 coins', current: 0, target: 1200, unlocked: false },
+        { id: 'survive30min', name: 'Eternal', desc: 'Survive for 30 minutes', reward: '1000 coins', current: 0, target: 1800, unlocked: false },
+        { id: 'allweapons', name: 'Arsenal', desc: 'Unlock all weapons in one game', reward: '300 coins', current: 0, target: 6, unlocked: false },
+        { id: 'nodamage5min', name: 'Untouchable', desc: 'Survive 5 min without damage', reward: '400 coins', current: 0, target: 1, unlocked: false },
+        { id: 'ultimate10', name: 'Ultimate Master', desc: 'Use ultimate 10 times', reward: '250 coins', current: 0, target: 10, unlocked: false },
+        { id: 'ultimate50', name: 'Ultimate Legend', desc: 'Use ultimate 50 times', reward: '1000 coins', current: 0, target: 50, unlocked: false },
+        { id: 'collector', name: 'Coin Collector', desc: 'Collect 10000 coins total', reward: 'Special skin', current: 0, target: 10000, unlocked: false },
+        { id: 'collector2', name: 'Coin Hoarder', desc: 'Collect 50000 coins total', reward: 'Epic skin', current: 0, target: 50000, unlocked: false },
+        { id: 'speedrun', name: 'Speed Demon', desc: 'Reach level 20 in under 10 min', reward: '500 coins', current: 0, target: 1, unlocked: false },
+        { id: 'perfectgame', name: 'Perfectionist', desc: 'Complete a game with 100% accuracy', reward: '1000 coins', current: 0, target: 1, unlocked: false }
     ];
 
     return (
@@ -3124,7 +3211,7 @@ function AchievementsMenu({ playerData, onBack }) {
                     backgroundPosition: 'center',
                     backgroundRepeat: 'no-repeat',
                     border: 'none',
-                    cursor: 'pointer',
+                    cursor: 'default',
                     imageRendering: 'pixelated',
                     transition: 'transform 0.15s ease, filter 0.15s ease',
                     backgroundColor: 'transparent',
@@ -3172,12 +3259,12 @@ function AchievementsMenu({ playerData, onBack }) {
                 overflow: 'hidden',
                 boxSizing: 'border-box'
             }}>
-                <div style={{
+                <div ref={scrollContainerRef} style={{
                     position: 'absolute',
-                    top: '110px',
+                    top: '120px',
                     left: '45px',
                     right: '45px',
-                    bottom: '110px',
+                    bottom: '90px',
                     overflowY: 'auto',
                     overflowX: 'hidden',
                     display: 'flex',
@@ -3185,7 +3272,7 @@ function AchievementsMenu({ playerData, onBack }) {
                     alignItems: 'center',
                     gap: '20px',
                     paddingTop: '20px',
-                    paddingBottom: '20px',
+                    paddingBottom: '40px',
                     paddingLeft: '20px',
                     paddingRight: '30px'
                 }}>
@@ -3194,73 +3281,290 @@ function AchievementsMenu({ playerData, onBack }) {
                         display: 'flex',
                         flexDirection: 'column',
                         gap: '0px',
-                        width: '100%',
-                        margin: 0,
+                        width: '80%',
+                        margin: '0 auto',
                         padding: 0
                     }}>
                         {achievements.map((ach) => (
-                            <div
+                            <button
                                 key={ach.id}
+                                onClick={() => setSelectedAchievement(ach)}
                                 style={{
                                     width: '100%',
-                                    height: '170px',
+                                    height: '200px',
                                     backgroundImage: 'url(assets/KNAPP1.png)',
                                     backgroundSize: '100% 100%',
                                     backgroundPosition: 'center',
                                     backgroundRepeat: 'no-repeat',
+                                    backgroundColor: 'transparent',
                                     border: 'none',
                                     imageRendering: 'pixelated',
-                                    backgroundColor: 'transparent',
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    padding: '30px 35px',
+                                    position: 'relative',
+                                    margin: 0,
+                                    marginBottom: '-80px',
+                                    cursor: 'default',
+                                    transition: 'transform 0.15s ease, filter 0.15s ease',
+                                    fontFamily: '"Press Start 2P", monospace',
+                                    gap: '20px',
+                                    filter: 'brightness(1)'
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.currentTarget.style.transform = 'scale(1.02)';
+                                    e.currentTarget.style.filter = 'brightness(1.1)';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.currentTarget.style.transform = 'scale(1)';
+                                    e.currentTarget.style.filter = 'brightness(1)';
+                                }}
+                                onMouseDown={(e) => {
+                                    e.currentTarget.style.transform = 'scale(0.98)';
+                                    e.currentTarget.style.filter = 'brightness(0.9)';
+                                }}
+                                onMouseUp={(e) => {
+                                    e.currentTarget.style.transform = 'scale(1.02)';
+                                    e.currentTarget.style.filter = 'brightness(1.1)';
+                                }}
+                            >
+                                {/* Content */}
+                                <div style={{
+                                    flex: 1,
                                     display: 'flex',
                                     flexDirection: 'column',
                                     alignItems: 'center',
                                     justifyContent: 'center',
-                                    padding: '15px',
-                                    position: 'relative',
-                                    margin: 0,
-                                    marginBottom: '-60px'
-                                }}
-                            >
-                                <div style={{
-                                    fontSize: '16px',
-                                    fontWeight: 'bold',
-                                    color: '#1a1410',
-                                    marginBottom: '5px',
-                                    textShadow: '1px 1px 0 rgba(0,0,0,0.3)',
-                                    fontFamily: '"Press Start 2P", monospace'
-                                }}>{ach.icon} {ach.name}</div>
-                                <div style={{
-                                    fontSize: '8px',
-                                    color: '#1a1410',
-                                    textAlign: 'center',
-                                    marginBottom: '3px',
-                                    fontFamily: '"Press Start 2P", monospace'
-                                }}>{ach.desc}</div>
-                                <div style={{
-                                    fontSize: '7px',
-                                    color: '#1a1410',
-                                    fontWeight: 'bold',
-                                    fontFamily: '"Press Start 2P", monospace'
-                                }}>Reward: {ach.reward}</div>
+                                    gap: '12px',
+                                    width: '100%'
+                                }}>
+                                    {/* Title */}
+                                    <div style={{
+                                        fontSize: '16px',
+                                        fontWeight: 'bold',
+                                        color: '#2a1810',
+                                        textAlign: 'center',
+                                        textShadow: '1px 1px 0 rgba(255,255,255,0.3)'
+                                    }}>{ach.name}</div>
+
+                                    {/* Progress Bar Container */}
+                                    <div style={{
+                                        width: '70%',
+                                        height: '24px',
+                                        backgroundColor: '#5a4530',
+                                        border: '2px solid #3a2820',
+                                        borderRadius: '4px',
+                                        overflow: 'hidden',
+                                        position: 'relative',
+                                        boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.6)'
+                                    }}>
+                                        {/* Progress Fill */}
+                                        <div style={{
+                                            width: `${Math.min((ach.current / ach.target) * 100, 100)}%`,
+                                            height: '100%',
+                                            backgroundColor: ach.unlocked ? '#6fb880' : '#8b6f47',
+                                            transition: 'width 0.3s ease',
+                                            boxShadow: 'inset 0 1px 2px rgba(255,255,255,0.2)'
+                                        }}></div>
+
+                                        {/* Progress Text */}
+                                        <div style={{
+                                            position: 'absolute',
+                                            top: '50%',
+                                            left: '50%',
+                                            transform: 'translate(-50%, -50%)',
+                                            fontSize: '11px',
+                                            fontWeight: 'bold',
+                                            color: '#f5e6c8',
+                                            textShadow: '1px 1px 2px rgba(0,0,0,0.8)',
+                                            pointerEvents: 'none'
+                                        }}>{Math.min(ach.current, ach.target)}/{ach.target}</div>
+                                    </div>
+                                </div>
+
+                                {/* Checkmark */}
                                 {ach.unlocked && (
                                     <div style={{
                                         position: 'absolute',
-                                        top: '5px',
-                                        right: '5px',
-                                        fontSize: '8px',
+                                        top: '8px',
+                                        right: '8px',
+                                        fontSize: '16px',
                                         color: '#6fb880',
-                                        fontWeight: 'bold',
-                                        backgroundColor: 'rgba(47, 79, 79, 0.8)',
-                                        padding: '3px 6px',
-                                        borderRadius: '3px',
-                                        fontFamily: '"Press Start 2P", monospace'
-                                    }}>✓ UNLOCKED</div>
+                                        textShadow: '1px 1px 2px rgba(0,0,0,0.5)'
+                                    }}>✓</div>
                                 )}
-                            </div>
+                            </button>
                         ))}
                     </div>
                 </div>
             </div>
+
+            {/* Detail Modal */}
+            {selectedAchievement && (
+                <>
+                    {/* Backdrop overlay */}
+                    <div style={{
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        backgroundColor: 'rgba(0, 0, 0, 0.4)',
+                        backdropFilter: 'blur(4px)',
+                        zIndex: 999
+                    }} onClick={() => setSelectedAchievement(null)}></div>
+
+                    <div style={{
+                        position: 'fixed',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: '650px',
+                        minHeight: '500px',
+                        backgroundImage: 'url(assets/MainMenuBoxGame.png)',
+                        backgroundSize: '100% 100%',
+                        imageRendering: 'pixelated',
+                        padding: '100px 80px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '15px',
+                        zIndex: 1000
+                    }}>
+                    {/* Icon Circle */}
+                    <div style={{
+                        width: '100px',
+                        height: '100px',
+                        backgroundColor: selectedAchievement.unlocked ? '#6fb880' : '#6b5545',
+                        border: '4px solid #3a2820',
+                        borderRadius: '50%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        boxShadow: 'inset 0 4px 8px rgba(0,0,0,0.5)'
+                    }}>
+                        {/* Icon will go here later */}
+                    </div>
+
+                    {/* Title */}
+                    <div style={{
+                        fontSize: '18px',
+                        fontWeight: 'bold',
+                        color: '#1a1410',
+                        fontFamily: '"Press Start 2P", monospace',
+                        textAlign: 'center'
+                    }}>{selectedAchievement.name}</div>
+
+                    {/* Description */}
+                    <div style={{
+                        fontSize: '10px',
+                        color: '#4a3830',
+                        fontFamily: '"Press Start 2P", monospace',
+                        textAlign: 'center',
+                        lineHeight: '1.6',
+                        maxWidth: '80%'
+                    }}>{selectedAchievement.desc}</div>
+
+                    {/* Progress Bar */}
+                    <div style={{
+                        width: '80%',
+                        height: '28px',
+                        backgroundColor: '#5a4530',
+                        border: '2px solid #3a2820',
+                        borderRadius: '4px',
+                        overflow: 'hidden',
+                        position: 'relative',
+                        boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.6)'
+                    }}>
+                        <div style={{
+                            width: `${Math.min((selectedAchievement.current / selectedAchievement.target) * 100, 100)}%`,
+                            height: '100%',
+                            backgroundColor: selectedAchievement.unlocked ? '#6fb880' : '#8b6f47',
+                            transition: 'width 0.3s ease',
+                            boxShadow: 'inset 0 1px 2px rgba(255,255,255,0.2)'
+                        }}></div>
+
+                        <div style={{
+                            position: 'absolute',
+                            top: '50%',
+                            left: '50%',
+                            transform: 'translate(-50%, -50%)',
+                            fontSize: '11px',
+                            fontWeight: 'bold',
+                            color: '#f5e6c8',
+                            fontFamily: '"Press Start 2P", monospace',
+                            textShadow: '1px 1px 2px rgba(0,0,0,0.8)',
+                            pointerEvents: 'none'
+                        }}>{Math.min(selectedAchievement.current, selectedAchievement.target)} / {selectedAchievement.target}</div>
+                    </div>
+
+                    {/* Reward */}
+                    <div style={{
+                        fontSize: '11px',
+                        color: '#D4AF37',
+                        fontWeight: 'bold',
+                        fontFamily: '"Press Start 2P", monospace',
+                        backgroundColor: 'rgba(0,0,0,0.2)',
+                        padding: '8px 16px',
+                        borderRadius: '8px'
+                    }}>Reward: {selectedAchievement.reward}</div>
+
+                    {/* Unlocked Status */}
+                    {selectedAchievement.unlocked && (
+                        <div style={{
+                            fontSize: '14px',
+                            color: '#6fb880',
+                            fontWeight: 'bold',
+                            fontFamily: '"Press Start 2P", monospace',
+                            textShadow: '2px 2px 0 #2a5840'
+                        }}>UNLOCKED</div>
+                    )}
+
+                    {/* Close Button */}
+                    <button
+                        onClick={() => setSelectedAchievement(null)}
+                        style={{
+                            marginTop: '10px',
+                            width: '220px',
+                            height: '80px',
+                            backgroundImage: 'url(assets/KNAPP1.png)',
+                            backgroundSize: '100% 100%',
+                            backgroundPosition: 'center',
+                            backgroundRepeat: 'no-repeat',
+                            backgroundColor: 'transparent',
+                            border: 'none',
+                            imageRendering: 'pixelated',
+                            cursor: 'default',
+                            fontSize: '16px',
+                            fontWeight: 'bold',
+                            color: '#2a1810',
+                            fontFamily: '"Press Start 2P", monospace',
+                            textShadow: '1px 1px 0 rgba(255,255,255,0.3)',
+                            transition: 'transform 0.15s ease, filter 0.15s ease',
+                            filter: 'brightness(1)'
+                        }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.transform = 'scale(1.05)';
+                            e.currentTarget.style.filter = 'brightness(1.15)';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.transform = 'scale(1)';
+                            e.currentTarget.style.filter = 'brightness(1)';
+                        }}
+                        onMouseDown={(e) => {
+                            e.currentTarget.style.transform = 'scale(0.95)';
+                            e.currentTarget.style.filter = 'brightness(0.9)';
+                        }}
+                        onMouseUp={(e) => {
+                            e.currentTarget.style.transform = 'scale(1.05)';
+                            e.currentTarget.style.filter = 'brightness(1.15)';
+                        }}
+                    >CLOSE</button>
+                </div>
+                </>
+            )}
         </div>
     );
 }
@@ -3379,7 +3683,7 @@ function MusicMenu({ playerData, setPlayerData, onBack }) {
                                 boxShadow: currentlyPlaying === track.id ? '0 4px 0 #5a4530, inset 0 2px 0 rgba(245, 230, 200, 0.3)' : '0 3px 0 #5a4530',
                                 imageRendering: 'pixelated',
                                 fontFamily: '"Press Start 2P", monospace',
-                                cursor: 'pointer',
+                                cursor: 'default',
                                 transition: 'transform 0.1s'
                             }}
                             onClick={() => playTrack(track)}
