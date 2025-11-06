@@ -1277,6 +1277,24 @@ function GameUI() {
                             padding: '60px 50px 70px 50px',
                             overflow: 'hidden'
                         }}>
+                            {/* Level Up Banner */}
+                            <img
+                                src="assets/levelupbanner5game.png"
+                                alt="Level Up"
+                                style={{
+                                    position: 'absolute',
+                                    top: '-200px',
+                                    left: '50%',
+                                    transform: 'translateX(-50%) scaleY(0.7)',
+                                    width: '600px',
+                                    height: 'auto',
+                                    imageRendering: 'pixelated',
+                                    filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.5))',
+                                    zIndex: 10,
+                                    pointerEvents: 'none'
+                                }}
+                            />
+
                             <div style={{
                                 width: '100%',
                                 height: '100%',
