@@ -3436,6 +3436,9 @@ function AchievementsMenu({ playerData, onBack }) {
                         zIndex: 1000,
                         position: 'relative'
                     }}>
+                    {/* Debug: Show if tiers exist */}
+                    {console.log('Selected achievement:', selectedAchievement.name, 'Has tiers:', !!selectedAchievement.tiers, 'Tier count:', selectedAchievement.tiers?.length, 'Current tier:', selectedTier)}
+
                     {/* Left Arrow (for multi-tier achievements) */}
                     {selectedAchievement.tiers && selectedTier > 0 && (
                         <button
