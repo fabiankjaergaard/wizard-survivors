@@ -19,10 +19,11 @@ function CustomCursor() {
                 width: '32px',
                 height: '32px',
                 backgroundImage: "url('assets/wand-cursor-small.png')",
-                backgroundSize: 'cover',
+                backgroundSize: 'contain',
+                backgroundRepeat: 'no-repeat',
                 imageRendering: 'pixelated',
                 pointerEvents: 'none',
-                transform: 'translate(-50%, -50%)',
+                transform: 'translate(-8px, -8px)',
                 zIndex: 9999,
             }}
         />

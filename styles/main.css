@@ -2,7 +2,6 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    cursor: none !important;
 }
 
 body {
@@ -11,34 +10,23 @@ body {
     overflow: hidden;
     width: 100vw;
     height: 100vh;
-    cursor: none !important;
-}
-
-html {
-    cursor: none !important;
-}
-
-button, a, div, canvas {
-    cursor: none !important;
+    cursor: none;
 }
 
 .game-ui-container {
     width: 100vw;
     height: 100vh;
     position: relative;
-    cursor: none !important;
 }
 
 #game-container {
     position: relative;
     width: 100%;
     height: 100%;
-    cursor: none !important;
 }
 
 #gameCanvas {
     display: block;
-    cursor: none !important;
     width: 100%;
     height: 100%;
     background: #1a1a2e;
