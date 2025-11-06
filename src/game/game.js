@@ -912,6 +912,10 @@ magicMissileSprite.src = 'assets/MagicMisileGame.png';
 const backgroundTexture = new Image();
 backgroundTexture.src = 'assets/Background3TestGame.png';
 
+// Load Reward Chest Sprite
+const rewardChestSprite = new Image();
+rewardChestSprite.src = 'assets/RewardChestGame.png';
+
 // LPC Spritesheet has all animations in one image
 const wizardSprites = {
     lpc: wizardLPCSprite
@@ -6139,7 +6143,26 @@ class XPOrb {
         this.x = x;
         this.y = y;
         this.xpValue = xpValue;
-        this.size = 8;
+
+        // Size and color based on XP value
+        if (xpValue <= 5) {
+            // Small XP (common enemies)
+            this.size = 6;
+            this.color = { r: 100, g: 200, b: 255 }; // Blue
+        } else if (xpValue <= 15) {
+            // Medium XP
+            this.size = 9;
+            this.color = { r: 150, g: 100, b: 255 }; // Purple
+        } else if (xpValue <= 30) {
+            // Large XP
+            this.size = 12;
+            this.color = { r: 255, g: 150, b: 50 }; // Orange
+        } else {
+            // Huge XP (bosses)
+            this.size = 16;
+            this.color = { r: 255, g: 215, b: 0 }; // Gold
+        }
+
         this.magnetRange = 150; // How close player needs to be to attract orb
         this.magnetSpeed = 4;
         this.pulseTimer = 0;
@@ -6215,7 +6238,7 @@ class XPOrb {
             ctx.globalAlpha = sparkle.life;
             ctx.fillStyle = '#ffffff';
             ctx.shadowBlur = 4;
-            ctx.shadowColor = '#64c8ff';
+            ctx.shadowColor = `rgb(${this.color.r}, ${this.color.g}, ${this.color.b})`;
             ctx.fillRect(
                 sparkleScreen.x - sparkle.size / 2,
                 sparkleScreen.y - sparkle.size / 2,
@@ -6235,9 +6258,9 @@ class XPOrb {
             screen.y + floatY,
             this.size * 2.5
         );
-        gradient.addColorStop(0, `rgba(100, 200, 255, ${this.glowIntensity * 0.6})`);
-        gradient.addColorStop(0.4, `rgba(100, 200, 255, ${this.glowIntensity * 0.3})`);
-        gradient.addColorStop(1, 'rgba(100, 200, 255, 0)');
+        gradient.addColorStop(0, `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${this.glowIntensity * 0.6})`);
+        gradient.addColorStop(0.4, `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${this.glowIntensity * 0.3})`);
+        gradient.addColorStop(1, `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, 0)`);
 
         ctx.fillStyle = gradient;
         ctx.beginPath();
@@ -6245,7 +6268,7 @@ class XPOrb {
         ctx.fill();
 
         // Rotating energy ring
-        ctx.strokeStyle = `rgba(100, 200, 255, ${this.glowIntensity * 0.5})`;
+        ctx.strokeStyle = `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${this.glowIntensity * 0.5})`;
         ctx.lineWidth = 1.5;
         ctx.beginPath();
         for (let i = 0; i < 8; i++) {
@@ -6273,13 +6296,19 @@ class XPOrb {
             screen.y + floatY,
             currentSize
         );
+
+        // Create lighter versions of the color for gradient
+        const lightColor = `rgb(${Math.min(255, this.color.r + 100)}, ${Math.min(255, this.color.g + 100)}, ${Math.min(255, this.color.b + 100)})`;
+        const midColor = `rgb(${Math.min(255, this.color.r + 50)}, ${Math.min(255, this.color.g + 50)}, ${Math.min(255, this.color.b + 50)})`;
+        const darkColor = `rgb(${Math.max(0, this.color.r - 50)}, ${Math.max(0, this.color.g - 50)}, ${Math.max(0, this.color.b - 50)})`;
+
         orbGradient.addColorStop(0, '#ffffff');
-        orbGradient.addColorStop(0.3, '#e0f7ff');
-        orbGradient.addColorStop(0.6, '#64c8ff');
-        orbGradient.addColorStop(1, '#3498db');
+        orbGradient.addColorStop(0.3, lightColor);
+        orbGradient.addColorStop(0.6, midColor);
+        orbGradient.addColorStop(1, darkColor);
 
         ctx.shadowBlur = 15;
-        ctx.shadowColor = '#64c8ff';
+        ctx.shadowColor = `rgb(${this.color.r}, ${this.color.g}, ${this.color.b})`;
         ctx.fillStyle = orbGradient;
         ctx.beginPath();
         ctx.arc(screen.x, screen.y + floatY, currentSize, 0, Math.PI * 2);
@@ -6400,164 +6429,49 @@ class Chest {
         const bobOffset = Math.sin(this.bobTimer) * 5;
         const sparklePhase = this.bobTimer * 3;
 
-        // Shadow - larger and softer
+        // Chest sprite size
+        const spriteSize = 64; // Adjust based on your sprite size
+
+        // Shadow
         ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
         ctx.beginPath();
-        ctx.ellipse(screen.x, screen.y + this.size * 1.3, this.size * 1.2, this.size * 0.4, 0, 0, Math.PI * 2);
+        ctx.ellipse(screen.x, screen.y + spriteSize * 0.4, spriteSize * 0.4, spriteSize * 0.15, 0, 0, Math.PI * 2);
         ctx.fill();
 
         // Magical glow if player is near
         if (this.isNearPlayer) {
             // Outer magical glow
-            const outerGlow = ctx.createRadialGradient(screen.x, screen.y + bobOffset, 0, screen.x, screen.y + bobOffset, this.size * 3.5);
+            const outerGlow = ctx.createRadialGradient(screen.x, screen.y + bobOffset, 0, screen.x, screen.y + bobOffset, spriteSize * 1.5);
             outerGlow.addColorStop(0, `rgba(255, 215, 0, ${this.glowIntensity * 0.4})`);
             outerGlow.addColorStop(0.3, `rgba(255, 165, 0, ${this.glowIntensity * 0.3})`);
             outerGlow.addColorStop(0.6, `rgba(218, 165, 32, ${this.glowIntensity * 0.1})`);
             outerGlow.addColorStop(1, 'rgba(255, 215, 0, 0)');
             ctx.fillStyle = outerGlow;
             ctx.beginPath();
-            ctx.arc(screen.x, screen.y + bobOffset, this.size * 3.5, 0, Math.PI * 2);
+            ctx.arc(screen.x, screen.y + bobOffset, spriteSize * 1.5, 0, Math.PI * 2);
             ctx.fill();
 
             // Inner bright glow
-            const innerGlow = ctx.createRadialGradient(screen.x, screen.y + bobOffset, 0, screen.x, screen.y + bobOffset, this.size * 1.8);
+            const innerGlow = ctx.createRadialGradient(screen.x, screen.y + bobOffset, 0, screen.x, screen.y + bobOffset, spriteSize * 0.8);
             innerGlow.addColorStop(0, `rgba(255, 255, 200, ${this.glowIntensity * 0.6})`);
             innerGlow.addColorStop(0.5, `rgba(255, 215, 0, ${this.glowIntensity * 0.3})`);
             innerGlow.addColorStop(1, 'rgba(255, 215, 0, 0)');
             ctx.fillStyle = innerGlow;
             ctx.beginPath();
-            ctx.arc(screen.x, screen.y + bobOffset, this.size * 1.8, 0, Math.PI * 2);
+            ctx.arc(screen.x, screen.y + bobOffset, spriteSize * 0.8, 0, Math.PI * 2);
             ctx.fill();
         }
 
-        // Chest base with gradient
-        const baseGradient = ctx.createLinearGradient(screen.x - this.size, screen.y + bobOffset, screen.x + this.size, screen.y + bobOffset + this.size * 1.2);
-        baseGradient.addColorStop(0, '#6B4423');
-        baseGradient.addColorStop(0.3, '#8B5A3C');
-        baseGradient.addColorStop(0.7, '#6B4423');
-        baseGradient.addColorStop(1, '#4A2F1A');
-        ctx.fillStyle = baseGradient;
-        ctx.fillRect(screen.x - this.size, screen.y + bobOffset, this.size * 2, this.size * 1.2);
-
-        // Base wood grain details
-        ctx.strokeStyle = 'rgba(50, 30, 15, 0.3)';
-        ctx.lineWidth = 1;
-        for (let i = 0; i < 3; i++) {
-            ctx.beginPath();
-            ctx.moveTo(screen.x - this.size, screen.y + bobOffset + (i + 1) * this.size * 0.3);
-            ctx.lineTo(screen.x + this.size, screen.y + bobOffset + (i + 1) * this.size * 0.3);
-            ctx.stroke();
-        }
-
-        // Chest lid with 3D effect
-        const lidGradient = ctx.createLinearGradient(screen.x - this.size, screen.y - this.size * 0.3 + bobOffset, screen.x + this.size, screen.y + this.size * 0.5 + bobOffset);
-        lidGradient.addColorStop(0, '#4A2F1A');
-        lidGradient.addColorStop(0.5, '#6B4423');
-        lidGradient.addColorStop(1, '#3A1F0A');
-        ctx.fillStyle = lidGradient;
-        ctx.fillRect(screen.x - this.size, screen.y - this.size * 0.3 + bobOffset, this.size * 2, this.size * 0.8);
-
-        // Lid highlight
-        ctx.fillStyle = 'rgba(139, 90, 60, 0.4)';
-        ctx.fillRect(screen.x - this.size * 0.9, screen.y - this.size * 0.25 + bobOffset, this.size * 1.8, this.size * 0.15);
-
-        // Ornate metal corner decorations
-        ctx.fillStyle = '#C9A561';
-        ctx.strokeStyle = '#8B7355';
-        ctx.lineWidth = 1;
-
-        // Top left corner
-        ctx.beginPath();
-        ctx.moveTo(screen.x - this.size, screen.y - this.size * 0.3 + bobOffset);
-        ctx.lineTo(screen.x - this.size * 0.7, screen.y - this.size * 0.3 + bobOffset);
-        ctx.lineTo(screen.x - this.size, screen.y + bobOffset);
-        ctx.closePath();
-        ctx.fill();
-        ctx.stroke();
-
-        // Top right corner
-        ctx.beginPath();
-        ctx.moveTo(screen.x + this.size, screen.y - this.size * 0.3 + bobOffset);
-        ctx.lineTo(screen.x + this.size * 0.7, screen.y - this.size * 0.3 + bobOffset);
-        ctx.lineTo(screen.x + this.size, screen.y + bobOffset);
-        ctx.closePath();
-        ctx.fill();
-        ctx.stroke();
-
-        // Decorative metal bands with rivets
-        ctx.fillStyle = '#B8956A';
-        ctx.strokeStyle = '#8B7355';
-        ctx.lineWidth = 2;
-
-        // Top band
-        ctx.fillRect(screen.x - this.size * 1.05, screen.y + this.size * 0.2 + bobOffset, this.size * 2.1, this.size * 0.15);
-        ctx.strokeRect(screen.x - this.size * 1.05, screen.y + this.size * 0.2 + bobOffset, this.size * 2.1, this.size * 0.15);
-
-        // Bottom band
-        ctx.fillRect(screen.x - this.size * 1.05, screen.y + this.size * 0.8 + bobOffset, this.size * 2.1, this.size * 0.15);
-        ctx.strokeRect(screen.x - this.size * 1.05, screen.y + this.size * 0.8 + bobOffset, this.size * 2.1, this.size * 0.15);
-
-        // Rivets on bands
-        ctx.fillStyle = '#6B5A45';
-        for (let i = -1; i <= 1; i++) {
-            ctx.beginPath();
-            ctx.arc(screen.x + i * this.size * 0.6, screen.y + this.size * 0.275 + bobOffset, 2, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.arc(screen.x + i * this.size * 0.6, screen.y + this.size * 0.875 + bobOffset, 2, 0, Math.PI * 2);
-            ctx.fill();
-        }
-
-        // Large ornate lock with glow
+        // Draw the chest sprite
         ctx.save();
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = '#FFD700';
-
-        // Lock plate (hexagonal shape)
-        ctx.fillStyle = '#D4AF37';
-        ctx.beginPath();
-        for (let i = 0; i < 6; i++) {
-            const angle = (Math.PI / 3) * i;
-            const x = screen.x + Math.cos(angle) * this.size * 0.4;
-            const y = screen.y + this.size * 0.55 + bobOffset + Math.sin(angle) * this.size * 0.4;
-            if (i === 0) ctx.moveTo(x, y);
-            else ctx.lineTo(x, y);
-        }
-        ctx.closePath();
-        ctx.fill();
-
-        // Lock shine
-        const lockGradient = ctx.createRadialGradient(
-            screen.x - this.size * 0.15,
-            screen.y + this.size * 0.45 + bobOffset,
-            0,
-            screen.x,
-            screen.y + this.size * 0.55 + bobOffset,
-            this.size * 0.4
+        ctx.imageSmoothingEnabled = false; // Pixel art style
+        ctx.drawImage(
+            rewardChestSprite,
+            screen.x - spriteSize / 2,
+            screen.y + bobOffset - spriteSize / 2,
+            spriteSize,
+            spriteSize
         );
-        lockGradient.addColorStop(0, '#FFE87C');
-        lockGradient.addColorStop(0.6, '#D4AF37');
-        lockGradient.addColorStop(1, '#8B7355');
-        ctx.fillStyle = lockGradient;
-        ctx.fill();
-        ctx.strokeStyle = '#8B7355';
-        ctx.lineWidth = 2;
-        ctx.stroke();
-
-        // Keyhole - ornate shape
-        ctx.fillStyle = '#2C1810';
-        ctx.beginPath();
-        ctx.arc(screen.x, screen.y + this.size * 0.5 + bobOffset, this.size * 0.12, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.beginPath();
-        ctx.moveTo(screen.x - this.size * 0.08, screen.y + this.size * 0.5 + bobOffset);
-        ctx.lineTo(screen.x + this.size * 0.08, screen.y + this.size * 0.5 + bobOffset);
-        ctx.lineTo(screen.x + this.size * 0.05, screen.y + this.size * 0.7 + bobOffset);
-        ctx.lineTo(screen.x - this.size * 0.05, screen.y + this.size * 0.7 + bobOffset);
-        ctx.closePath();
-        ctx.fill();
-
         ctx.restore();
 
         // Sparkle effects when near player
@@ -6565,7 +6479,7 @@ class Chest {
             ctx.fillStyle = '#FFE87C';
             for (let i = 0; i < 5; i++) {
                 const sparkleAngle = sparklePhase + (i * Math.PI * 2 / 5);
-                const sparkleDistance = this.size * 1.5;
+                const sparkleDistance = spriteSize * 0.6;
                 const sparkleSize = 2 + Math.sin(sparklePhase + i) * 1.5;
                 const sparkleX = screen.x + Math.cos(sparkleAngle) * sparkleDistance;
                 const sparkleY = screen.y + bobOffset + Math.sin(sparkleAngle) * sparkleDistance;
@@ -6589,9 +6503,9 @@ class Chest {
             // Prompt background with gradient
             const promptGradient = ctx.createLinearGradient(
                 screen.x - 40,
-                screen.y - this.size * 2.5 + bobOffset,
+                screen.y - spriteSize * 0.8 + bobOffset,
                 screen.x + 40,
-                screen.y - this.size * 2.5 + bobOffset + 26
+                screen.y - spriteSize * 0.8 + bobOffset + 26
             );
             promptGradient.addColorStop(0, 'rgba(20, 20, 30, 0.85)');
             promptGradient.addColorStop(0.5, 'rgba(30, 30, 40, 0.95)');
@@ -6600,7 +6514,7 @@ class Chest {
 
             // Rounded rectangle for prompt
             ctx.beginPath();
-            ctx.roundRect(screen.x - 40, screen.y - this.size * 2.5 + bobOffset, 80, 26, 8);
+            ctx.roundRect(screen.x - 40, screen.y - spriteSize * 0.8 + bobOffset, 80, 26, 8);
             ctx.fill();
 
             // Border glow
@@ -6616,7 +6530,7 @@ class Chest {
             ctx.font = 'bold 14px Arial';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.fillText('Press E', screen.x, screen.y - this.size * 2.5 + bobOffset + 13);
+            ctx.fillText('Press E', screen.x, screen.y - spriteSize * 0.8 + bobOffset + 13);
             ctx.restore();
         }
     }
@@ -7401,9 +7315,9 @@ function levelUp() {
     const allUpgrades = [
         { name: 'Max HP +20', desc: 'Increase maximum health', type: 'stat', apply: () => { gameState.player.maxHp += 20; gameState.player.hp += 20; } },
         { name: 'Speed +0.5', desc: 'Move faster', type: 'stat', apply: () => { gameState.player.speed += 0.5; } },
-        { name: 'All Weapons Damage +5', desc: 'Deal more damage with all weapons', type: 'stat', apply: () => { gameState.player.weapons.forEach(w => w.damage += 5); } },
-        { name: 'All Weapons Speed +10%', desc: 'Attack more frequently with all weapons', type: 'stat', apply: () => { gameState.player.weapons.forEach(w => w.cooldown *= 0.9); } },
-        { name: 'All Weapons Range +30', desc: 'Increase attack range for all weapons', type: 'stat', apply: () => { gameState.player.weapons.forEach(w => w.range += 30); } },
+        { name: 'All Weapons Damage +5', desc: 'More damage with all weapons', type: 'stat', apply: () => { gameState.player.weapons.forEach(w => w.damage += 5); } },
+        { name: 'All Weapons Speed +10%', desc: 'Attack faster with all weapons', type: 'stat', apply: () => { gameState.player.weapons.forEach(w => w.cooldown *= 0.9); } },
+        { name: 'All Weapons Range +30', desc: 'Longer attack range', type: 'stat', apply: () => { gameState.player.weapons.forEach(w => w.range += 30); } },
         { name: 'Heal 50 HP', desc: 'Restore health', type: 'stat', apply: () => { gameState.player.hp = Math.min(gameState.player.maxHp, gameState.player.hp + 50); } }
     ];
 
@@ -7411,7 +7325,7 @@ function levelUp() {
     if (!gameState.player.hasXPMagnet) {
         allUpgrades.push({
             name: 'XP Magnet',
-            desc: 'Automatically attract XP orbs from nearby enemies',
+            desc: 'Attract XP orbs automatically',
             type: 'stat',
             apply: () => { gameState.player.hasXPMagnet = true; }
         });
@@ -7422,7 +7336,7 @@ function levelUp() {
         // Level up existing weapon
         allUpgrades.push({
             name: `${weapon.name} Level ${weapon.level + 1}`,
-            desc: `Upgrade ${weapon.name}: +3 damage, -5% cooldown`,
+            desc: `+3 damage, -5% cooldown`,
             type: 'weapon_upgrade',
             weaponType: weapon.type,
             apply: () => {
@@ -7438,7 +7352,7 @@ function levelUp() {
             if (weapon.projectileCount < 5) { // Max 5 projectiles
                 allUpgrades.push({
                     name: `${weapon.name} +1 Projectile`,
-                    desc: `Fire ${weapon.projectileCount + 1} ${weapon.name}s at once`,
+                    desc: `${weapon.projectileCount + 1} ${weapon.name}s at once`,
                     type: 'weapon_upgrade',
                     weaponType: weapon.type,
                     apply: () => {
@@ -7452,7 +7366,7 @@ function levelUp() {
         if (weapon.type === 'arcane' && gameState.orbitingOrbs.length < 8) {
             allUpgrades.push({
                 name: 'Arcane Orb +1 Orb',
-                desc: `Add 1 more orbiting orb (currently ${gameState.orbitingOrbs.length})`,
+                desc: `Add 1 orb (now ${gameState.orbitingOrbs.length})`,
                 type: 'weapon_upgrade',
                 weaponType: weapon.type,
                 apply: () => {
@@ -7465,7 +7379,7 @@ function levelUp() {
         if (weapon.type === 'fireball' && weapon.explosionRadius) {
             allUpgrades.push({
                 name: 'Fireball +20 Explosion Radius',
-                desc: `Larger explosions (currently ${weapon.explosionRadius}px)`,
+                desc: `Bigger explosions (${weapon.explosionRadius}px)`,
                 type: 'weapon_upgrade',
                 weaponType: weapon.type,
                 apply: () => {
@@ -7479,7 +7393,7 @@ function levelUp() {
     if (canAddWeapon() && !hasWeapon('lightning')) {
         allUpgrades.push({
             name: '⚡ Lightning Bolt',
-            desc: 'NEW WEAPON: Chain lightning that jumps between enemies',
+            desc: 'Chain lightning jumps between foes',
             type: 'new_weapon',
             weaponType: 'lightning',
             apply: () => {
@@ -7500,7 +7414,7 @@ function levelUp() {
     if (canAddWeapon() && !hasWeapon('fireball')) {
         allUpgrades.push({
             name: '🔥 Fireball',
-            desc: 'NEW WEAPON: Explosive fireballs that damage multiple enemies',
+            desc: 'Explosive fireballs hit multiple foes',
             type: 'new_weapon',
             weaponType: 'fireball',
             apply: () => {
@@ -7522,7 +7436,7 @@ function levelUp() {
     if (canAddWeapon() && !hasWeapon('ice')) {
         allUpgrades.push({
             name: 'Ice Spikes',
-            desc: 'NEW WEAPON: Freezing spikes that slow enemies',
+            desc: 'Freezing spikes slow enemies',
             type: 'new_weapon',
             weaponType: 'ice',
             apply: () => {
@@ -7543,7 +7457,7 @@ function levelUp() {
     if (canAddWeapon() && !hasWeapon('arcane')) {
         allUpgrades.push({
             name: '🌀 Arcane Orb',
-            desc: 'NEW WEAPON: Three orbiting orbs that protect you and damage enemies',
+            desc: 'Three orbiting orbs protect and damage',
             type: 'new_weapon',
             weaponType: 'arcane',
             apply: () => {
@@ -7570,7 +7484,9 @@ function levelUp() {
     if (canAddWeapon() && !hasWeapon('homing_missile')) {
         allUpgrades.push({
             name: '🚀 Homing Missiles',
-            desc: 'Auto-firing missiles that track and chase enemies',
+            desc: 'Missiles track and chase enemies',
+            type: 'new_weapon',
+            weaponType: 'homing_missile',
             apply: () => {
                 gameState.player.weapons.push({
                     type: 'homing_missile',
@@ -7588,7 +7504,7 @@ function levelUp() {
     if (canAddWeapon() && !hasWeapon('chain_lightning')) {
         allUpgrades.push({
             name: '⚡ Chain Lightning',
-            desc: 'NEW WEAPON: Lightning that jumps between 5 enemies',
+            desc: 'Lightning jumps between 5 enemies',
             type: 'new_weapon',
             weaponType: 'chain_lightning',
             apply: () => {
@@ -7609,7 +7525,7 @@ function levelUp() {
     if (canAddWeapon() && !hasWeapon('spirit_wolf')) {
         allUpgrades.push({
             name: '🐺 Spirit Wolf',
-            desc: 'NEW WEAPON: Summon ghost wolves that attack enemies (max 3)',
+            desc: 'Summon ghost wolves (max 3)',
             type: 'new_weapon',
             weaponType: 'spirit_wolf',
             apply: () => {
@@ -7630,7 +7546,7 @@ function levelUp() {
     if (canAddWeapon() && !hasWeapon('black_hole')) {
         allUpgrades.push({
             name: 'Black Hole',
-            desc: 'NEW WEAPON: Create a gravity well that pulls and damages enemies',
+            desc: 'Gravity well pulls and damages enemies',
             type: 'new_weapon',
             weaponType: 'black_hole',
             apply: () => {
@@ -7651,7 +7567,7 @@ function levelUp() {
     if (canAddWeapon() && !hasWeapon('poison_cloud')) {
         allUpgrades.push({
             name: '☠️ Poison Cloud',
-            desc: 'NEW WEAPON: Toxic clouds that damage enemies over time',
+            desc: 'Toxic clouds damage over time',
             type: 'new_weapon',
             weaponType: 'poison_cloud',
             apply: () => {
@@ -7674,8 +7590,9 @@ function levelUp() {
     if (canAddWeapon() && !hasWeapon('crystal_shard')) {
         allUpgrades.push({
             name: '💎 Crystal Shard',
-            desc: 'NEW WEAPON: Exploding crystals that split into fragments',
+            desc: 'Crystals split into fragments',
             type: 'new_weapon',
+            weaponType: 'crystal_shard',
             apply: () => {
                 const weapon = {
                     type: 'crystal_shard',
@@ -7696,8 +7613,9 @@ function levelUp() {
     if (canAddWeapon() && !hasWeapon('frost_nova')) {
         allUpgrades.push({
             name: '❄️ Frost Nova',
-            desc: 'NEW WEAPON: Freezes and damages all nearby enemies',
+            desc: 'Freezes all nearby enemies',
             type: 'new_weapon',
+            weaponType: 'frost_nova',
             apply: () => {
                 const weapon = {
                     type: 'frost_nova',
@@ -7718,8 +7636,9 @@ function levelUp() {
     if (canAddWeapon() && !hasWeapon('thunder_hammer')) {
         allUpgrades.push({
             name: '⚡ Thunder Hammer',
-            desc: 'NEW WEAPON: Melee AOE attack with stun effect',
+            desc: 'Melee AOE attack stuns enemies',
             type: 'new_weapon',
+            weaponType: 'thunder_hammer',
             apply: () => {
                 const weapon = {
                     type: 'thunder_hammer',
@@ -7740,7 +7659,7 @@ function levelUp() {
     if (canAddWeapon() && !hasWeapon('shadow_clone')) {
         allUpgrades.push({
             name: '👤 Shadow Clone',
-            desc: 'NEW WEAPON: Summon clones that mimic your attacks',
+            desc: 'Summon clones that mimic attacks',
             type: 'new_weapon',
             weaponType: 'shadow_clone',
             apply: () => {
@@ -7760,9 +7679,9 @@ function levelUp() {
         });
     }
 
-    // Select 1 unique upgrade and assign rarity
+    // Select 3 unique upgrades and assign rarities
     const selectedUpgrades = [];
-    while (selectedUpgrades.length < 1 && allUpgrades.length > 0) {
+    while (selectedUpgrades.length < 3 && allUpgrades.length > 0) {
         const upgrade = allUpgrades[Math.floor(Math.random() * allUpgrades.length)];
         if (!selectedUpgrades.includes(upgrade)) {
             // Assign random rarity to this upgrade
