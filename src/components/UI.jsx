@@ -3125,7 +3125,7 @@ function AchievementsMenu({ playerData, onBack }) {
         // Multi-tier Kill Achievement
         {
             id: 'kills',
-            name: `Enemy Slayer ${getKillTier() > 0 ? '★'.repeat(getKillTier()) : ''}`,
+            name: 'Enemy Slayer',
             desc: `Kill enemies (Tier ${getKillTier()}/7)`,
             reward: 'Coins & Glory',
             current: playerData.totalKills,
