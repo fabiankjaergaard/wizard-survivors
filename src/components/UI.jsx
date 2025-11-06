@@ -1317,8 +1317,8 @@ function GameUI() {
                                         >
                                             {/* Weapon Icon - Outside on the left */}
                                             <div style={{
-                                                width: '70px',
-                                                height: '70px',
+                                                width: '90px',
+                                                height: '90px',
                                                 flexShrink: 0,
                                                 backgroundImage: 'url(assets/WeaponSlotTestGame.png)',
                                                 backgroundSize: 'cover',
@@ -1336,15 +1336,15 @@ function GameUI() {
                                                                 src={upgradeIcon.src}
                                                                 alt={upgrade.name}
                                                                 style={{
-                                                                    width: '35px',
-                                                                    height: '35px',
+                                                                    width: '50px',
+                                                                    height: '50px',
                                                                     objectFit: 'contain',
                                                                     imageRendering: 'pixelated'
                                                                 }}
                                                             />
                                                         ) : (
                                                             <span style={{
-                                                                fontSize: '20px',
+                                                                fontSize: '28px',
                                                                 color: '#6fb880',
                                                                 fontWeight: 'bold'
                                                             }}>{upgradeIcon.value}</span>
@@ -1361,7 +1361,8 @@ function GameUI() {
                                                     backgroundPosition: 'center',
                                                     backgroundRepeat: 'no-repeat',
                                                     backgroundColor: 'transparent',
-                                                    padding: '30px 35px',
+                                                    padding: '45px 35px',
+                                                    minHeight: '120px',
                                                     border: 'none',
                                                     cursor: 'default',
                                                     transition: 'transform 0.15s ease, filter 0.15s ease',
