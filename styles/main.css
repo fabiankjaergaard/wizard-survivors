@@ -1,3 +1,8 @@
+/* Göm den vanliga system-cursorn */
+body, * {
+    cursor: none !important;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -10,7 +15,6 @@ body {
     overflow: hidden;
     width: 100vw;
     height: 100vh;
-    cursor: none;
 }
 
 .game-ui-container {
