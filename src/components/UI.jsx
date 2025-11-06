@@ -2514,61 +2514,61 @@ function SkillTreeMenu({ playerData, setPlayerData, onBack }) {
         {
             name: 'Combat',
             skills: [
-                { id: 'atk1', name: 'Attack I', icon: '⚔️', desc: '+5% Damage' },
-                { id: 'atk2', name: 'Attack II', icon: '⚔️', desc: '+10% Damage' },
-                { id: 'atk3', name: 'Attack III', icon: '⚔️', desc: '+15% Damage' },
-                { id: 'atk4', name: 'Attack IV', icon: '⚔️', desc: '+20% Damage' },
-                { id: 'crit1', name: 'Critical I', icon: '💥', desc: '+5% Crit' },
-                { id: 'crit2', name: 'Critical II', icon: '💥', desc: '+10% Crit' },
-                { id: 'crit3', name: 'Critical III', icon: '💥', desc: '+15% Crit' },
-                { id: 'speed1', name: 'Speed I', icon: '⚡', desc: '+5% Speed' },
-                { id: 'speed2', name: 'Speed II', icon: '⚡', desc: '+10% Speed' },
-                { id: 'rage1', name: 'Rage I', icon: '😡', desc: '+10% Dmg' },
-                { id: 'rage2', name: 'Rage II', icon: '😡', desc: '+20% Dmg' },
-                { id: 'pierce1', name: 'Pierce I', icon: '🎯', desc: '+5% Pierce' },
-                { id: 'pierce2', name: 'Pierce II', icon: '🎯', desc: '+10% Pierce' },
-                { id: 'fury1', name: 'Fury I', icon: '🔥', desc: '+Attack Spd' },
-                { id: 'fury2', name: 'Fury II', icon: '🔥', desc: '++Attack Spd' },
+                { id: 'atk1', name: 'Attack I', desc: '+5% Damage' },
+                { id: 'atk2', name: 'Attack II', desc: '+10% Damage' },
+                { id: 'atk3', name: 'Attack III', desc: '+15% Damage' },
+                { id: 'atk4', name: 'Attack IV', desc: '+20% Damage' },
+                { id: 'crit1', name: 'Critical I', desc: '+5% Crit' },
+                { id: 'crit2', name: 'Critical II', desc: '+10% Crit' },
+                { id: 'crit3', name: 'Critical III', desc: '+15% Crit' },
+                { id: 'speed1', name: 'Speed I', desc: '+5% Speed' },
+                { id: 'speed2', name: 'Speed II', desc: '+10% Speed' },
+                { id: 'rage1', name: 'Rage I', desc: '+10% Dmg' },
+                { id: 'rage2', name: 'Rage II', desc: '+20% Dmg' },
+                { id: 'pierce1', name: 'Pierce I', desc: '+5% Pierce' },
+                { id: 'pierce2', name: 'Pierce II', desc: '+10% Pierce' },
+                { id: 'fury1', name: 'Fury I', desc: '+Attack Spd' },
+                { id: 'fury2', name: 'Fury II', desc: '++Attack Spd' },
             ]
         },
         {
             name: 'Defense',
             skills: [
-                { id: 'hp1', name: 'Health I', icon: '❤️', desc: '+10 HP' },
-                { id: 'hp2', name: 'Health II', icon: '❤️', desc: '+20 HP' },
-                { id: 'hp3', name: 'Health III', icon: '❤️', desc: '+30 HP' },
-                { id: 'hp4', name: 'Health IV', icon: '❤️', desc: '+50 HP' },
-                { id: 'armor1', name: 'Armor I', icon: '🛡️', desc: '+5% Defense' },
-                { id: 'armor2', name: 'Armor II', icon: '🛡️', desc: '+10% Defense' },
-                { id: 'armor3', name: 'Armor III', icon: '🛡️', desc: '+15% Defense' },
-                { id: 'regen1', name: 'Regen I', icon: '💚', desc: '+1 HP/s' },
-                { id: 'regen2', name: 'Regen II', icon: '💚', desc: '+2 HP/s' },
-                { id: 'regen3', name: 'Regen III', icon: '💚', desc: '+3 HP/s' },
-                { id: 'resist1', name: 'Resist I', icon: '🔰', desc: '+5% Resist' },
-                { id: 'resist2', name: 'Resist II', icon: '🔰', desc: '+10% Resist' },
-                { id: 'tough1', name: 'Tough I', icon: '💪', desc: '+Toughness' },
-                { id: 'tough2', name: 'Tough II', icon: '💪', desc: '++Toughness' },
-                { id: 'block1', name: 'Block I', icon: '🚫', desc: '+5% Block' },
+                { id: 'hp1', name: 'Health I', desc: '+10 HP' },
+                { id: 'hp2', name: 'Health II', desc: '+20 HP' },
+                { id: 'hp3', name: 'Health III', desc: '+30 HP' },
+                { id: 'hp4', name: 'Health IV', desc: '+50 HP' },
+                { id: 'armor1', name: 'Armor I', desc: '+5% Defense' },
+                { id: 'armor2', name: 'Armor II', desc: '+10% Defense' },
+                { id: 'armor3', name: 'Armor III', desc: '+15% Defense' },
+                { id: 'regen1', name: 'Regen I', desc: '+1 HP/s' },
+                { id: 'regen2', name: 'Regen II', desc: '+2 HP/s' },
+                { id: 'regen3', name: 'Regen III', desc: '+3 HP/s' },
+                { id: 'resist1', name: 'Resist I', desc: '+5% Resist' },
+                { id: 'resist2', name: 'Resist II', desc: '+10% Resist' },
+                { id: 'tough1', name: 'Tough I', desc: '+Toughness' },
+                { id: 'tough2', name: 'Tough II', desc: '++Toughness' },
+                { id: 'block1', name: 'Block I', desc: '+5% Block' },
             ]
         },
         {
             name: 'Magic',
             skills: [
-                { id: 'mag1', name: 'Magic I', icon: '✨', desc: '+5% Magic' },
-                { id: 'mag2', name: 'Magic II', icon: '✨', desc: '+10% Magic' },
-                { id: 'mag3', name: 'Magic III', icon: '✨', desc: '+15% Magic' },
-                { id: 'mag4', name: 'Magic IV', icon: '✨', desc: '+20% Magic' },
-                { id: 'mana1', name: 'Mana I', icon: '🔮', desc: '+10 Mana' },
-                { id: 'mana2', name: 'Mana II', icon: '🔮', desc: '+20 Mana' },
-                { id: 'mana3', name: 'Mana III', icon: '🔮', desc: '+30 Mana' },
-                { id: 'cool1', name: 'Cooldown I', icon: '⏱️', desc: '-10% CD' },
-                { id: 'cool2', name: 'Cooldown II', icon: '⏱️', desc: '-20% CD' },
-                { id: 'spell1', name: 'Spell I', icon: '🌟', desc: '+Spell Dmg' },
-                { id: 'spell2', name: 'Spell II', icon: '🌟', desc: '++Spell Dmg' },
-                { id: 'wisdom1', name: 'Wisdom I', icon: '📖', desc: '+5% XP' },
-                { id: 'wisdom2', name: 'Wisdom II', icon: '📖', desc: '+10% XP' },
-                { id: 'arcane1', name: 'Arcane I', icon: '🔯', desc: '+Magic Find' },
-                { id: 'arcane2', name: 'Arcane II', icon: '🔯', desc: '++Magic Find' },
+                { id: 'mag1', name: 'Magic I', desc: '+5% Magic' },
+                { id: 'mag2', name: 'Magic II', desc: '+10% Magic' },
+                { id: 'mag3', name: 'Magic III', desc: '+15% Magic' },
+                { id: 'mag4', name: 'Magic IV', desc: '+20% Magic' },
+                { id: 'mana1', name: 'Mana I', desc: '+10 Mana' },
+                { id: 'mana2', name: 'Mana II', desc: '+20 Mana' },
+                { id: 'mana3', name: 'Mana III', desc: '+30 Mana' },
+                { id: 'cool1', name: 'Cooldown I', desc: '-10% CD' },
+                { id: 'cool2', name: 'Cooldown II', desc: '-20% CD' },
+                { id: 'spell1', name: 'Spell I', desc: '+Spell Dmg' },
+                { id: 'spell2', name: 'Spell II', desc: '++Spell Dmg' },
+                { id: 'wisdom1', name: 'Wisdom I', desc: '+5% XP' },
+                { id: 'wisdom2', name: 'Wisdom II', desc: '+10% XP' },
+                { id: 'arcane1', name: 'Arcane I', desc: '+Magic Find' },
+                { id: 'arcane2', name: 'Arcane II', desc: '++Magic Find' },
             ]
         }
     ];
@@ -2712,10 +2712,7 @@ function SkillTreeMenu({ playerData, setPlayerData, onBack }) {
                                         e.currentTarget.style.filter = 'brightness(1)';
                                     }}
                                 >
-                                    <div style={{
-                                        fontSize: '32px',
-                                        filter: 'drop-shadow(2px 2px 0px rgba(0,0,0,0.5))'
-                                    }}>{skill.icon}</div>
+                                    {/* Icon placeholder - no emoji */}
                                 </div>
                             ))}
                         </div>
