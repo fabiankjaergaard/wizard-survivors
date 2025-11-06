@@ -1216,22 +1216,25 @@ function GameUI() {
                                 <span className="weapon-icon"></span>
                                 <span>Spawn Chest</span>
                             </button>
-                            <button className="weapon-btn level-up-test" onClick={() => {
-                                if (window.gameState && window.gameState.player) {
-                                    // Set XP to exactly what's needed to level up
-                                    window.gameState.player.xp = window.gameState.player.xpToLevel;
-                                    console.log('Player will level up! XP:', window.gameState.player.xp, '/', window.gameState.player.xpToLevel);
-                                } else {
-                                    console.error('Game not started yet! Start the game first.');
-                                }
-                            }} style={{
-                                background: 'linear-gradient(135deg, rgba(107, 185, 128, 0.8) 0%, rgba(42, 88, 64, 0.8) 100%)',
-                                border: '2px solid #6fb880'
-                            }}>
-                                <span className="weapon-icon">⬆️</span>
-                                <span>Level Up</span>
-                            </button>
                         </div>
+                        <hr style={{margin: '20px 0', borderColor: 'rgba(255,255,255,0.1)'}} />
+                        <button className="weapon-btn level-up-test" onClick={() => {
+                            if (window.gameState && window.gameState.player) {
+                                // Set XP to exactly what's needed to level up
+                                window.gameState.player.xp = window.gameState.player.xpToLevel;
+                                console.log('Player will level up! XP:', window.gameState.player.xp, '/', window.gameState.player.xpToLevel);
+                            } else {
+                                console.error('Game not started yet! Start the game first.');
+                            }
+                        }} style={{
+                            background: 'linear-gradient(135deg, rgba(107, 185, 128, 0.8) 0%, rgba(42, 88, 64, 0.8) 100%)',
+                            border: '2px solid #6fb880',
+                            width: '100%',
+                            marginBottom: '10px'
+                        }}>
+                            <span className="weapon-icon">⬆️</span>
+                            <span>Level Up</span>
+                        </button>
                     </div>
                 )}
 
