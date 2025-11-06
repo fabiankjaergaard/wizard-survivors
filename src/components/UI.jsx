@@ -3424,23 +3424,27 @@ function AchievementsMenu({ playerData, onBack }) {
                         transform: 'translate(-50%, -50%)',
                         width: '650px',
                         minHeight: '500px',
-                        backgroundImage: 'url(assets/MainMenuBoxGame.png)',
-                        backgroundSize: '100% 100%',
-                        imageRendering: 'pixelated',
-                        padding: '100px 80px',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '15px',
-                        zIndex: 1000,
-                        position: 'relative'
+                        zIndex: 1000
                     }}>
-                    {/* Debug: Show if tiers exist */}
-                    {console.log('Selected achievement:', selectedAchievement.name, 'Has tiers:', !!selectedAchievement.tiers, 'Tier count:', selectedAchievement.tiers?.length, 'Current tier:', selectedTier)}
+                        <div style={{
+                            position: 'relative',
+                            width: '100%',
+                            height: '100%',
+                            backgroundImage: 'url(assets/MainMenuBoxGame.png)',
+                            backgroundSize: '100% 100%',
+                            imageRendering: 'pixelated',
+                            padding: '100px 80px',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '15px'
+                        }}>
+                        {/* Debug: Show if tiers exist */}
+                        {console.log('Selected achievement:', selectedAchievement.name, 'Has tiers:', !!selectedAchievement.tiers, 'Tier count:', selectedAchievement.tiers?.length, 'Current tier:', selectedTier)}
 
-                    {/* Left Arrow (for multi-tier achievements) */}
-                    {selectedAchievement.tiers && selectedTier > 0 && (
+                        {/* Left Arrow (for multi-tier achievements) */}
+                        {selectedAchievement.tiers && selectedTier > 0 && (
                         <button
                             onClick={(e) => {
                                 e.stopPropagation();
@@ -3661,6 +3665,7 @@ function AchievementsMenu({ playerData, onBack }) {
                             e.currentTarget.style.filter = 'brightness(1.15)';
                         }}
                     >CLOSE</button>
+                    </div>
                 </div>
                 </>
             )}
