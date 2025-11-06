@@ -7760,9 +7760,9 @@ function levelUp() {
         });
     }
 
-    // Select 3 unique upgrades and assign rarities
+    // Select 1 unique upgrade and assign rarity
     const selectedUpgrades = [];
-    while (selectedUpgrades.length < 3 && allUpgrades.length > 0) {
+    while (selectedUpgrades.length < 1 && allUpgrades.length > 0) {
         const upgrade = allUpgrades[Math.floor(Math.random() * allUpgrades.length)];
         if (!selectedUpgrades.includes(upgrade)) {
             // Assign random rarity to this upgrade
