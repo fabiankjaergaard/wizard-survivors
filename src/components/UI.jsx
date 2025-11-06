@@ -1216,6 +1216,17 @@ function GameUI() {
                                 <span className="weapon-icon"></span>
                                 <span>Spawn Chest</span>
                             </button>
+                            <button className="weapon-btn level-up-test" onClick={() => {
+                                if (window.game && window.game.player) {
+                                    window.game.player.gainXP(window.game.player.xpToNextLevel);
+                                }
+                            }} style={{
+                                background: 'linear-gradient(135deg, rgba(107, 185, 128, 0.8) 0%, rgba(42, 88, 64, 0.8) 100%)',
+                                border: '2px solid #6fb880'
+                            }}>
+                                <span className="weapon-icon">⬆️</span>
+                                <span>Level Up</span>
+                            </button>
                         </div>
                     </div>
                 )}
@@ -1228,10 +1239,10 @@ function GameUI() {
                             width: '800px',
                             maxWidth: '90vw',
                             padding: '50px',
-                            background: '#d4c5a0',
-                            border: '12px solid #6fb880',
-                            borderRadius: '0',
-                            boxShadow: '0 0 0 6px #5a4530, inset 0 0 0 10px #f5e6c8',
+                            backgroundImage: 'url(assets/MainMenuBoxGame.png)',
+                            backgroundSize: '100% 100%',
+                            backgroundPosition: 'center',
+                            backgroundRepeat: 'no-repeat',
                             imageRendering: 'pixelated',
                             fontFamily: '"Press Start 2P", monospace'
                         }}>
