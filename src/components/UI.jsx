@@ -1253,177 +1253,229 @@ function GameUI() {
                     </div>
                 )}
 
-                {/* Level Up Screen - Pixel Art Style */}
+                {/* Level Up Screen - Main Menu Style */}
                 {showLevelUp && (
                     <div className="modal-overlay">
                         <div style={{
                             position: 'relative',
-                            width: '800px',
-                            maxWidth: '90vw',
-                            padding: '50px',
+                            width: 'min(600px, 90vw)',
+                            height: '950px',
+                            maxHeight: '95vh',
                             backgroundImage: 'url(assets/MainMenuBoxGame.png)',
                             backgroundSize: '100% 100%',
                             backgroundPosition: 'center',
                             backgroundRepeat: 'no-repeat',
+                            border: 'none',
+                            borderRadius: '0',
+                            boxShadow: 'none',
                             imageRendering: 'pixelated',
-                            fontFamily: '"Press Start 2P", monospace'
+                            fontFamily: '"Press Start 2P", monospace',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'flex-start',
+                            alignItems: 'center',
+                            padding: '60px 50px 70px 50px',
+                            overflow: 'hidden'
                         }}>
-                            <h2 style={{
-                                textAlign: 'center',
-                                fontSize: '36px',
-                                color: '#6fb880',
-                                marginBottom: '40px',
-                                textShadow: '4px 4px 0px #2a5840',
-                                letterSpacing: '2px',
-                                textTransform: 'uppercase'
-                            }}>LEVEL UP!</h2>
-
                             <div style={{
+                                width: '100%',
+                                height: '100%',
+                                overflowY: 'hidden',
+                                overflowX: 'hidden',
                                 display: 'flex',
                                 flexDirection: 'column',
-                                gap: '15px',
-                                alignItems: 'center'
+                                alignItems: 'center',
+                                gap: '5px',
+                                paddingRight: '10px',
+                                paddingTop: '65px'
                             }}>
                                 {upgrades.map((upgrade, index) => {
                                     // Determine colors based on rarity
                                     let borderColor = '#8b6f47'; // Always brown border
                                     let glowColor = 'transparent';
-                                    let badgeColor = '#6b5545';
+                                    let badgeColor = '#9ca3af';
+                                    let badgeTextColor = '#1a1a1a';
+                                    let badgeShadow = 'none';
 
-                                    // Keep badge color for rarity but not border/glow
+                                    // Set badge styling based on rarity
                                     if (upgrade.rarity) {
-                                        if (upgrade.rarity.key === 'rare') {
-                                            badgeColor = '#4a9eff';
+                                        if (upgrade.rarity.key === 'common') {
+                                            badgeColor = '#9ca3af';
+                                            badgeTextColor = '#1a1a1a';
+                                        } else if (upgrade.rarity.key === 'rare') {
+                                            badgeColor = '#3b82f6';
+                                            badgeTextColor = '#ffffff';
+                                            badgeShadow = '0 0 8px rgba(59, 130, 246, 0.6)';
+                                        } else if (upgrade.rarity.key === 'epic') {
+                                            badgeColor = '#a855f7';
+                                            badgeTextColor = '#ffffff';
+                                            badgeShadow = '0 0 8px rgba(168, 85, 247, 0.6)';
                                         } else if (upgrade.rarity.key === 'legendary') {
-                                            badgeColor = '#ffa500';
+                                            badgeColor = '#f59e0b';
+                                            badgeTextColor = '#1a1a1a';
+                                            badgeShadow = '0 0 12px rgba(245, 158, 11, 0.8)';
                                         }
                                     }
 
                                     const upgradeIcon = getUpgradeIcon(upgrade);
 
                                     return (
-                                        <div
+                                        <button
                                             key={index}
                                             onClick={() => window.selectUpgrade(index)}
                                             style={{
                                                 position: 'relative',
-                                                display: 'flex',
-                                                gap: '15px',
-                                                alignItems: 'center',
-                                                maxWidth: '500px',
-                                                width: '100%',
-                                                cursor: 'default'
-                                            }}
-                                        >
-                                            {/* Weapon Icon - Outside on the left */}
-                                            <div style={{
-                                                width: '90px',
-                                                height: '90px',
-                                                flexShrink: 0,
-                                                backgroundImage: 'url(assets/WeaponSlotTestGame.png)',
-                                                backgroundSize: 'cover',
+                                                width: '450px',
+                                                height: '220px',
+                                                backgroundImage: 'url(assets/dffgdfgdf.png)',
+                                                backgroundSize: '100% 100%',
                                                 backgroundPosition: 'center',
+                                                backgroundRepeat: 'no-repeat',
+                                                border: 'none',
+                                                cursor: 'default',
                                                 imageRendering: 'pixelated',
+                                                transition: 'transform 0.15s ease, filter 0.15s ease',
+                                                backgroundColor: 'transparent',
+                                                fontFamily: '"Press Start 2P", monospace',
+                                                fontSize: '13px',
+                                                color: '#ffffff',
+                                                fontWeight: 'bold',
+                                                textShadow: '2px 2px 0 rgba(0,0,0,0.3)',
+                                                filter: 'brightness(1)',
+                                                marginBottom: '-90px',
                                                 display: 'flex',
+                                                flexDirection: 'column',
                                                 alignItems: 'center',
                                                 justifyContent: 'center',
-                                                padding: '12px'
-                                            }}>
-                                                {upgradeIcon && (
-                                                    <>
-                                                        {upgradeIcon.type === 'image' ? (
-                                                            <img
-                                                                src={upgradeIcon.src}
-                                                                alt={upgrade.name}
-                                                                style={{
-                                                                    width: '50px',
-                                                                    height: '50px',
-                                                                    objectFit: 'contain',
-                                                                    imageRendering: 'pixelated'
-                                                                }}
-                                                            />
-                                                        ) : (
-                                                            <span style={{
-                                                                fontSize: '28px',
-                                                                color: '#6fb880',
-                                                                fontWeight: 'bold'
-                                                            }}>{upgradeIcon.value}</span>
-                                                        )}
-                                                    </>
-                                                )}
-                                            </div>
-
-                                            {/* Button */}
-                                            <div
-                                                style={{
-                                                    backgroundImage: 'url(assets/KNAPP1.png)',
-                                                    backgroundSize: '100% 100%',
-                                                    backgroundPosition: 'center',
-                                                    backgroundRepeat: 'no-repeat',
-                                                    backgroundColor: 'transparent',
-                                                    padding: '60px 40px',
-                                                    minHeight: '160px',
-                                                    border: 'none',
-                                                    cursor: 'default',
-                                                    transition: 'transform 0.15s ease, filter 0.15s ease',
-                                                    position: 'relative',
-                                                    display: 'flex',
-                                                    gap: '15px',
-                                                    alignItems: 'center',
-                                                    outline: 'none',
-                                                    imageRendering: 'pixelated',
-                                                    filter: 'brightness(1)',
-                                                    flex: 1
-                                                }}
+                                                gap: '12px',
+                                                padding: '35px',
+                                                overflow: 'visible'
+                                            }}
                                             onMouseEnter={(e) => {
-                                                e.currentTarget.style.transform = 'scale(1.02)';
-                                                e.currentTarget.style.filter = 'brightness(1.1)';
+                                                e.target.style.transform = 'scale(1.05)';
+                                                e.target.style.filter = 'brightness(1.15)';
                                             }}
                                             onMouseLeave={(e) => {
-                                                e.currentTarget.style.transform = 'scale(1)';
-                                                e.currentTarget.style.filter = 'brightness(1)';
+                                                e.target.style.transform = 'scale(1)';
+                                                e.target.style.filter = 'brightness(1)';
                                             }}
                                             onMouseDown={(e) => {
-                                                e.currentTarget.style.transform = 'scale(0.98)';
-                                                e.currentTarget.style.filter = 'brightness(0.9)';
+                                                e.target.style.transform = 'scale(0.95)';
+                                                e.target.style.filter = 'brightness(0.9)';
                                             }}
                                             onMouseUp={(e) => {
-                                                e.currentTarget.style.transform = 'scale(1.02)';
-                                                e.currentTarget.style.filter = 'brightness(1.1)';
+                                                e.target.style.transform = 'scale(1.05)';
+                                                e.target.style.filter = 'brightness(1.15)';
                                             }}
                                         >
-                                            {/* Text Content */}
-                                            <div style={{ flex: 1 }}>
-                                                <h3 style={{
-                                                    fontSize: '14px',
-                                                    color: '#1a1a1a',
-                                                    marginBottom: '10px',
+                                            {/* Horizontal Layout - Icon left, text right */}
+                                            <div style={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: '20px',
+                                                width: '100%',
+                                                padding: '0 30px'
+                                            }}>
+                                                {/* Icon on left */}
+                                                <div style={{
+                                                    width: '38px',
+                                                    height: '38px',
                                                     display: 'flex',
                                                     alignItems: 'center',
-                                                    gap: '10px'
+                                                    justifyContent: 'center',
+                                                    flexShrink: 0
                                                 }}>
-                                                    {upgrade.name}
-                                                    {upgrade.rarity && (
+                                                    {upgradeIcon ? (
+                                                        <>
+                                                            {upgradeIcon.type === 'image' ? (
+                                                                <img
+                                                                    src={upgradeIcon.src}
+                                                                    alt={upgrade.name}
+                                                                    style={{
+                                                                        width: '34px',
+                                                                        height: '34px',
+                                                                        objectFit: 'contain',
+                                                                        imageRendering: 'pixelated',
+                                                                        filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.6))'
+                                                                    }}
+                                                                />
+                                                            ) : (
+                                                                <span style={{
+                                                                    fontSize: '28px',
+                                                                    color: '#ffffff',
+                                                                    fontWeight: 'bold',
+                                                                    textShadow: '2px 2px 0 rgba(0,0,0,0.5)'
+                                                                }}>{upgradeIcon.value}</span>
+                                                            )}
+                                                        </>
+                                                    ) : (
                                                         <span style={{
-                                                            fontSize: '8px',
-                                                            padding: '4px 8px',
-                                                            background: badgeColor,
-                                                            color: '#1a1a1a',
-                                                            borderRadius: '4px',
-                                                            fontWeight: 'bold'
-                                                        }}>
-                                                            {upgrade.rarity.name.toUpperCase()}
-                                                        </span>
+                                                            fontSize: '30px',
+                                                            color: '#ffffff',
+                                                            fontWeight: 'bold',
+                                                            textShadow: '2px 2px 0 rgba(0,0,0,0.5)'
+                                                        }}>⬆</span>
                                                     )}
-                                                </h3>
-                                                <p style={{
-                                                    fontSize: '10px',
-                                                    color: '#4a3830',
-                                                    lineHeight: '1.5'
-                                                }}>{upgrade.desc}</p>
+                                                </div>
+
+                                                {/* Text content on right */}
+                                                <div style={{
+                                                    display: 'flex',
+                                                    flexDirection: 'column',
+                                                    gap: '5px',
+                                                    flex: 1,
+                                                    minWidth: 0,
+                                                    textAlign: 'left'
+                                                }}>
+                                                    {/* Name and Badge on same line */}
+                                                    <div style={{
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        gap: '10px',
+                                                        flexWrap: 'wrap'
+                                                    }}>
+                                                        <span style={{
+                                                            fontSize: '15px',
+                                                            fontWeight: 'bold',
+                                                            lineHeight: '1.3'
+                                                        }}>
+                                                            {upgrade.name.replace(/^[^\w\s]+\s*/, '')}
+                                                        </span>
+
+                                                        {upgrade.rarity && (
+                                                            <span style={{
+                                                                fontSize: '9px',
+                                                                padding: '4px 8px',
+                                                                background: badgeColor,
+                                                                color: badgeTextColor,
+                                                                borderRadius: '3px',
+                                                                fontWeight: 'bold',
+                                                                textTransform: 'uppercase',
+                                                                boxShadow: badgeShadow,
+                                                                letterSpacing: '0.5px',
+                                                                border: '1px solid rgba(0, 0, 0, 0.2)',
+                                                                flexShrink: 0
+                                                            }}>
+                                                                {upgrade.rarity.name}
+                                                            </span>
+                                                        )}
+                                                    </div>
+
+                                                    {/* Description */}
+                                                    <p style={{
+                                                        fontSize: '11px',
+                                                        lineHeight: '1.5',
+                                                        margin: 0,
+                                                        color: '#ffffff',
+                                                        textShadow: '1px 1px 0 rgba(0,0,0,0.3)',
+                                                        opacity: 0.95,
+                                                        textAlign: 'left'
+                                                    }}>
+                                                        {upgrade.desc}
+                                                    </p>
+                                                </div>
                                             </div>
-                                        </div>
-                                        </div>
+                                        </button>
                                     );
                                 })}
                             </div>
