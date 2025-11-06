@@ -1113,6 +1113,21 @@ function GameUI() {
                     {showDebugMenu ? 'X' : 'Test Weapons'}
                 </button>
 
+                {/* Level Up Test Button */}
+                <button
+                    className="level-up-test-btn"
+                    onClick={() => {
+                        if (window.gameState && window.gameState.player) {
+                            window.gameState.player.xp = window.gameState.player.xpToLevel;
+                            console.log('Player will level up! XP:', window.gameState.player.xp, '/', window.gameState.player.xpToLevel);
+                        } else {
+                            console.error('Game not started yet! Start the game first.');
+                        }
+                    }}
+                >
+                    Level Up
+                </button>
+
                 {/* Debug Weapon Menu */}
                 {showDebugMenu && (
                     <div className="debug-menu">

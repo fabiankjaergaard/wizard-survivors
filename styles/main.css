@@ -581,9 +581,31 @@ body {
     transform: scale(1.05);
 }
 
-.debug-menu {
+.level-up-test-btn {
     position: absolute;
     top: 70px;
+    right: 20px;
+    padding: 12px 20px;
+    background: rgba(111, 184, 128, 0.9);
+    border: 2px solid #6fb880;
+    border-radius: 8px;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 100;
+    pointer-events: all;
+}
+
+.level-up-test-btn:hover {
+    background: #6fb880;
+    transform: scale(1.05);
+}
+
+.debug-menu {
+    position: absolute;
+    top: 120px;
     right: 20px;
     background: rgba(0, 0, 0, 0.95);
     backdrop-filter: blur(10px);
