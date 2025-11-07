@@ -1906,15 +1906,6 @@ function GameUI() {
                             padding: '120px 40px 40px 40px',
                             overflow: 'hidden'
                         }}>
-                            {/* Title */}
-                            <div style={{
-                                fontSize: '24px',
-                                color: '#2a1810',
-                                fontWeight: 'bold',
-                                marginBottom: '25px',
-                                textShadow: '2px 2px 0 rgba(255,255,255,0.3)'
-                            }}>MUSIC</div>
-
                             {/* Volume Control */}
                             <div style={{
                                 width: '100%',
@@ -1960,7 +1951,7 @@ function GameUI() {
                                 display: 'flex',
                                 flexDirection: 'column',
                                 alignItems: 'center',
-                                marginTop: '-20px',
+                                marginTop: '-50px',
                                 maxHeight: '480px',
                                 overflowY: 'auto',
                                 overflowX: 'hidden',
