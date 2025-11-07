@@ -1795,7 +1795,7 @@ function GameUI() {
                                     onClick={() => window.location.reload()}
                                     style={{
                                         width: '300px',
-                                        height: '145px',
+                                        height: '200px',
                                         backgroundImage: 'url(assets/KNAPP1.png)',
                                         backgroundSize: '100% 100%',
                                         backgroundPosition: 'center',
@@ -1840,7 +1840,7 @@ function GameUI() {
                                     }}
                                     style={{
                                         width: '300px',
-                                        height: '145px',
+                                        height: '200px',
                                         backgroundImage: 'url(assets/KNAPP1.png)',
                                         backgroundSize: '100% 100%',
                                         backgroundPosition: 'center',
@@ -1961,7 +1961,7 @@ function GameUI() {
                                 flexDirection: 'column',
                                 alignItems: 'center',
                                 marginTop: '10px',
-                                maxHeight: '350px',
+                                maxHeight: '480px',
                                 overflowY: 'auto',
                                 overflowX: 'hidden',
                                 paddingRight: '10px'
@@ -1989,7 +1989,7 @@ function GameUI() {
                                         }}
                                         style={{
                                             width: '300px',
-                                            height: '145px',
+                                            height: '200px',
                                             backgroundImage: 'url(assets/KNAPP1.png)',
                                             backgroundSize: '100% 100%',
                                             backgroundPosition: 'center',
@@ -2055,7 +2055,7 @@ function GameUI() {
                                         }}
                                         style={{
                                             width: '300px',
-                                            height: '145px',
+                                            height: '200px',
                                             backgroundImage: 'url(assets/KNAPP1.png)',
                                             backgroundSize: '100% 100%',
                                             backgroundPosition: 'center',
@@ -2076,7 +2076,7 @@ function GameUI() {
                                             alignItems: 'center',
                                             justifyContent: 'center',
                                             gap: '8px',
-                                            marginTop: '-65px'
+                                            marginTop: '-90px'
                                         }}
                                         onMouseEnter={(e) => {
                                             e.target.style.transform = 'scale(1.05)';
@@ -2103,7 +2103,7 @@ function GameUI() {
                                 <button
                                     style={{
                                         width: '300px',
-                                        height: '145px',
+                                        height: '200px',
                                         backgroundImage: 'url(assets/KNAPP1.png)',
                                         backgroundSize: '100% 100%',
                                         backgroundPosition: 'center',
@@ -2149,7 +2149,7 @@ function GameUI() {
                                 <button
                                     style={{
                                         width: '300px',
-                                        height: '145px',
+                                        height: '200px',
                                         backgroundImage: 'url(assets/KNAPP1.png)',
                                         backgroundSize: '100% 100%',
                                         backgroundPosition: 'center',
@@ -2195,7 +2195,7 @@ function GameUI() {
                                 <button
                                     style={{
                                         width: '300px',
-                                        height: '145px',
+                                        height: '200px',
                                         backgroundImage: 'url(assets/KNAPP1.png)',
                                         backgroundSize: '100% 100%',
                                         backgroundPosition: 'center',
