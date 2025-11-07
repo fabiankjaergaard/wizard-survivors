@@ -1914,7 +1914,7 @@ function GameUI() {
                                 }}
                                 style={{
                                     position: 'absolute',
-                                    left: '40px',
+                                    left: '-70px',
                                     top: '80px',
                                     width: '50px',
                                     height: '50px',
