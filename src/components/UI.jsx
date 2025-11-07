@@ -1960,7 +1960,7 @@ function GameUI() {
                                 display: 'flex',
                                 flexDirection: 'column',
                                 alignItems: 'center',
-                                marginTop: '10px',
+                                marginTop: '-20px',
                                 maxHeight: '480px',
                                 overflowY: 'auto',
                                 overflowX: 'hidden',
