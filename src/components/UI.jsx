@@ -2229,6 +2229,12 @@ function GameUI() {
                                 >
                                 </button>
                             </div>
+
+                            {/* Back Button */}
+                            <BackButton onClick={() => {
+                                setShowMusicControl(false);
+                                setShowPaused(true);
+                            }} />
                         </div>
                     </div>
                 )}
