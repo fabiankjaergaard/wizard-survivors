@@ -852,57 +852,6 @@ function GameUI() {
                     </div>
                 </div>
 
-                {/* Music Mute/Unmute Button */}
-                <button
-                    onClick={() => {
-                        if (window.currentMusicAudio) {
-                            if (window.currentMusicAudio.volume > 0) {
-                                window.currentMusicAudio.volume = 0;
-                                setPlayerData({...playerData, musicVolume: 0});
-                            } else {
-                                window.currentMusicAudio.volume = 0.5;
-                                setPlayerData({...playerData, musicVolume: 0.5});
-                            }
-                        }
-                    }}
-                    style={{
-                        position: 'absolute',
-                        top: '20px',
-                        right: '110px',
-                        width: '80px',
-                        height: '80px',
-                        backgroundImage: 'url(assets/WeaponSlotTestGame.png)',
-                        backgroundSize: '100% 100%',
-                        backgroundPosition: 'center',
-                        backgroundRepeat: 'no-repeat',
-                        border: 'none',
-                        backgroundColor: 'transparent',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        cursor: 'default',
-                        imageRendering: 'pixelated',
-                        transition: 'transform 0.1s',
-                        zIndex: 3000,
-                        padding: 0
-                    }}
-                    onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-                    onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-                >
-                    <span style={{
-                        fontSize: '24px',
-                        color: 'white',
-                        fontFamily: '"Press Start 2P", monospace',
-                        textShadow: '2px 2px 0 rgba(0,0,0,0.5)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        lineHeight: 1
-                    }}>
-                        {playerData.musicVolume > 0 ? '♪' : '✕'}
-                    </span>
-                </button>
-
                 {/* Active Weapons Display */}
                 <div className="weapons-hud">
                     {window.gameState && window.gameState.player.weapons.map((weapon, index) => {
@@ -1378,30 +1327,38 @@ function GameUI() {
                                 paddingTop: '65px'
                             }}>
                                 {upgrades.map((upgrade, index) => {
-                                    // Determine colors based on rarity
-                                    let borderColor = '#8b6f47'; // Always brown border
-                                    let glowColor = 'transparent';
-                                    let badgeColor = '#9ca3af';
-                                    let badgeTextColor = '#1a1a1a';
-                                    let badgeShadow = 'none';
+                                    // Determine badge colors, glow and particle effects based on rarity
+                                    let badgeColor = '#6b7280';
+                                    let badgeTextColor = '#ffffff';
+                                    let badgeGlow = '0 0 8px rgba(107, 114, 128, 0.6)';
+                                    let badgeParticleClass = 'badge-particles-common';
+                                    let rarityName = 'common';
 
                                     // Set badge styling based on rarity
                                     if (upgrade.rarity) {
-                                        if (upgrade.rarity.key === 'common') {
-                                            badgeColor = '#9ca3af';
-                                            badgeTextColor = '#1a1a1a';
-                                        } else if (upgrade.rarity.key === 'rare') {
-                                            badgeColor = '#3b82f6';
+                                        // Get rarity name and convert to lowercase
+                                        rarityName = (upgrade.rarity.name || upgrade.rarity.key || upgrade.rarity || '').toString().toLowerCase();
+
+                                        if (rarityName.includes('common')) {
+                                            badgeColor = '#6b7280';
                                             badgeTextColor = '#ffffff';
-                                            badgeShadow = '0 0 8px rgba(59, 130, 246, 0.6)';
-                                        } else if (upgrade.rarity.key === 'epic') {
-                                            badgeColor = '#a855f7';
+                                            badgeGlow = '0 0 8px rgba(107, 114, 128, 0.6)';
+                                            badgeParticleClass = 'badge-particles-common';
+                                        } else if (rarityName.includes('rare')) {
+                                            badgeColor = '#2563eb';
                                             badgeTextColor = '#ffffff';
-                                            badgeShadow = '0 0 8px rgba(168, 85, 247, 0.6)';
-                                        } else if (upgrade.rarity.key === 'legendary') {
-                                            badgeColor = '#f59e0b';
-                                            badgeTextColor = '#1a1a1a';
-                                            badgeShadow = '0 0 12px rgba(245, 158, 11, 0.8)';
+                                            badgeGlow = '0 0 10px rgba(37, 99, 235, 0.8)';
+                                            badgeParticleClass = 'badge-particles-rare';
+                                        } else if (rarityName.includes('epic')) {
+                                            badgeColor = '#9333ea';
+                                            badgeTextColor = '#ffffff';
+                                            badgeGlow = '0 0 12px rgba(147, 51, 234, 0.9)';
+                                            badgeParticleClass = 'badge-particles-epic';
+                                        } else if (rarityName.includes('legend')) {
+                                            badgeColor = '#ea580c';
+                                            badgeTextColor = '#ffffff';
+                                            badgeGlow = '0 0 15px rgba(234, 88, 12, 1)';
+                                            badgeParticleClass = 'badge-particles-legendary';
                                         }
                                     }
 
@@ -1440,20 +1397,24 @@ function GameUI() {
                                                 overflow: 'visible'
                                             }}
                                             onMouseEnter={(e) => {
-                                                e.target.style.transform = 'scale(1.05)';
-                                                e.target.style.filter = 'brightness(1.15)';
+                                                e.currentTarget.style.transform = 'translateY(-5px) scale(1.03)';
+                                                e.currentTarget.style.filter = 'brightness(1.2) drop-shadow(0 8px 12px rgba(0,0,0,0.4))';
+                                                e.currentTarget.style.transition = 'all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)';
                                             }}
                                             onMouseLeave={(e) => {
-                                                e.target.style.transform = 'scale(1)';
-                                                e.target.style.filter = 'brightness(1)';
+                                                e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                                                e.currentTarget.style.filter = 'brightness(1)';
+                                                e.currentTarget.style.transition = 'all 0.2s ease-out';
                                             }}
                                             onMouseDown={(e) => {
-                                                e.target.style.transform = 'scale(0.95)';
-                                                e.target.style.filter = 'brightness(0.9)';
+                                                e.currentTarget.style.transform = 'translateY(2px) scale(0.98)';
+                                                e.currentTarget.style.filter = 'brightness(0.95)';
+                                                e.currentTarget.style.transition = 'all 0.1s ease-out';
                                             }}
                                             onMouseUp={(e) => {
-                                                e.target.style.transform = 'scale(1.05)';
-                                                e.target.style.filter = 'brightness(1.15)';
+                                                e.currentTarget.style.transform = 'translateY(-5px) scale(1.03)';
+                                                e.currentTarget.style.filter = 'brightness(1.2) drop-shadow(0 8px 12px rgba(0,0,0,0.4))';
+                                                e.currentTarget.style.transition = 'all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1)';
                                             }}
                                         >
                                             {/* Horizontal Layout - Icon left, text right */}
@@ -1515,7 +1476,7 @@ function GameUI() {
                                                     minWidth: 0,
                                                     textAlign: 'left'
                                                 }}>
-                                                    {/* Name and Badge on same line */}
+                                                    {/* Name and Badge */}
                                                     <div style={{
                                                         display: 'flex',
                                                         alignItems: 'center',
@@ -1531,20 +1492,140 @@ function GameUI() {
                                                         </span>
 
                                                         {upgrade.rarity && (
-                                                            <span style={{
-                                                                fontSize: '9px',
-                                                                padding: '4px 8px',
-                                                                background: badgeColor,
-                                                                color: badgeTextColor,
-                                                                borderRadius: '3px',
-                                                                fontWeight: 'bold',
-                                                                textTransform: 'uppercase',
-                                                                boxShadow: badgeShadow,
-                                                                letterSpacing: '0.5px',
-                                                                border: '1px solid rgba(0, 0, 0, 0.2)',
-                                                                flexShrink: 0
-                                                            }}>
+                                                            <span
+                                                                className={badgeParticleClass}
+                                                                style={{
+                                                                    position: 'relative',
+                                                                    display: 'inline-block',
+                                                                    fontSize: '8px',
+                                                                    padding: '3px 6px',
+                                                                    backgroundColor: badgeColor,
+                                                                    color: badgeTextColor,
+                                                                    borderRadius: '3px',
+                                                                    fontWeight: 'bold',
+                                                                    textTransform: 'uppercase',
+                                                                    letterSpacing: '0.5px',
+                                                                    border: `1px solid ${badgeColor}`,
+                                                                    boxShadow: badgeGlow,
+                                                                    flexShrink: 0,
+                                                                    textShadow: '1px 1px 2px rgba(0,0,0,0.5)',
+                                                                    overflow: 'visible'
+                                                                }}>
                                                                 {upgrade.rarity.name}
+                                                                {/* Orbiting particles - only on Epic and Legendary */}
+                                                                {rarityName.includes('epic') && (
+                                                                    <>
+                                                                        <span style={{
+                                                                            position: 'absolute',
+                                                                            width: '4px',
+                                                                            height: '4px',
+                                                                            borderRadius: '50%',
+                                                                            background: `radial-gradient(circle, ${badgeColor}, transparent)`,
+                                                                            boxShadow: `0 0 8px ${badgeColor}, 0 0 12px ${badgeColor}`,
+                                                                            left: '50%',
+                                                                            top: '50%',
+                                                                            marginLeft: '-2px',
+                                                                            marginTop: '-2px',
+                                                                            animation: `orbit-badge-${index % 3}-1 2s linear infinite`,
+                                                                            pointerEvents: 'none',
+                                                                            opacity: 0.9
+                                                                        }}></span>
+                                                                        <span style={{
+                                                                            position: 'absolute',
+                                                                            width: '3px',
+                                                                            height: '3px',
+                                                                            borderRadius: '50%',
+                                                                            background: `radial-gradient(circle, ${badgeColor}, transparent)`,
+                                                                            boxShadow: `0 0 7px ${badgeColor}, 0 0 10px ${badgeColor}`,
+                                                                            left: '50%',
+                                                                            top: '50%',
+                                                                            marginLeft: '-1.5px',
+                                                                            marginTop: '-1.5px',
+                                                                            animation: `orbit-badge-${index % 3}-2 2.5s linear infinite`,
+                                                                            pointerEvents: 'none',
+                                                                            opacity: 0.85
+                                                                        }}></span>
+                                                                        <span style={{
+                                                                            position: 'absolute',
+                                                                            width: '3px',
+                                                                            height: '3px',
+                                                                            borderRadius: '50%',
+                                                                            background: `radial-gradient(circle, ${badgeColor}, transparent)`,
+                                                                            boxShadow: `0 0 6px ${badgeColor}, 0 0 9px ${badgeColor}`,
+                                                                            left: '50%',
+                                                                            top: '50%',
+                                                                            marginLeft: '-1.5px',
+                                                                            marginTop: '-1.5px',
+                                                                            animation: `orbit-badge-${index % 3}-3 2.3s linear infinite 0.5s`,
+                                                                            pointerEvents: 'none',
+                                                                            opacity: 0.8
+                                                                        }}></span>
+                                                                    </>
+                                                                )}
+                                                                {rarityName.includes('legend') && (
+                                                                    <>
+                                                                        <span style={{
+                                                                            position: 'absolute',
+                                                                            width: '6px',
+                                                                            height: '6px',
+                                                                            borderRadius: '50%',
+                                                                            background: `radial-gradient(circle, ${badgeColor}, transparent)`,
+                                                                            boxShadow: `0 0 12px ${badgeColor}, 0 0 18px ${badgeColor}, 0 0 24px ${badgeColor}`,
+                                                                            left: '50%',
+                                                                            top: '50%',
+                                                                            marginLeft: '-3px',
+                                                                            marginTop: '-3px',
+                                                                            animation: `orbit-badge-${index % 3}-1 1.2s linear infinite`,
+                                                                            pointerEvents: 'none',
+                                                                            opacity: 1
+                                                                        }}></span>
+                                                                        <span style={{
+                                                                            position: 'absolute',
+                                                                            width: '5px',
+                                                                            height: '5px',
+                                                                            borderRadius: '50%',
+                                                                            background: `radial-gradient(circle, ${badgeColor}, transparent)`,
+                                                                            boxShadow: `0 0 10px ${badgeColor}, 0 0 15px ${badgeColor}, 0 0 20px ${badgeColor}`,
+                                                                            left: '50%',
+                                                                            top: '50%',
+                                                                            marginLeft: '-2.5px',
+                                                                            marginTop: '-2.5px',
+                                                                            animation: `orbit-badge-${index % 3}-2 1.5s linear infinite`,
+                                                                            pointerEvents: 'none',
+                                                                            opacity: 0.95
+                                                                        }}></span>
+                                                                        <span style={{
+                                                                            position: 'absolute',
+                                                                            width: '5px',
+                                                                            height: '5px',
+                                                                            borderRadius: '50%',
+                                                                            background: `radial-gradient(circle, ${badgeColor}, transparent)`,
+                                                                            boxShadow: `0 0 9px ${badgeColor}, 0 0 14px ${badgeColor}, 0 0 18px ${badgeColor}`,
+                                                                            left: '50%',
+                                                                            top: '50%',
+                                                                            marginLeft: '-2.5px',
+                                                                            marginTop: '-2.5px',
+                                                                            animation: `orbit-badge-${index % 3}-3 1.4s linear infinite 0.3s`,
+                                                                            pointerEvents: 'none',
+                                                                            opacity: 0.92
+                                                                        }}></span>
+                                                                        <span style={{
+                                                                            position: 'absolute',
+                                                                            width: '4px',
+                                                                            height: '4px',
+                                                                            borderRadius: '50%',
+                                                                            background: `radial-gradient(circle, ${badgeColor}, transparent)`,
+                                                                            boxShadow: `0 0 8px ${badgeColor}, 0 0 12px ${badgeColor}`,
+                                                                            left: '50%',
+                                                                            top: '50%',
+                                                                            marginLeft: '-2px',
+                                                                            marginTop: '-2px',
+                                                                            animation: `orbit-badge-${index % 3}-1 1.8s linear infinite 0.6s`,
+                                                                            pointerEvents: 'none',
+                                                                            opacity: 0.88
+                                                                        }}></span>
+                                                                    </>
+                                                                )}
                                                             </span>
                                                         )}
                                                     </div>
@@ -1741,7 +1822,7 @@ function GameUI() {
                 )}
 
                 {/* Pause Screen with Pixel Art Menu */}
-                {showPaused && !showLevelUp && !showGameOver && !showChestPopup && !showMysteryBoxSpinner && (
+                {showPaused && !showLevelUp && !showGameOver && !showChestPopup && !showMysteryBoxSpinner && !showMusicControl && (
                     <div className="modal-overlay">
                         <div style={{
                             position: 'relative',
@@ -1906,7 +1987,9 @@ function GameUI() {
                                 <button
                                     onClick={() => {
                                         setShowMusicControl(true);
-                                        setShowPaused(false);
+                                        if (window.gameState) {
+                                            window.gameState.isPaused = true;
+                                        }
                                     }}
                                     style={{
                                         width: '300px',
@@ -1953,10 +2036,9 @@ function GameUI() {
                 )}
 
                 {/* In-Game Music Menu */}
-                {showMusicControl && (
-                    <div className="modal-overlay" style={{
-                        position: 'relative'
-                    }}>
+                {showMusicControl && showPaused && (
+                    <div className="modal-overlay">
+                        <div style={{position: 'relative'}}>
                         {/* Back button */}
                         <button
                             onClick={() => {
@@ -1965,7 +2047,7 @@ function GameUI() {
                             }}
                             style={{
                                 position: 'absolute',
-                                left: 'calc(50% - 320px)',
+                                left: '-95px',
                                 top: '50%',
                                 transform: 'translateY(-50%)',
                                     width: '80px',
@@ -2345,6 +2427,7 @@ function GameUI() {
                                 >
                                 </button>
                             </div>
+                        </div>
                         </div>
                     </div>
                 )}
@@ -3078,6 +3161,8 @@ function CharacterMenu({ playerData, setPlayerData, onBack }) {
 
 // Skill Tree Menu Component (same layout as main menu)
 function SkillTreeMenu({ playerData, setPlayerData, onBack }) {
+    const [hoveredSkill, setHoveredSkill] = React.useState(null);
+
     // ESC key to go back
     React.useEffect(() => {
         const handleKeyDown = (e) => {
@@ -3223,17 +3308,33 @@ function SkillTreeMenu({ playerData, setPlayerData, onBack }) {
                     justifyContent: 'flex-start',
                     alignItems: 'center',
                     padding: '0',
-                    overflow: 'hidden',
+                    overflow: 'visible',
                     boxSizing: 'border-box'
                 }}>
+                    {/* Tree Badge Icon - overlapping top */}
+                    <img
+                        src={`assets/SkillTree${tree.name === 'Combat' ? 'Combat' : tree.name === 'Defense' ? 'DefenseGame' : 'MagicGame'}.png`}
+                        alt={tree.name}
+                        style={{
+                            position: 'absolute',
+                            top: '10px',
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                            width: '180px',
+                            height: 'auto',
+                            imageRendering: 'pixelated',
+                            zIndex: 10
+                        }}
+                    />
+
                     <div style={{
                         position: 'absolute',
-                        top: '110px',
+                        top: '140px',
                         left: '45px',
                         right: '45px',
                         bottom: '110px',
                         overflowY: 'auto',
-                        overflowX: 'hidden',
+                        overflowX: 'visible',
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
@@ -3243,16 +3344,6 @@ function SkillTreeMenu({ playerData, setPlayerData, onBack }) {
                         paddingLeft: '10px',
                         paddingRight: '20px'
                     }}>
-                        {/* Tree Title */}
-                        <h3 style={{
-                            color: '#6fb880',
-                            fontSize: '18px',
-                            textAlign: 'center',
-                            marginBottom: '10px',
-                            textShadow: '2px 2px 0 #2a5840',
-                            fontFamily: '"Press Start 2P", monospace',
-                            textTransform: 'uppercase'
-                        }}>{tree.name}</h3>
 
                         {/* Skill Slots */}
                         <div style={{
@@ -3272,7 +3363,7 @@ function SkillTreeMenu({ playerData, setPlayerData, onBack }) {
                                         backgroundPosition: 'center',
                                         backgroundRepeat: 'no-repeat',
                                         border: 'none',
-                                        cursor: 'default',
+                                        cursor: 'pointer',
                                         imageRendering: 'pixelated',
                                         transition: 'transform 0.15s ease, filter 0.15s ease',
                                         backgroundColor: 'transparent',
@@ -3286,17 +3377,65 @@ function SkillTreeMenu({ playerData, setPlayerData, onBack }) {
                                     onMouseEnter={(e) => {
                                         e.currentTarget.style.transform = 'scale(1.1)';
                                         e.currentTarget.style.filter = 'brightness(1.2)';
+                                        setHoveredSkill(skill);
                                     }}
                                     onMouseLeave={(e) => {
                                         e.currentTarget.style.transform = 'scale(1)';
                                         e.currentTarget.style.filter = 'brightness(1)';
+                                        setHoveredSkill(null);
                                     }}
                                 >
-                                    {/* Icon placeholder - no emoji */}
                                 </div>
                             ))}
                         </div>
                     </div>
+
+                    {/* Tooltip rendered outside scroll container */}
+                    {hoveredSkill && (
+                        <div style={{
+                            position: 'absolute',
+                            top: '250px',
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                            backgroundImage: 'url(assets/KNAPP1.png)',
+                            backgroundSize: '100% 100%',
+                            backgroundPosition: 'center',
+                            backgroundRepeat: 'no-repeat',
+                            imageRendering: 'pixelated',
+                            padding: '20px 25px',
+                            minWidth: '180px',
+                            minHeight: '70px',
+                            zIndex: 9999,
+                            pointerEvents: 'none',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '8px'
+                        }}>
+                            <div style={{
+                                color: '#6fb880',
+                                fontSize: '9px',
+                                fontWeight: 'bold',
+                                textShadow: '2px 2px 0 #2a5840',
+                                fontFamily: '"Press Start 2P", monospace',
+                                textAlign: 'center',
+                                whiteSpace: 'nowrap'
+                            }}>
+                                {hoveredSkill.name}
+                            </div>
+                            <div style={{
+                                color: '#d4a574',
+                                fontSize: '7px',
+                                fontFamily: '"Press Start 2P", monospace',
+                                textShadow: '1px 1px 2px rgba(0,0,0,0.8)',
+                                textAlign: 'center',
+                                whiteSpace: 'nowrap'
+                            }}>
+                                {hoveredSkill.desc}
+                            </div>
+                        </div>
+                    )}
                 </div>
             ))}
         </div>

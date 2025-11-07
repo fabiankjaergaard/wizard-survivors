@@ -5966,7 +5966,34 @@ class Projectile {
     }
 
     draw() {
-        // Different colors and effects for different weapon types
+        const screen = toScreen(this.x, this.y);
+
+        // Magic missile uses custom sprite with rotation
+        if (this.weapon.type === 'magic_missile') {
+            const projectileImg = new Image();
+            projectileImg.src = '/assets/MagicOrbProjectileBasicGame.png';
+
+            // Calculate angle based on velocity direction
+            const angle = Math.atan2(this.vy, this.vx);
+
+            ctx.save();
+            ctx.translate(screen.x, screen.y);
+            ctx.rotate(angle);
+
+            // Add glow effect
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = '#a855f7';
+
+            // Draw projectile image (centered)
+            const size = 40; // Size of the sprite
+            ctx.drawImage(projectileImg, -size/2, -size/2, size, size);
+
+            ctx.restore();
+            ctx.shadowBlur = 0;
+            return;
+        }
+
+        // Different colors and effects for other weapon types
         let fillColor, glowColor, size;
 
         switch(this.weapon.type) {
@@ -6002,7 +6029,7 @@ class Projectile {
                 ctx.shadowBlur = 12;
                 ctx.shadowColor = '#9370db';
                 break;
-            default: // magic_missile
+            default:
                 fillColor = '#00d9ff';
                 glowColor = '#7fffd4';
                 size = 5;
@@ -6010,9 +6037,7 @@ class Projectile {
                 ctx.shadowColor = '#00d9ff';
         }
 
-        const screen = toScreen(this.x, this.y);
-
-        // Draw simple circle projectile
+        // Draw simple circle projectile for other types
         ctx.fillStyle = fillColor;
         ctx.beginPath();
         ctx.arc(screen.x, screen.y, size, 0, Math.PI * 2);

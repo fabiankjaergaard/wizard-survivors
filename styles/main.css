@@ -1833,3 +1833,293 @@ body {
         letter-spacing: 3px !important;
     }
 }
+
+/* Rarity Badge Particle Effects */
+.badge-particles-common,
+.badge-particles-rare,
+.badge-particles-epic,
+.badge-particles-legendary {
+    position: relative;
+    overflow: visible;
+}
+
+.badge-particles-common::before,
+.badge-particles-common::after,
+.badge-particles-rare::before,
+.badge-particles-rare::after,
+.badge-particles-epic::before,
+.badge-particles-epic::after,
+.badge-particles-legendary::before,
+.badge-particles-legendary::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+/* Common - Gray particles */
+@keyframes particle-float-common-1 {
+    0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.6;
+    }
+    100% {
+        transform: translate(-15px, -20px) scale(0);
+        opacity: 0;
+    }
+}
+
+@keyframes particle-float-common-2 {
+    0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.6;
+    }
+    100% {
+        transform: translate(15px, -25px) scale(0);
+        opacity: 0;
+    }
+}
+
+.badge-particles-common::before {
+    width: 4px;
+    height: 4px;
+    background: radial-gradient(circle, rgba(107, 114, 128, 1), rgba(107, 114, 128, 0));
+    left: 20%;
+    bottom: 0;
+    animation: particle-float-common-1 2s ease-out infinite;
+}
+
+.badge-particles-common::after {
+    width: 3px;
+    height: 3px;
+    background: radial-gradient(circle, rgba(107, 114, 128, 1), rgba(107, 114, 128, 0));
+    right: 25%;
+    bottom: 0;
+    animation: particle-float-common-2 2.3s ease-out infinite 0.4s;
+}
+
+/* Rare - Blue particles */
+@keyframes particle-float-rare-1 {
+    0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.8;
+    }
+    100% {
+        transform: translate(-18px, -28px) scale(0);
+        opacity: 0;
+    }
+}
+
+@keyframes particle-float-rare-2 {
+    0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.8;
+    }
+    100% {
+        transform: translate(18px, -30px) scale(0);
+        opacity: 0;
+    }
+}
+
+.badge-particles-rare::before {
+    width: 5px;
+    height: 5px;
+    background: radial-gradient(circle, rgba(37, 99, 235, 1), rgba(37, 99, 235, 0));
+    box-shadow: 0 0 6px rgba(37, 99, 235, 0.8);
+    left: 15%;
+    bottom: 0;
+    animation: particle-float-rare-1 1.8s ease-out infinite;
+}
+
+.badge-particles-rare::after {
+    width: 4px;
+    height: 4px;
+    background: radial-gradient(circle, rgba(37, 99, 235, 1), rgba(37, 99, 235, 0));
+    box-shadow: 0 0 5px rgba(37, 99, 235, 0.8);
+    right: 20%;
+    bottom: 0;
+    animation: particle-float-rare-2 2s ease-out infinite 0.3s;
+}
+
+/* Epic - Purple particles */
+@keyframes particle-float-epic-1 {
+    0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.9;
+    }
+    100% {
+        transform: translate(-22px, -35px) scale(0);
+        opacity: 0;
+    }
+}
+
+@keyframes particle-float-epic-2 {
+    0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.9;
+    }
+    100% {
+        transform: translate(20px, -38px) scale(0);
+        opacity: 0;
+    }
+}
+
+.badge-particles-epic::before {
+    width: 6px;
+    height: 6px;
+    background: radial-gradient(circle, rgba(147, 51, 234, 1), rgba(147, 51, 234, 0));
+    box-shadow: 0 0 8px rgba(147, 51, 234, 1);
+    left: 12%;
+    bottom: 0;
+    animation: particle-float-epic-1 1.5s ease-out infinite;
+}
+
+.badge-particles-epic::after {
+    width: 5px;
+    height: 5px;
+    background: radial-gradient(circle, rgba(147, 51, 234, 1), rgba(147, 51, 234, 0));
+    box-shadow: 0 0 7px rgba(147, 51, 234, 1);
+    right: 18%;
+    bottom: 0;
+    animation: particle-float-epic-2 1.7s ease-out infinite 0.2s;
+}
+
+/* Legendary - Orange/Gold particles */
+@keyframes particle-float-legendary-1 {
+    0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-25px, -42px) scale(0);
+        opacity: 0;
+    }
+}
+
+@keyframes particle-float-legendary-2 {
+    0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    100% {
+        transform: translate(25px, -45px) scale(0);
+        opacity: 0;
+    }
+}
+
+.badge-particles-legendary::before {
+    width: 7px;
+    height: 7px;
+    background: radial-gradient(circle, rgba(234, 88, 12, 1), rgba(234, 88, 12, 0));
+    box-shadow: 0 0 10px rgba(234, 88, 12, 1), 0 0 15px rgba(255, 200, 0, 0.5);
+    left: 10%;
+    bottom: 0;
+    animation: particle-float-legendary-1 1.2s ease-out infinite;
+}
+
+.badge-particles-legendary::after {
+    width: 6px;
+    height: 6px;
+    background: radial-gradient(circle, rgba(234, 88, 12, 1), rgba(234, 88, 12, 0));
+    box-shadow: 0 0 10px rgba(234, 88, 12, 1), 0 0 15px rgba(255, 200, 0, 0.5);
+    right: 15%;
+    bottom: 0;
+    animation: particle-float-legendary-2 1.3s ease-out infinite 0.15s;
+}
+
+/* Orbiting particles around badge (like XP orbs) */
+@keyframes orbit-badge-0-1 {
+    0% { transform: translate(0, -15px) scale(1); opacity: 0.8; }
+    25% { transform: translate(15px, 0) scale(1.1); opacity: 1; }
+    50% { transform: translate(0, 15px) scale(1); opacity: 0.8; }
+    75% { transform: translate(-15px, 0) scale(0.9); opacity: 0.7; }
+    100% { transform: translate(0, -15px) scale(1); opacity: 0.8; }
+}
+
+@keyframes orbit-badge-0-2 {
+    0% { transform: translate(12px, -8px) scale(1); opacity: 0.7; }
+    25% { transform: translate(12px, 8px) scale(0.9); opacity: 0.6; }
+    50% { transform: translate(-12px, 8px) scale(1); opacity: 0.8; }
+    75% { transform: translate(-12px, -8px) scale(1.1); opacity: 0.9; }
+    100% { transform: translate(12px, -8px) scale(1); opacity: 0.7; }
+}
+
+@keyframes orbit-badge-0-3 {
+    0% { transform: translate(-10px, -10px) scale(1); opacity: 0.6; }
+    25% { transform: translate(10px, -10px) scale(0.9); opacity: 0.7; }
+    50% { transform: translate(10px, 10px) scale(1.1); opacity: 0.8; }
+    75% { transform: translate(-10px, 10px) scale(1); opacity: 0.6; }
+    100% { transform: translate(-10px, -10px) scale(1); opacity: 0.6; }
+}
+
+@keyframes orbit-badge-1-1 {
+    0% { transform: translate(0, -16px) scale(1); opacity: 0.8; }
+    25% { transform: translate(16px, 0) scale(1.1); opacity: 1; }
+    50% { transform: translate(0, 16px) scale(1); opacity: 0.8; }
+    75% { transform: translate(-16px, 0) scale(0.9); opacity: 0.7; }
+    100% { transform: translate(0, -16px) scale(1); opacity: 0.8; }
+}
+
+@keyframes orbit-badge-1-2 {
+    0% { transform: translate(13px, -9px) scale(1); opacity: 0.7; }
+    25% { transform: translate(13px, 9px) scale(0.9); opacity: 0.6; }
+    50% { transform: translate(-13px, 9px) scale(1); opacity: 0.8; }
+    75% { transform: translate(-13px, -9px) scale(1.1); opacity: 0.9; }
+    100% { transform: translate(13px, -9px) scale(1); opacity: 0.7; }
+}
+
+@keyframes orbit-badge-1-3 {
+    0% { transform: translate(-11px, -11px) scale(1); opacity: 0.6; }
+    25% { transform: translate(11px, -11px) scale(0.9); opacity: 0.7; }
+    50% { transform: translate(11px, 11px) scale(1.1); opacity: 0.8; }
+    75% { transform: translate(-11px, 11px) scale(1); opacity: 0.6; }
+    100% { transform: translate(-11px, -11px) scale(1); opacity: 0.6; }
+}
+
+@keyframes orbit-badge-2-1 {
+    0% { transform: translate(0, -14px) scale(1); opacity: 0.8; }
+    25% { transform: translate(14px, 0) scale(1.1); opacity: 1; }
+    50% { transform: translate(0, 14px) scale(1); opacity: 0.8; }
+    75% { transform: translate(-14px, 0) scale(0.9); opacity: 0.7; }
+    100% { transform: translate(0, -14px) scale(1); opacity: 0.8; }
+}
+
+@keyframes orbit-badge-2-2 {
+    0% { transform: translate(11px, -7px) scale(1); opacity: 0.7; }
+    25% { transform: translate(11px, 7px) scale(0.9); opacity: 0.6; }
+    50% { transform: translate(-11px, 7px) scale(1); opacity: 0.8; }
+    75% { transform: translate(-11px, -7px) scale(1.1); opacity: 0.9; }
+    100% { transform: translate(11px, -7px) scale(1); opacity: 0.7; }
+}
+
+@keyframes orbit-badge-2-3 {
+    0% { transform: translate(-9px, -9px) scale(1); opacity: 0.6; }
+    25% { transform: translate(9px, -9px) scale(0.9); opacity: 0.7; }
+    50% { transform: translate(9px, 9px) scale(1.1); opacity: 0.8; }
+    75% { transform: translate(-9px, 9px) scale(1); opacity: 0.6; }
+    100% { transform: translate(-9px, -9px) scale(1); opacity: 0.6; }
+}

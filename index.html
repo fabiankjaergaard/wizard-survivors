@@ -13,7 +13,69 @@
 <body>
     <div id="root"></div>
 
-    <script src="src/game/game.js"></script>
-    <script type="text/babel" src="src/components/UI.jsx"></script>
+    <!-- Constants (load first - no dependencies) -->
+    <script src="src/constants/config.js"></script>
+    <script src="src/constants/rarity.js"></script>
+    <script src="src/constants/achievements.js"></script>
+    <script src="src/constants/ultimates.js"></script>
+
+    <!-- Systems (depend on constants) -->
+    <script src="src/systems/sound.js"></script>
+    <script src="src/systems/camera.js"></script>
+    <script src="src/systems/difficulty.js"></script>
+    <script src="src/systems/input.js"></script>
+
+    <!-- Utils (depend on constants, systems) -->
+    <script src="src/utils/sprites.js"></script>
+    <script src="src/utils/gamestate.js"></script>
+    <script src="src/utils/helpers.js"></script>
+
+    <!-- Entity Classes (depend on CONFIG, camera, gameState) -->
+    <script src="src/entities/particle.js"></script>
+    <script src="src/entities/xporb.js"></script>
+    <script src="src/entities/damagenumber.js"></script>
+    <script src="src/entities/chest.js"></script>
+    <script src="src/entities/mysterybox.js"></script>
+    <script src="src/entities/player.js"></script>
+    <script src="src/entities/enemy.js"></script>
+    <script src="src/entities/charger.js"></script>
+    <script src="src/entities/teleporter.js"></script>
+    <script src="src/entities/necromancer.js"></script>
+    <script src="src/entities/archdemon.js"></script>
+    <script src="src/entities/splitter.js"></script>
+    <script src="src/entities/ranged.js"></script>
+    <script src="src/entities/tank.js"></script>
+    <script src="src/entities/healer.js"></script>
+    <script src="src/entities/swarm.js"></script>
+
+    <!-- Weapon Classes (depend on CONFIG, camera, gameState, entities) -->
+    <script src="src/weapons/projectile.js"></script>
+    <script src="src/weapons/orbitingorb.js"></script>
+    <script src="src/weapons/homingmissile.js"></script>
+    <script src="src/weapons/tornado.js"></script>
+    <script src="src/weapons/spinningblade.js"></script>
+    <script src="src/weapons/meteor.js"></script>
+    <script src="src/weapons/chainlightning.js"></script>
+    <script src="src/weapons/spiritwolf.js"></script>
+    <script src="src/weapons/blackhole.js"></script>
+    <script src="src/weapons/poisoncloud.js"></script>
+    <script src="src/weapons/crystalshard.js"></script>
+    <script src="src/weapons/frostnova.js"></script>
+    <script src="src/weapons/thunderhammer.js"></script>
+    <script src="src/weapons/shadowclone.js"></script>
+    <script src="src/weapons/swordspin.js"></script>
+
+    <!-- Core Game Functions (depend on everything above) -->
+    <script src="src/core/init.js"></script>
+    <script src="src/core/spawning.js"></script>
+    <script src="src/core/combat.js"></script>
+    <script src="src/core/progression.js"></script>
+    <script src="src/core/rendering.js"></script>
+    <script src="src/core/gameloop.js"></script>
+
+    <!-- UI Components (React - loads last) -->
+    <script type="text/babel" src="src/components/constants.jsx"></script>
+    <script type="text/babel" src="src/components/BackButton.jsx"></script>
+    <script type="text/babel" src="src/components/GameUI.jsx"></script>
 </body>
 </html>
