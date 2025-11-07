@@ -1906,57 +1906,16 @@ function GameUI() {
                             padding: '120px 40px 40px 40px',
                             overflow: 'hidden'
                         }}>
-                            {/* Close X Button */}
-                            <button
-                                onClick={() => {
-                                    setShowMusicControl(false);
-                                    setShowPaused(true);
-                                }}
-                                style={{
-                                    position: 'absolute',
-                                    top: '30px',
-                                    right: '30px',
-                                    width: '40px',
-                                    height: '40px',
-                                    backgroundColor: '#8b6f47',
-                                    border: '3px solid #4a3728',
-                                    borderRadius: '0',
-                                    cursor: 'url(assets/wand-cursor-small.png) 8 8, auto',
-                                    imageRendering: 'pixelated',
-                                    fontFamily: '"Press Start 2P", monospace',
-                                    fontSize: '20px',
-                                    color: '#2a1810',
-                                    fontWeight: 'bold',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    transition: 'transform 0.15s ease, filter 0.15s ease',
-                                    filter: 'brightness(1)'
-                                }}
-                                onMouseEnter={(e) => {
-                                    e.target.style.transform = 'scale(1.1)';
-                                    e.target.style.filter = 'brightness(1.2)';
-                                }}
-                                onMouseLeave={(e) => {
-                                    e.target.style.transform = 'scale(1)';
-                                    e.target.style.filter = 'brightness(1)';
-                                }}
-                                onMouseDown={(e) => {
-                                    e.target.style.transform = 'scale(0.9)';
-                                    e.target.style.filter = 'brightness(0.8)';
-                                }}
-                                onMouseUp={(e) => {
-                                    e.target.style.transform = 'scale(1.1)';
-                                    e.target.style.filter = 'brightness(1.2)';
-                                }}
-                            >
-                                ×
-                            </button>
+                            {/* Back Button */}
+                            <BackButton onClick={() => {
+                                setShowMusicControl(false);
+                                setShowPaused(true);
+                            }} />
 
                             {/* Volume Control */}
                             <div style={{
                                 width: '100%',
-                                maxWidth: '200px',
+                                maxWidth: '300px',
                                 marginBottom: '15px',
                                 textAlign: 'center'
                             }}>
@@ -1967,31 +1926,43 @@ function GameUI() {
                                     marginBottom: '8px',
                                     fontWeight: 'bold'
                                 }}>VOLUME: {Math.round(playerData.musicVolume * 100)}%</label>
-                                <input
-                                    type="range"
-                                    min="0"
-                                    max="1"
-                                    step="0.05"
-                                    value={playerData.musicVolume}
-                                    onChange={(e) => {
-                                        const volume = parseFloat(e.target.value);
-                                        setPlayerData({...playerData, musicVolume: volume});
-                                        if (window.currentMusicAudio) {
-                                            window.currentMusicAudio.volume = volume;
-                                        }
-                                    }}
-                                    style={{
-                                        width: '100%',
-                                        height: '15px',
-                                        cursor: 'pointer',
-                                        appearance: 'none',
-                                        backgroundColor: '#a0826d',
-                                        border: '2px solid #4a3728',
-                                        borderRadius: '0',
-                                        outline: 'none',
-                                        imageRendering: 'pixelated'
-                                    }}
-                                />
+                                <div style={{
+                                    position: 'relative',
+                                    width: '100%',
+                                    height: '50px',
+                                    backgroundImage: 'url(assets/ProgressbarGame.png)',
+                                    backgroundSize: '100% 100%',
+                                    backgroundPosition: 'center',
+                                    backgroundRepeat: 'no-repeat',
+                                    imageRendering: 'pixelated'
+                                }}>
+                                    <input
+                                        type="range"
+                                        min="0"
+                                        max="1"
+                                        step="0.05"
+                                        value={playerData.musicVolume}
+                                        onChange={(e) => {
+                                            const volume = parseFloat(e.target.value);
+                                            setPlayerData({...playerData, musicVolume: volume});
+                                            if (window.currentMusicAudio) {
+                                                window.currentMusicAudio.volume = volume;
+                                            }
+                                        }}
+                                        style={{
+                                            position: 'absolute',
+                                            top: '0',
+                                            left: '0',
+                                            width: '100%',
+                                            height: '100%',
+                                            cursor: 'pointer',
+                                            appearance: 'none',
+                                            backgroundColor: 'transparent',
+                                            border: 'none',
+                                            outline: 'none'
+                                        }}
+                                    />
+                                </div>
                             </div>
 
                             {/* Track Buttons - Scrollable Container */}
