@@ -1675,70 +1675,76 @@ function GameUI() {
                     <div className="modal-overlay">
                         <div style={{
                             position: 'relative',
-                            width: '420px',
-                            padding: '50px',
-                            background: '#d4c5a0',
-                            border: '12px solid #8b6f47',
+                            width: 'min(500px, 90vw)',
+                            height: '850px',
+                            maxHeight: '95vh',
+                            backgroundImage: 'url(assets/MainMenuBoxGame.png)',
+                            backgroundSize: '100% 100%',
+                            backgroundPosition: 'center',
+                            backgroundRepeat: 'no-repeat',
+                            border: 'none',
                             borderRadius: '0',
-                            boxShadow: '0 0 0 6px #5a4530, inset 0 0 0 10px #f5e6c8',
+                            boxShadow: 'none',
                             imageRendering: 'pixelated',
-                            fontFamily: '"Press Start 2P", monospace'
+                            fontFamily: '"Press Start 2P", monospace',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'flex-start',
+                            alignItems: 'center',
+                            padding: '150px 40px 60px 40px',
+                            overflow: 'hidden'
                         }}>
                             {/* Game Stats Display */}
                             <div style={{
                                 display: 'flex',
-                                justifyContent: 'space-around',
-                                marginBottom: '30px',
-                                paddingBottom: '30px',
-                                borderBottom: '3px solid #8b6f47',
-                                gap: '15px'
+                                justifyContent: 'center',
+                                marginBottom: '40px',
+                                gap: '30px',
+                                width: '100%'
                             }}>
                                 <div style={{
-                                    background: 'rgba(0,0,0,0.2)',
-                                    padding: '12px 18px',
-                                    borderRadius: '6px',
-                                    border: '2px solid #8b6f47',
-                                    fontSize: '10px',
-                                    color: '#2a5840',
-                                    fontWeight: 'bold',
-                                    textAlign: 'center',
-                                    flex: 1
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    fontSize: '16px',
+                                    color: '#2a1810',
+                                    fontWeight: 'bold'
                                 }}>
-                                    <div style={{fontSize: '18px', marginBottom: '5px'}}>{gameStats.kills}</div>
-                                    <div>Kills</div>
+                                    <div style={{fontSize: '24px', marginBottom: '8px'}}>{gameStats.kills}</div>
+                                    <div style={{fontSize: '12px'}}>KILLS</div>
                                 </div>
                                 <div style={{
-                                    background: 'rgba(0,0,0,0.2)',
-                                    padding: '12px 18px',
-                                    borderRadius: '6px',
-                                    border: '2px solid #8b6f47',
-                                    fontSize: '10px',
-                                    color: '#2a5840',
-                                    fontWeight: 'bold',
-                                    textAlign: 'center',
-                                    flex: 1
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    fontSize: '16px',
+                                    color: '#2a1810',
+                                    fontWeight: 'bold'
                                 }}>
-                                    <div style={{fontSize: '18px', marginBottom: '5px'}}>{gameStats.time}</div>
-                                    <div>Time</div>
+                                    <div style={{fontSize: '24px', marginBottom: '8px'}}>{gameStats.time}</div>
+                                    <div style={{fontSize: '12px'}}>TIME</div>
                                 </div>
                                 <div style={{
-                                    background: 'rgba(0,0,0,0.2)',
-                                    padding: '12px 18px',
-                                    borderRadius: '6px',
-                                    border: '2px solid #8b6f47',
-                                    fontSize: '10px',
-                                    color: '#2a5840',
-                                    fontWeight: 'bold',
-                                    textAlign: 'center',
-                                    flex: 1
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    fontSize: '16px',
+                                    color: '#2a1810',
+                                    fontWeight: 'bold'
                                 }}>
-                                    <div style={{fontSize: '18px', marginBottom: '5px'}}>{coins}</div>
-                                    <div>Coins</div>
+                                    <div style={{fontSize: '24px', marginBottom: '8px'}}>{coins}</div>
+                                    <div style={{fontSize: '12px'}}>COINS</div>
                                 </div>
                             </div>
 
                             {/* Menu buttons */}
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+                            <div style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '5px',
+                                alignItems: 'center',
+                                width: '100%'
+                            }}>
                                 <button
                                     onClick={() => {
                                         if (window.gameState) {
@@ -1746,25 +1752,41 @@ function GameUI() {
                                         }
                                     }}
                                     style={{
-                                        width: '100%',
-                                        padding: '18px 24px',
-                                        background: 'linear-gradient(180deg, #6fb880 0%, #4a9860 100%)',
-                                        border: '4px solid #2a5840',
-                                        borderRadius: '8px',
-                                        color: '#1a1a1a',
-                                        fontSize: '18px',
-                                        fontWeight: 'bold',
-                                        cursor: 'default',
-                                        textTransform: 'uppercase',
-                                        letterSpacing: '1px',
-                                        boxShadow: '0 6px 0 #2a5840, inset 0 3px 0 #8fd8a0',
+                                        width: '280px',
+                                        height: '145px',
+                                        backgroundImage: 'url(assets/dffgdfgdf.png)',
+                                        backgroundSize: '100% 100%',
+                                        backgroundPosition: 'center',
+                                        backgroundRepeat: 'no-repeat',
+                                        border: 'none',
+                                        cursor: 'url(assets/wand-cursor-small.png) 8 8, auto',
                                         imageRendering: 'pixelated',
+                                        transition: 'transform 0.15s ease, filter 0.15s ease',
+                                        backgroundColor: 'transparent',
                                         fontFamily: '"Press Start 2P", monospace',
-                                        transition: 'transform 0.1s'
+                                        fontSize: '24px',
+                                        color: '#ffffff',
+                                        fontWeight: 'bold',
+                                        textShadow: '2px 2px 0 rgba(0,0,0,0.3)',
+                                        filter: 'brightness(1)',
+                                        marginBottom: '-60px'
                                     }}
-                                    onMouseDown={(e) => e.target.style.transform = 'translateY(2px)'}
-                                    onMouseUp={(e) => e.target.style.transform = 'translateY(0)'}
-                                    onMouseLeave={(e) => e.target.style.transform = 'translateY(0)'}
+                                    onMouseEnter={(e) => {
+                                        e.target.style.transform = 'scale(1.05)';
+                                        e.target.style.filter = 'brightness(1.15)';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.target.style.transform = 'scale(1)';
+                                        e.target.style.filter = 'brightness(1)';
+                                    }}
+                                    onMouseDown={(e) => {
+                                        e.target.style.transform = 'scale(0.95)';
+                                        e.target.style.filter = 'brightness(0.9)';
+                                    }}
+                                    onMouseUp={(e) => {
+                                        e.target.style.transform = 'scale(1.05)';
+                                        e.target.style.filter = 'brightness(1.15)';
+                                    }}
                                 >
                                     RESUME
                                 </button>
@@ -1772,127 +1794,309 @@ function GameUI() {
                                 <button
                                     onClick={() => window.location.reload()}
                                     style={{
-                                        width: '100%',
-                                        padding: '18px 24px',
-                                        background: 'linear-gradient(180deg, #6fb880 0%, #4a9860 100%)',
-                                        border: '4px solid #2a5840',
-                                        borderRadius: '8px',
-                                        color: '#1a1a1a',
-                                        fontSize: '18px',
-                                        fontWeight: 'bold',
-                                        cursor: 'default',
-                                        textTransform: 'uppercase',
-                                        letterSpacing: '1px',
-                                        boxShadow: '0 6px 0 #2a5840, inset 0 3px 0 #8fd8a0',
+                                        width: '300px',
+                                        height: '145px',
+                                        backgroundImage: 'url(assets/KNAPP1.png)',
+                                        backgroundSize: '100% 100%',
+                                        backgroundPosition: 'center',
+                                        backgroundRepeat: 'no-repeat',
+                                        border: 'none',
+                                        cursor: 'url(assets/wand-cursor-small.png) 8 8, auto',
                                         imageRendering: 'pixelated',
+                                        transition: 'transform 0.15s ease, filter 0.15s ease',
+                                        backgroundColor: 'transparent',
                                         fontFamily: '"Press Start 2P", monospace',
-                                        transition: 'transform 0.1s'
+                                        fontSize: '24px',
+                                        color: '#2a1810',
+                                        fontWeight: 'bold',
+                                        textShadow: '2px 2px 0 rgba(255,255,255,0.3)',
+                                        filter: 'brightness(1)',
+                                        marginBottom: '-60px'
                                     }}
-                                    onMouseDown={(e) => e.target.style.transform = 'translateY(2px)'}
-                                    onMouseUp={(e) => e.target.style.transform = 'translateY(0)'}
-                                    onMouseLeave={(e) => e.target.style.transform = 'translateY(0)'}
+                                    onMouseEnter={(e) => {
+                                        e.target.style.transform = 'scale(1.05)';
+                                        e.target.style.filter = 'brightness(1.15)';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.target.style.transform = 'scale(1)';
+                                        e.target.style.filter = 'brightness(1)';
+                                    }}
+                                    onMouseDown={(e) => {
+                                        e.target.style.transform = 'scale(0.95)';
+                                        e.target.style.filter = 'brightness(0.9)';
+                                    }}
+                                    onMouseUp={(e) => {
+                                        e.target.style.transform = 'scale(1.05)';
+                                        e.target.style.filter = 'brightness(1.15)';
+                                    }}
                                 >
                                     RESTART
                                 </button>
 
-                                {/* Music controls section */}
-                                <div style={{
-                                    marginTop: '30px',
-                                    padding: '20px',
-                                    background: 'rgba(0,0,0,0.2)',
-                                    borderRadius: '8px',
-                                    border: '3px solid #8b6f47'
-                                }}>
-                                    <div style={{fontSize: '14px', color: '#2a5840', marginBottom: '15px', fontWeight: 'bold'}}>
-                                        🎵 MUSIC
-                                    </div>
-                                    <div style={{marginBottom: '15px'}}>
-                                        <label style={{color: '#2a5840', fontSize: '12px', marginBottom: '8px', display: 'block'}}>
-                                            Volume: {Math.round(playerData.musicVolume * 100)}%
-                                        </label>
-                                        <input
-                                            type="range"
-                                            min="0"
-                                            max="1"
-                                            step="0.05"
-                                            value={playerData.musicVolume}
-                                            onChange={(e) => {
-                                                const volume = parseFloat(e.target.value);
-                                                setPlayerData({...playerData, musicVolume: volume});
-                                                if (window.currentMusicAudio) {
-                                                    window.currentMusicAudio.volume = volume;
-                                                }
-                                            }}
-                                            style={{width: '100%'}}
-                                        />
-                                    </div>
-                                    <div style={{display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '15px'}}>
-                                        {MUSIC_TRACKS.map(track => {
-                                            const isPlaying = playerData.selectedTrack === track.id;
-                                            return (
-                                                <div
-                                                    key={track.id}
-                                                    onClick={() => {
-                                                        if (window.currentMusicAudio) {
-                                                            window.currentMusicAudio.pause();
-                                                            window.currentMusicAudio = null;
-                                                        }
-                                                        if (isPlaying) {
-                                                            setPlayerData({...playerData, selectedTrack: null});
-                                                        } else {
-                                                            const audio = new Audio(track.path);
-                                                            audio.volume = playerData.musicVolume;
-                                                            audio.loop = true;
-                                                            audio.play().catch(err => console.error('Error playing music:', err));
-                                                            window.currentMusicAudio = audio;
-                                                            setPlayerData({...playerData, selectedTrack: track.id});
-                                                        }
-                                                    }}
-                                                    style={{
-                                                        padding: '12px',
-                                                        background: isPlaying ? '#6fb880' : '#5a4530',
-                                                        border: '3px solid #2a5840',
-                                                        borderRadius: '4px',
-                                                        color: isPlaying ? '#1a1a1a' : '#d4c5a0',
-                                                        fontSize: '11px',
-                                                        cursor: 'default',
-                                                        display: 'flex',
-                                                        justifyContent: 'space-between',
-                                                        alignItems: 'center'
-                                                    }}
-                                                >
-                                                    <span>{track.name}</span>
-                                                    {isPlaying && <span>▶</span>}
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-                                    {playerData.selectedTrack && (
-                                        <button
-                                            onClick={() => {
-                                                if (window.currentMusicAudio) {
-                                                    window.currentMusicAudio.pause();
-                                                    window.currentMusicAudio = null;
-                                                }
-                                                setPlayerData({...playerData, selectedTrack: null});
-                                            }}
-                                            style={{
-                                                width: '100%',
-                                                padding: '12px',
-                                                background: '#c85a54',
-                                                border: '3px solid #8b3a34',
-                                                borderRadius: '4px',
-                                                color: '#fff',
-                                                fontSize: '11px',
-                                                cursor: 'default',
-                                                fontWeight: 'bold'
-                                            }}
-                                        >
-                                            STOP MUSIC
-                                        </button>
-                                    )}
-                                </div>
+                                <button
+                                    onClick={() => {
+                                        setShowMusicControl(true);
+                                        setShowPaused(false);
+                                    }}
+                                    style={{
+                                        width: '300px',
+                                        height: '145px',
+                                        backgroundImage: 'url(assets/KNAPP1.png)',
+                                        backgroundSize: '100% 100%',
+                                        backgroundPosition: 'center',
+                                        backgroundRepeat: 'no-repeat',
+                                        border: 'none',
+                                        cursor: 'url(assets/wand-cursor-small.png) 8 8, auto',
+                                        imageRendering: 'pixelated',
+                                        transition: 'transform 0.15s ease, filter 0.15s ease',
+                                        backgroundColor: 'transparent',
+                                        fontFamily: '"Press Start 2P", monospace',
+                                        fontSize: '24px',
+                                        color: '#2a1810',
+                                        fontWeight: 'bold',
+                                        textShadow: '2px 2px 0 rgba(255,255,255,0.3)',
+                                        filter: 'brightness(1)',
+                                        marginBottom: '-60px'
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.target.style.transform = 'scale(1.05)';
+                                        e.target.style.filter = 'brightness(1.15)';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.target.style.transform = 'scale(1)';
+                                        e.target.style.filter = 'brightness(1)';
+                                    }}
+                                    onMouseDown={(e) => {
+                                        e.target.style.transform = 'scale(0.95)';
+                                        e.target.style.filter = 'brightness(0.9)';
+                                    }}
+                                    onMouseUp={(e) => {
+                                        e.target.style.transform = 'scale(1.05)';
+                                        e.target.style.filter = 'brightness(1.15)';
+                                    }}
+                                >
+                                    MUSIC
+                                </button>
                             </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* In-Game Music Menu */}
+                {showMusicControl && (
+                    <div className="modal-overlay">
+                        <div style={{
+                            position: 'relative',
+                            width: 'min(500px, 90vw)',
+                            height: '850px',
+                            maxHeight: '95vh',
+                            backgroundImage: 'url(assets/MainMenuBoxGame.png)',
+                            backgroundSize: '100% 100%',
+                            backgroundPosition: 'center',
+                            backgroundRepeat: 'no-repeat',
+                            border: 'none',
+                            borderRadius: '0',
+                            boxShadow: 'none',
+                            imageRendering: 'pixelated',
+                            fontFamily: '"Press Start 2P", monospace',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'flex-start',
+                            alignItems: 'center',
+                            padding: '120px 40px 40px 40px',
+                            overflow: 'hidden'
+                        }}>
+                            {/* Title */}
+                            <div style={{
+                                fontSize: '24px',
+                                color: '#2a1810',
+                                fontWeight: 'bold',
+                                marginBottom: '25px',
+                                textShadow: '2px 2px 0 rgba(255,255,255,0.3)'
+                            }}>MUSIC</div>
+
+                            {/* Volume Control */}
+                            <div style={{
+                                width: '100%',
+                                maxWidth: '300px',
+                                marginBottom: '25px',
+                                textAlign: 'center'
+                            }}>
+                                <label style={{
+                                    fontSize: '11px',
+                                    color: '#2a1810',
+                                    display: 'block',
+                                    marginBottom: '10px',
+                                    fontWeight: 'bold'
+                                }}>VOLUME: {Math.round(playerData.musicVolume * 100)}%</label>
+                                <input
+                                    type="range"
+                                    min="0"
+                                    max="1"
+                                    step="0.05"
+                                    value={playerData.musicVolume}
+                                    onChange={(e) => {
+                                        const volume = parseFloat(e.target.value);
+                                        setPlayerData({...playerData, musicVolume: volume});
+                                        if (window.currentMusicAudio) {
+                                            window.currentMusicAudio.volume = volume;
+                                        }
+                                    }}
+                                    style={{
+                                        width: '100%',
+                                        height: '25px',
+                                        cursor: 'pointer',
+                                        appearance: 'none',
+                                        backgroundColor: 'rgba(139, 111, 71, 0.5)',
+                                        border: '3px solid #8b6f47',
+                                        borderRadius: '8px',
+                                        outline: 'none'
+                                    }}
+                                />
+                            </div>
+
+                            {/* Track List - Scrollable */}
+                            <div style={{
+                                width: '100%',
+                                flex: 1,
+                                overflowY: 'auto',
+                                overflowX: 'hidden',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '10px',
+                                alignItems: 'center',
+                                marginBottom: '15px',
+                                paddingRight: '10px',
+                                maxHeight: '350px'
+                            }}>
+                                {MUSIC_TRACKS && MUSIC_TRACKS.length > 0 ? (
+                                    MUSIC_TRACKS.map(track => {
+                                        const isPlaying = playerData.selectedTrack === track.id;
+                                        return (
+                                            <button
+                                                key={track.id}
+                                                onClick={() => {
+                                                    if (window.currentMusicAudio) {
+                                                        window.currentMusicAudio.pause();
+                                                        window.currentMusicAudio = null;
+                                                    }
+                                                    if (isPlaying) {
+                                                        setPlayerData({...playerData, selectedTrack: null});
+                                                    } else {
+                                                        const audio = new Audio(track.path);
+                                                        audio.volume = playerData.musicVolume;
+                                                        audio.loop = true;
+                                                        audio.play().catch(err => console.error('Error playing music:', err));
+                                                        window.currentMusicAudio = audio;
+                                                        setPlayerData({...playerData, selectedTrack: track.id});
+                                                    }
+                                                }}
+                                                style={{
+                                                    width: '300px',
+                                                    height: '145px',
+                                                    backgroundImage: 'url(assets/KNAPP1.png)',
+                                                    backgroundSize: '100% 100%',
+                                                    backgroundPosition: 'center',
+                                                    backgroundRepeat: 'no-repeat',
+                                                    border: 'none',
+                                                    cursor: 'url(assets/wand-cursor-small.png) 8 8, auto',
+                                                    imageRendering: 'pixelated',
+                                                    transition: 'transform 0.15s ease, filter 0.15s ease',
+                                                    backgroundColor: 'transparent',
+                                                    fontFamily: '"Press Start 2P", monospace',
+                                                    fontSize: '11px',
+                                                    color: '#2a1810',
+                                                    fontWeight: 'bold',
+                                                    textShadow: '2px 2px 0 rgba(255,255,255,0.3)',
+                                                    filter: isPlaying ? 'brightness(1.2) saturate(1.3)' : 'brightness(1)',
+                                                    display: 'flex',
+                                                    flexDirection: 'column',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    gap: '5px',
+                                                    position: 'relative'
+                                                }}
+                                                onMouseEnter={(e) => {
+                                                    e.target.style.transform = 'scale(1.05)';
+                                                    e.target.style.filter = 'brightness(1.15)';
+                                                }}
+                                                onMouseLeave={(e) => {
+                                                    e.target.style.transform = 'scale(1)';
+                                                    e.target.style.filter = 'brightness(1)';
+                                                }}
+                                                onMouseDown={(e) => {
+                                                    e.target.style.transform = 'scale(0.95)';
+                                                    e.target.style.filter = 'brightness(0.9)';
+                                                }}
+                                                onMouseUp={(e) => {
+                                                    e.target.style.transform = 'scale(1.05)';
+                                                    e.target.style.filter = 'brightness(1.15)';
+                                                }}
+                                            >
+                                                <div style={{fontSize: '12px', lineHeight: '1.3'}}>{track.name}</div>
+                                                <div style={{fontSize: '8px', opacity: 0.7, marginTop: '2px'}}>{track.artist || 'Unknown'}</div>
+                                            </button>
+                                        );
+                                    })
+                                ) : (
+                                    <div style={{
+                                        textAlign: 'center',
+                                        padding: '30px',
+                                        color: '#2a1810',
+                                        fontSize: '10px',
+                                        lineHeight: '1.8'
+                                    }}>
+                                        <p>NO TRACKS</p>
+                                        <p style={{marginTop: '8px', fontSize: '8px'}}>ADD MUSIC FILES</p>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Back Button */}
+                            <button
+                                onClick={() => {
+                                    setShowMusicControl(false);
+                                    setShowPaused(true);
+                                }}
+                                style={{
+                                    width: '300px',
+                                    height: '145px',
+                                    backgroundImage: 'url(assets/KNAPP1.png)',
+                                    backgroundSize: '100% 100%',
+                                    backgroundPosition: 'center',
+                                    backgroundRepeat: 'no-repeat',
+                                    border: 'none',
+                                    cursor: 'url(assets/wand-cursor-small.png) 8 8, auto',
+                                    imageRendering: 'pixelated',
+                                    transition: 'transform 0.15s ease, filter 0.15s ease',
+                                    backgroundColor: 'transparent',
+                                    fontFamily: '"Press Start 2P", monospace',
+                                    fontSize: '24px',
+                                    color: '#2a1810',
+                                    fontWeight: 'bold',
+                                    textShadow: '2px 2px 0 rgba(255,255,255,0.3)',
+                                    filter: 'brightness(1)',
+                                    marginTop: '10px'
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.target.style.transform = 'scale(1.05)';
+                                    e.target.style.filter = 'brightness(1.15)';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.target.style.transform = 'scale(1)';
+                                    e.target.style.filter = 'brightness(1)';
+                                }}
+                                onMouseDown={(e) => {
+                                    e.target.style.transform = 'scale(0.95)';
+                                    e.target.style.filter = 'brightness(0.9)';
+                                }}
+                                onMouseUp={(e) => {
+                                    e.target.style.transform = 'scale(1.05)';
+                                    e.target.style.filter = 'brightness(1.15)';
+                                }}
+                            >
+                                BACK
+                            </button>
                         </div>
                     </div>
                 )}
@@ -3859,126 +4063,152 @@ function MusicMenu({ playerData, setPlayerData, onBack }) {
     };
 
     return (
-        <div className="submenu">
-            <h2>MUSIC</h2>
-
+        <div style={{
+            position: 'relative',
+            width: 'min(500px, 90vw)',
+            height: '850px',
+            maxHeight: '95vh',
+            backgroundImage: 'url(assets/MainMenuBoxGame.png)',
+            backgroundSize: '100% 100%',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            border: 'none',
+            borderRadius: '0',
+            boxShadow: 'none',
+            imageRendering: 'pixelated',
+            fontFamily: '"Press Start 2P", monospace',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'flex-start',
+            alignItems: 'center',
+            padding: '150px 40px 60px 40px',
+            overflow: 'hidden'
+        }}>
+            {/* Title */}
             <div style={{
-                textAlign: 'center',
-                marginBottom: '30px'
+                fontSize: '28px',
+                color: '#2a1810',
+                fontWeight: 'bold',
+                marginBottom: '40px',
+                textShadow: '2px 2px 0 rgba(255,255,255,0.3)'
+            }}>MUSIC</div>
+
+            {/* Volume Control */}
+            <div style={{
+                width: '100%',
+                maxWidth: '350px',
+                marginBottom: '40px',
+                textAlign: 'center'
             }}>
-                <div className="volume-control" style={{
-                    marginBottom: '20px'
-                }}>
-                    <label style={{
-                        fontFamily: '"Press Start 2P", monospace',
-                        fontSize: '14px',
-                        color: '#6fb880',
-                        display: 'block',
-                        marginBottom: '10px'
-                    }}>Volume: {Math.round(playerData.musicVolume * 100)}%</label>
-                    <input
-                        type="range"
-                        min="0"
-                        max="1"
-                        step="0.05"
-                        value={playerData.musicVolume}
-                        onChange={(e) => changeVolume(e.target.value)}
-                        className="volume-slider"
-                    />
-                </div>
+                <label style={{
+                    fontSize: '14px',
+                    color: '#2a1810',
+                    display: 'block',
+                    marginBottom: '15px',
+                    fontWeight: 'bold'
+                }}>VOLUME: {Math.round(playerData.musicVolume * 100)}%</label>
+                <input
+                    type="range"
+                    min="0"
+                    max="1"
+                    step="0.05"
+                    value={playerData.musicVolume}
+                    onChange={(e) => changeVolume(e.target.value)}
+                    style={{
+                        width: '100%',
+                        height: '30px',
+                        cursor: 'pointer',
+                        appearance: 'none',
+                        backgroundColor: 'rgba(139, 111, 71, 0.5)',
+                        border: '3px solid #8b6f47',
+                        borderRadius: '8px',
+                        outline: 'none'
+                    }}
+                />
             </div>
 
+            {/* Track List - Scrollable */}
             <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-                gap: '20px',
-                maxWidth: '1000px',
-                margin: '0 auto'
+                width: '100%',
+                flex: 1,
+                overflowY: 'auto',
+                overflowX: 'hidden',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '15px',
+                alignItems: 'center',
+                marginBottom: '20px',
+                paddingRight: '10px'
             }}>
                 {MUSIC_TRACKS && MUSIC_TRACKS.length > 0 ? (
                     MUSIC_TRACKS.map(track => (
-                        <div
+                        <button
                             key={track.id}
+                            onClick={() => playTrack(track)}
                             style={{
-                                background: currentlyPlaying === track.id ? '#b8a586' : 'rgba(139, 111, 71, 0.5)',
-                                border: currentlyPlaying === track.id ? '4px solid #6fb880' : '4px solid #8b6f47',
-                                borderRadius: '8px',
-                                padding: '20px',
+                                width: '350px',
+                                height: '100px',
+                                backgroundImage: currentlyPlaying === track.id ? 'url(assets/dffgdfgdf.png)' : 'url(assets/KNAPP1.png)',
+                                backgroundSize: '100% 100%',
+                                backgroundPosition: 'center',
+                                backgroundRepeat: 'no-repeat',
+                                border: 'none',
+                                cursor: 'url(assets/wand-cursor-small.png) 8 8, auto',
+                                imageRendering: 'pixelated',
+                                transition: 'transform 0.15s ease, filter 0.15s ease',
+                                backgroundColor: 'transparent',
+                                fontFamily: '"Press Start 2P", monospace',
+                                fontSize: '12px',
+                                color: currentlyPlaying === track.id ? '#ffffff' : '#2a1810',
+                                fontWeight: 'bold',
+                                textShadow: currentlyPlaying === track.id ? '2px 2px 0 rgba(0,0,0,0.3)' : '2px 2px 0 rgba(255,255,255,0.3)',
+                                filter: 'brightness(1)',
                                 display: 'flex',
                                 flexDirection: 'column',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                position: 'relative',
-                                boxShadow: currentlyPlaying === track.id ? '0 4px 0 #5a4530, inset 0 2px 0 rgba(245, 230, 200, 0.3)' : '0 3px 0 #5a4530',
-                                imageRendering: 'pixelated',
-                                fontFamily: '"Press Start 2P", monospace',
-                                cursor: 'default',
-                                transition: 'transform 0.1s'
+                                gap: '5px',
+                                position: 'relative'
                             }}
-                            onClick={() => playTrack(track)}
-                            onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
-                            onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+                            onMouseEnter={(e) => {
+                                e.target.style.transform = 'scale(1.05)';
+                                e.target.style.filter = 'brightness(1.15)';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.target.style.transform = 'scale(1)';
+                                e.target.style.filter = 'brightness(1)';
+                            }}
+                            onMouseDown={(e) => {
+                                e.target.style.transform = 'scale(0.95)';
+                                e.target.style.filter = 'brightness(0.9)';
+                            }}
+                            onMouseUp={(e) => {
+                                e.target.style.transform = 'scale(1.05)';
+                                e.target.style.filter = 'brightness(1.15)';
+                            }}
                         >
-                            <div style={{
-                                fontSize: '48px',
-                                marginBottom: '15px'
-                            }}>🎵</div>
-
-                            <div style={{
-                                fontSize: '10px',
-                                color: currentlyPlaying === track.id ? '#2a5840' : '#8b6f47',
-                                fontWeight: 'bold',
-                                textAlign: 'center',
-                                marginBottom: '8px',
-                                lineHeight: '1.4'
-                            }}>
-                                {track.name}
-                            </div>
-
-                            <div style={{
-                                fontSize: '8px',
-                                color: currentlyPlaying === track.id ? '#6b5545' : '#6b5545',
-                                textAlign: 'center',
-                                marginBottom: '12px',
-                                opacity: 0.8
-                            }}>
-                                {track.artist || 'Unknown'}
-                            </div>
-
                             {currentlyPlaying === track.id && (
                                 <div style={{
                                     position: 'absolute',
                                     top: '10px',
                                     right: '10px',
-                                    width: '24px',
-                                    height: '24px',
-                                    borderRadius: '50%',
-                                    background: '#6fb880',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    fontSize: '12px',
-                                    fontWeight: 'bold',
-                                    color: '#fff',
-                                    border: '2px solid #5a4530',
-                                    boxShadow: '0 2px 0 #2a1a0a'
-                                }}>
-                                    ▶
-                                </div>
+                                    fontSize: '14px'
+                                }}>▶</div>
                             )}
-                        </div>
+                            <div style={{fontSize: '14px'}}>{track.name}</div>
+                            <div style={{fontSize: '8px', opacity: 0.8}}>{track.artist || 'Unknown'}</div>
+                        </button>
                     ))
                 ) : (
                     <div style={{
-                        gridColumn: '1 / -1',
                         textAlign: 'center',
                         padding: '40px',
-                        color: '#ccc',
-                        fontFamily: '"Press Start 2P", monospace',
-                        fontSize: '12px'
+                        color: '#2a1810',
+                        fontSize: '12px',
+                        lineHeight: '1.8'
                     }}>
-                        <p>No music tracks available yet.</p>
-                        <p style={{marginTop: '10px'}}>Add music files to see them here!</p>
+                        <p>NO TRACKS</p>
+                        <p style={{marginTop: '10px', fontSize: '10px'}}>ADD MUSIC FILES</p>
                     </div>
                 )}
             </div>
