@@ -2076,7 +2076,7 @@ function GameUI() {
                                             alignItems: 'center',
                                             justifyContent: 'center',
                                             gap: '8px',
-                                            marginTop: '-90px'
+                                            marginTop: '-60px'
                                         }}
                                         onMouseEnter={(e) => {
                                             e.target.style.transform = 'scale(1.05)';
