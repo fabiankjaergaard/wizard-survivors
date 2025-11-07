@@ -1966,10 +1966,77 @@ function GameUI() {
                                 overflowX: 'hidden',
                                 paddingRight: '10px'
                             }}>
-                                {MUSIC_TRACKS && MUSIC_TRACKS.map((track, index) => (
+                                {/* First Track Button */}
+                                {MUSIC_TRACKS && MUSIC_TRACKS.length > 0 && (
                                     <button
-                                        key={track.id}
                                         onClick={() => {
+                                            const track = MUSIC_TRACKS[0];
+                                            const isPlaying = playerData.selectedTrack === track.id;
+                                            if (window.currentMusicAudio) {
+                                                window.currentMusicAudio.pause();
+                                                window.currentMusicAudio = null;
+                                            }
+                                            if (isPlaying) {
+                                                setPlayerData({...playerData, selectedTrack: null});
+                                            } else {
+                                                const audio = new Audio(track.path);
+                                                audio.volume = playerData.musicVolume;
+                                                audio.loop = true;
+                                                audio.play().catch(err => console.error('Error playing music:', err));
+                                                window.currentMusicAudio = audio;
+                                                setPlayerData({...playerData, selectedTrack: track.id});
+                                            }
+                                        }}
+                                        style={{
+                                            width: '300px',
+                                            height: '145px',
+                                            backgroundImage: 'url(assets/KNAPP1.png)',
+                                            backgroundSize: '100% 100%',
+                                            backgroundPosition: 'center',
+                                            backgroundRepeat: 'no-repeat',
+                                            border: 'none',
+                                            cursor: 'url(assets/wand-cursor-small.png) 8 8, auto',
+                                            imageRendering: 'pixelated',
+                                            transition: 'transform 0.15s ease, filter 0.15s ease',
+                                            backgroundColor: 'transparent',
+                                            fontFamily: '"Press Start 2P", monospace',
+                                            fontSize: '16px',
+                                            color: '#2a1810',
+                                            fontWeight: 'bold',
+                                            textShadow: '2px 2px 0 rgba(255,255,255,0.3)',
+                                            filter: 'brightness(1)',
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            gap: '8px'
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            e.target.style.transform = 'scale(1.05)';
+                                            e.target.style.filter = 'brightness(1.15)';
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.target.style.transform = 'scale(1)';
+                                            e.target.style.filter = 'brightness(1)';
+                                        }}
+                                        onMouseDown={(e) => {
+                                            e.target.style.transform = 'scale(0.95)';
+                                            e.target.style.filter = 'brightness(0.9)';
+                                        }}
+                                        onMouseUp={(e) => {
+                                            e.target.style.transform = 'scale(1.05)';
+                                            e.target.style.filter = 'brightness(1.15)';
+                                        }}
+                                    >
+                                        {MUSIC_TRACKS[0].name}
+                                    </button>
+                                )}
+
+                                {/* Second Track Button */}
+                                {MUSIC_TRACKS && MUSIC_TRACKS.length > 1 && (
+                                    <button
+                                        onClick={() => {
+                                            const track = MUSIC_TRACKS[1];
                                             const isPlaying = playerData.selectedTrack === track.id;
                                             if (window.currentMusicAudio) {
                                                 window.currentMusicAudio.pause();
@@ -2009,7 +2076,7 @@ function GameUI() {
                                             alignItems: 'center',
                                             justifyContent: 'center',
                                             gap: '8px',
-                                            marginTop: index === 0 ? '0' : '-65px'
+                                            marginTop: '-65px'
                                         }}
                                         onMouseEnter={(e) => {
                                             e.target.style.transform = 'scale(1.05)';
@@ -2028,7 +2095,57 @@ function GameUI() {
                                             e.target.style.filter = 'brightness(1.15)';
                                         }}
                                     >
-                                        {track.name}
+                                        {MUSIC_TRACKS[1].name}
+                                    </button>
+                                )}
+
+                                {/* Empty Placeholder Buttons */}
+                                {[...Array(6)].map((_, index) => (
+                                    <button
+                                        key={`empty-${index}`}
+                                        style={{
+                                            width: '300px',
+                                            height: '145px',
+                                            backgroundImage: 'url(assets/KNAPP1.png)',
+                                            backgroundSize: '100% 100%',
+                                            backgroundPosition: 'center',
+                                            backgroundRepeat: 'no-repeat',
+                                            border: 'none',
+                                            cursor: 'url(assets/wand-cursor-small.png) 8 8, auto',
+                                            imageRendering: 'pixelated',
+                                            transition: 'transform 0.15s ease, filter 0.15s ease',
+                                            backgroundColor: 'transparent',
+                                            fontFamily: '"Press Start 2P", monospace',
+                                            fontSize: '16px',
+                                            color: '#2a1810',
+                                            fontWeight: 'bold',
+                                            textShadow: '2px 2px 0 rgba(255,255,255,0.3)',
+                                            filter: 'brightness(1)',
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            gap: '8px',
+                                            marginTop: '-65px',
+                                            opacity: 0.5
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            e.target.style.transform = 'scale(1.05)';
+                                            e.target.style.filter = 'brightness(1.15)';
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.target.style.transform = 'scale(1)';
+                                            e.target.style.filter = 'brightness(1)';
+                                        }}
+                                        onMouseDown={(e) => {
+                                            e.target.style.transform = 'scale(0.95)';
+                                            e.target.style.filter = 'brightness(0.9)';
+                                        }}
+                                        onMouseUp={(e) => {
+                                            e.target.style.transform = 'scale(1.05)';
+                                            e.target.style.filter = 'brightness(1.15)';
+                                        }}
+                                    >
                                     </button>
                                 ))}
                             </div>
