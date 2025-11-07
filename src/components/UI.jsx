@@ -1906,6 +1906,53 @@ function GameUI() {
                             padding: '120px 40px 40px 40px',
                             overflow: 'hidden'
                         }}>
+                            {/* Close X Button */}
+                            <button
+                                onClick={() => {
+                                    setShowMusicControl(false);
+                                    setShowPaused(true);
+                                }}
+                                style={{
+                                    position: 'absolute',
+                                    top: '30px',
+                                    right: '30px',
+                                    width: '40px',
+                                    height: '40px',
+                                    backgroundColor: '#8b6f47',
+                                    border: '3px solid #4a3728',
+                                    borderRadius: '0',
+                                    cursor: 'url(assets/wand-cursor-small.png) 8 8, auto',
+                                    imageRendering: 'pixelated',
+                                    fontFamily: '"Press Start 2P", monospace',
+                                    fontSize: '20px',
+                                    color: '#2a1810',
+                                    fontWeight: 'bold',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    transition: 'transform 0.15s ease, filter 0.15s ease',
+                                    filter: 'brightness(1)'
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.target.style.transform = 'scale(1.1)';
+                                    e.target.style.filter = 'brightness(1.2)';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.target.style.transform = 'scale(1)';
+                                    e.target.style.filter = 'brightness(1)';
+                                }}
+                                onMouseDown={(e) => {
+                                    e.target.style.transform = 'scale(0.9)';
+                                    e.target.style.filter = 'brightness(0.8)';
+                                }}
+                                onMouseUp={(e) => {
+                                    e.target.style.transform = 'scale(1.1)';
+                                    e.target.style.filter = 'brightness(1.2)';
+                                }}
+                            >
+                                ×
+                            </button>
+
                             {/* Volume Control */}
                             <div style={{
                                 width: '100%',
@@ -2230,49 +2277,6 @@ function GameUI() {
                                 </button>
                             </div>
 
-                            {/* Close Button */}
-                            <button onClick={() => {
-                                setShowMusicControl(false);
-                                setShowPaused(true);
-                            }} style={{
-                                width: '300px',
-                                height: '145px',
-                                backgroundImage: 'url(assets/KNAPP1.png)',
-                                backgroundSize: '100% 100%',
-                                backgroundPosition: 'center',
-                                backgroundRepeat: 'no-repeat',
-                                border: 'none',
-                                cursor: 'url(assets/wand-cursor-small.png) 8 8, auto',
-                                imageRendering: 'pixelated',
-                                transition: 'transform 0.15s ease, filter 0.15s ease',
-                                backgroundColor: 'transparent',
-                                fontFamily: '"Press Start 2P", monospace',
-                                fontSize: '24px',
-                                color: '#2a1810',
-                                fontWeight: 'bold',
-                                textShadow: '2px 2px 0 rgba(255,255,255,0.3)',
-                                filter: 'brightness(1)',
-                                marginTop: '20px'
-                            }}
-                            onMouseEnter={(e) => {
-                                e.target.style.transform = 'scale(1.05)';
-                                e.target.style.filter = 'brightness(1.15)';
-                            }}
-                            onMouseLeave={(e) => {
-                                e.target.style.transform = 'scale(1)';
-                                e.target.style.filter = 'brightness(1)';
-                            }}
-                            onMouseDown={(e) => {
-                                e.target.style.transform = 'scale(0.95)';
-                                e.target.style.filter = 'brightness(0.9)';
-                            }}
-                            onMouseUp={(e) => {
-                                e.target.style.transform = 'scale(1.05)';
-                                e.target.style.filter = 'brightness(1.15)';
-                            }}
-                            >
-                                CLOSE
-                            </button>
                         </div>
                     </div>
                 )}
