@@ -2116,7 +2116,7 @@ function GameUI() {
                                         alignItems: 'center',
                                         justifyContent: 'center',
                                         gap: '8px',
-                                        marginTop: '-65px'
+                                        marginTop: '-60px'
                                     }}
                                     onMouseEnter={(e) => {
                                         e.target.style.transform = 'scale(1.05)';
@@ -2162,7 +2162,7 @@ function GameUI() {
                                         alignItems: 'center',
                                         justifyContent: 'center',
                                         gap: '8px',
-                                        marginTop: '-65px'
+                                        marginTop: '-60px'
                                     }}
                                     onMouseEnter={(e) => {
                                         e.target.style.transform = 'scale(1.05)';
@@ -2208,7 +2208,7 @@ function GameUI() {
                                         alignItems: 'center',
                                         justifyContent: 'center',
                                         gap: '8px',
-                                        marginTop: '-65px'
+                                        marginTop: '-60px'
                                     }}
                                     onMouseEnter={(e) => {
                                         e.target.style.transform = 'scale(1.05)';
