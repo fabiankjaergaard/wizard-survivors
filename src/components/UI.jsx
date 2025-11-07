@@ -2275,7 +2275,6 @@ function GameUI() {
                                 >
                                 </button>
                             </div>
-
                         </div>
                     </div>
                 )}
