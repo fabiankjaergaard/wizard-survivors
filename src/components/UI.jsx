@@ -1909,15 +1909,15 @@ function GameUI() {
                             {/* Volume Control */}
                             <div style={{
                                 width: '100%',
-                                maxWidth: '300px',
-                                marginBottom: '25px',
+                                maxWidth: '200px',
+                                marginBottom: '15px',
                                 textAlign: 'center'
                             }}>
                                 <label style={{
-                                    fontSize: '11px',
+                                    fontSize: '10px',
                                     color: '#2a1810',
                                     display: 'block',
-                                    marginBottom: '10px',
+                                    marginBottom: '8px',
                                     fontWeight: 'bold'
                                 }}>VOLUME: {Math.round(playerData.musicVolume * 100)}%</label>
                                 <input
@@ -1935,13 +1935,14 @@ function GameUI() {
                                     }}
                                     style={{
                                         width: '100%',
-                                        height: '25px',
+                                        height: '15px',
                                         cursor: 'pointer',
                                         appearance: 'none',
-                                        backgroundColor: 'rgba(139, 111, 71, 0.5)',
-                                        border: '3px solid #8b6f47',
-                                        borderRadius: '8px',
-                                        outline: 'none'
+                                        backgroundColor: '#a0826d',
+                                        border: '2px solid #4a3728',
+                                        borderRadius: '0',
+                                        outline: 'none',
+                                        imageRendering: 'pixelated'
                                     }}
                                 />
                             </div>
