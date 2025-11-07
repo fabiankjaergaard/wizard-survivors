@@ -1955,148 +1955,146 @@ function GameUI() {
                                 />
                             </div>
 
-                            {/* Track List - Scrollable */}
+                            {/* Track Buttons */}
                             <div style={{
-                                width: '100%',
-                                flex: 1,
-                                overflowY: 'auto',
-                                overflowX: 'hidden',
                                 display: 'flex',
                                 flexDirection: 'column',
-                                gap: '10px',
                                 alignItems: 'center',
-                                marginBottom: '15px',
-                                paddingRight: '10px',
-                                maxHeight: '350px'
+                                marginTop: '10px'
                             }}>
-                                {MUSIC_TRACKS && MUSIC_TRACKS.length > 0 ? (
-                                    MUSIC_TRACKS.map(track => {
-                                        const isPlaying = playerData.selectedTrack === track.id;
-                                        return (
-                                            <button
-                                                key={track.id}
-                                                onClick={() => {
-                                                    if (window.currentMusicAudio) {
-                                                        window.currentMusicAudio.pause();
-                                                        window.currentMusicAudio = null;
-                                                    }
-                                                    if (isPlaying) {
-                                                        setPlayerData({...playerData, selectedTrack: null});
-                                                    } else {
-                                                        const audio = new Audio(track.path);
-                                                        audio.volume = playerData.musicVolume;
-                                                        audio.loop = true;
-                                                        audio.play().catch(err => console.error('Error playing music:', err));
-                                                        window.currentMusicAudio = audio;
-                                                        setPlayerData({...playerData, selectedTrack: track.id});
-                                                    }
-                                                }}
-                                                style={{
-                                                    width: '300px',
-                                                    height: '145px',
-                                                    backgroundImage: 'url(assets/KNAPP1.png)',
-                                                    backgroundSize: '100% 100%',
-                                                    backgroundPosition: 'center',
-                                                    backgroundRepeat: 'no-repeat',
-                                                    border: 'none',
-                                                    cursor: 'url(assets/wand-cursor-small.png) 8 8, auto',
-                                                    imageRendering: 'pixelated',
-                                                    transition: 'transform 0.15s ease, filter 0.15s ease',
-                                                    backgroundColor: 'transparent',
-                                                    fontFamily: '"Press Start 2P", monospace',
-                                                    fontSize: '11px',
-                                                    color: '#2a1810',
-                                                    fontWeight: 'bold',
-                                                    textShadow: '2px 2px 0 rgba(255,255,255,0.3)',
-                                                    filter: isPlaying ? 'brightness(1.2) saturate(1.3)' : 'brightness(1)',
-                                                    display: 'flex',
-                                                    flexDirection: 'column',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                    gap: '5px',
-                                                    position: 'relative'
-                                                }}
-                                                onMouseEnter={(e) => {
-                                                    e.target.style.transform = 'scale(1.05)';
-                                                    e.target.style.filter = 'brightness(1.15)';
-                                                }}
-                                                onMouseLeave={(e) => {
-                                                    e.target.style.transform = 'scale(1)';
-                                                    e.target.style.filter = 'brightness(1)';
-                                                }}
-                                                onMouseDown={(e) => {
-                                                    e.target.style.transform = 'scale(0.95)';
-                                                    e.target.style.filter = 'brightness(0.9)';
-                                                }}
-                                                onMouseUp={(e) => {
-                                                    e.target.style.transform = 'scale(1.05)';
-                                                    e.target.style.filter = 'brightness(1.15)';
-                                                }}
-                                            >
-                                                <div style={{fontSize: '12px', lineHeight: '1.3'}}>{track.name}</div>
-                                                <div style={{fontSize: '8px', opacity: 0.7, marginTop: '2px'}}>{track.artist || 'Unknown'}</div>
-                                            </button>
-                                        );
-                                    })
-                                ) : (
-                                    <div style={{
-                                        textAlign: 'center',
-                                        padding: '30px',
-                                        color: '#2a1810',
-                                        fontSize: '10px',
-                                        lineHeight: '1.8'
-                                    }}>
-                                        <p>NO TRACKS</p>
-                                        <p style={{marginTop: '8px', fontSize: '8px'}}>ADD MUSIC FILES</p>
-                                    </div>
+                                {/* First Track Button */}
+                                {MUSIC_TRACKS && MUSIC_TRACKS.length > 0 && (
+                                    <button
+                                        onClick={() => {
+                                            const track = MUSIC_TRACKS[0];
+                                            const isPlaying = playerData.selectedTrack === track.id;
+                                            if (window.currentMusicAudio) {
+                                                window.currentMusicAudio.pause();
+                                                window.currentMusicAudio = null;
+                                            }
+                                            if (isPlaying) {
+                                                setPlayerData({...playerData, selectedTrack: null});
+                                            } else {
+                                                const audio = new Audio(track.path);
+                                                audio.volume = playerData.musicVolume;
+                                                audio.loop = true;
+                                                audio.play().catch(err => console.error('Error playing music:', err));
+                                                window.currentMusicAudio = audio;
+                                                setPlayerData({...playerData, selectedTrack: track.id});
+                                            }
+                                        }}
+                                        style={{
+                                            width: '300px',
+                                            height: '145px',
+                                            backgroundImage: 'url(assets/KNAPP1.png)',
+                                            backgroundSize: '100% 100%',
+                                            backgroundPosition: 'center',
+                                            backgroundRepeat: 'no-repeat',
+                                            border: 'none',
+                                            cursor: 'url(assets/wand-cursor-small.png) 8 8, auto',
+                                            imageRendering: 'pixelated',
+                                            transition: 'transform 0.15s ease, filter 0.15s ease',
+                                            backgroundColor: 'transparent',
+                                            fontFamily: '"Press Start 2P", monospace',
+                                            fontSize: '16px',
+                                            color: '#2a1810',
+                                            fontWeight: 'bold',
+                                            textShadow: '2px 2px 0 rgba(255,255,255,0.3)',
+                                            filter: 'brightness(1)',
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            gap: '8px'
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            e.target.style.transform = 'scale(1.05)';
+                                            e.target.style.filter = 'brightness(1.15)';
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.target.style.transform = 'scale(1)';
+                                            e.target.style.filter = 'brightness(1)';
+                                        }}
+                                        onMouseDown={(e) => {
+                                            e.target.style.transform = 'scale(0.95)';
+                                            e.target.style.filter = 'brightness(0.9)';
+                                        }}
+                                        onMouseUp={(e) => {
+                                            e.target.style.transform = 'scale(1.05)';
+                                            e.target.style.filter = 'brightness(1.15)';
+                                        }}
+                                    >
+                                        {MUSIC_TRACKS[0].name}
+                                    </button>
+                                )}
+
+                                {/* Second Track Button */}
+                                {MUSIC_TRACKS && MUSIC_TRACKS.length > 1 && (
+                                    <button
+                                        onClick={() => {
+                                            const track = MUSIC_TRACKS[1];
+                                            const isPlaying = playerData.selectedTrack === track.id;
+                                            if (window.currentMusicAudio) {
+                                                window.currentMusicAudio.pause();
+                                                window.currentMusicAudio = null;
+                                            }
+                                            if (isPlaying) {
+                                                setPlayerData({...playerData, selectedTrack: null});
+                                            } else {
+                                                const audio = new Audio(track.path);
+                                                audio.volume = playerData.musicVolume;
+                                                audio.loop = true;
+                                                audio.play().catch(err => console.error('Error playing music:', err));
+                                                window.currentMusicAudio = audio;
+                                                setPlayerData({...playerData, selectedTrack: track.id});
+                                            }
+                                        }}
+                                        style={{
+                                            width: '300px',
+                                            height: '145px',
+                                            backgroundImage: 'url(assets/KNAPP1.png)',
+                                            backgroundSize: '100% 100%',
+                                            backgroundPosition: 'center',
+                                            backgroundRepeat: 'no-repeat',
+                                            border: 'none',
+                                            cursor: 'url(assets/wand-cursor-small.png) 8 8, auto',
+                                            imageRendering: 'pixelated',
+                                            transition: 'transform 0.15s ease, filter 0.15s ease',
+                                            backgroundColor: 'transparent',
+                                            fontFamily: '"Press Start 2P", monospace',
+                                            fontSize: '16px',
+                                            color: '#2a1810',
+                                            fontWeight: 'bold',
+                                            textShadow: '2px 2px 0 rgba(255,255,255,0.3)',
+                                            filter: 'brightness(1)',
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            gap: '8px',
+                                            marginTop: '-90px'
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            e.target.style.transform = 'scale(1.05)';
+                                            e.target.style.filter = 'brightness(1.15)';
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.target.style.transform = 'scale(1)';
+                                            e.target.style.filter = 'brightness(1)';
+                                        }}
+                                        onMouseDown={(e) => {
+                                            e.target.style.transform = 'scale(0.95)';
+                                            e.target.style.filter = 'brightness(0.9)';
+                                        }}
+                                        onMouseUp={(e) => {
+                                            e.target.style.transform = 'scale(1.05)';
+                                            e.target.style.filter = 'brightness(1.15)';
+                                        }}
+                                    >
+                                        {MUSIC_TRACKS[1].name}
+                                    </button>
                                 )}
                             </div>
-
-                            {/* Back Button */}
-                            <button
-                                onClick={() => {
-                                    setShowMusicControl(false);
-                                    setShowPaused(true);
-                                }}
-                                style={{
-                                    width: '300px',
-                                    height: '145px',
-                                    backgroundImage: 'url(assets/KNAPP1.png)',
-                                    backgroundSize: '100% 100%',
-                                    backgroundPosition: 'center',
-                                    backgroundRepeat: 'no-repeat',
-                                    border: 'none',
-                                    cursor: 'url(assets/wand-cursor-small.png) 8 8, auto',
-                                    imageRendering: 'pixelated',
-                                    transition: 'transform 0.15s ease, filter 0.15s ease',
-                                    backgroundColor: 'transparent',
-                                    fontFamily: '"Press Start 2P", monospace',
-                                    fontSize: '24px',
-                                    color: '#2a1810',
-                                    fontWeight: 'bold',
-                                    textShadow: '2px 2px 0 rgba(255,255,255,0.3)',
-                                    filter: 'brightness(1)',
-                                    marginTop: '10px'
-                                }}
-                                onMouseEnter={(e) => {
-                                    e.target.style.transform = 'scale(1.05)';
-                                    e.target.style.filter = 'brightness(1.15)';
-                                }}
-                                onMouseLeave={(e) => {
-                                    e.target.style.transform = 'scale(1)';
-                                    e.target.style.filter = 'brightness(1)';
-                                }}
-                                onMouseDown={(e) => {
-                                    e.target.style.transform = 'scale(0.95)';
-                                    e.target.style.filter = 'brightness(0.9)';
-                                }}
-                                onMouseUp={(e) => {
-                                    e.target.style.transform = 'scale(1.05)';
-                                    e.target.style.filter = 'brightness(1.15)';
-                                }}
-                            >
-                                BACK
-                            </button>
                         </div>
                     </div>
                 )}
