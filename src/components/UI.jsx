@@ -1795,7 +1795,7 @@ function GameUI() {
                                     onClick={() => window.location.reload()}
                                     style={{
                                         width: '300px',
-                                        height: '200px',
+                                        height: '145px',
                                         backgroundImage: 'url(assets/KNAPP1.png)',
                                         backgroundSize: '100% 100%',
                                         backgroundPosition: 'center',
@@ -1840,7 +1840,7 @@ function GameUI() {
                                     }}
                                     style={{
                                         width: '300px',
-                                        height: '200px',
+                                        height: '145px',
                                         backgroundImage: 'url(assets/KNAPP1.png)',
                                         backgroundSize: '100% 100%',
                                         backgroundPosition: 'center',
