@@ -1914,8 +1914,8 @@ function GameUI() {
                                 }}
                                 style={{
                                     position: 'absolute',
-                                    left: '30px',
-                                    top: '30px',
+                                    left: '40px',
+                                    top: '60px',
                                     width: '80px',
                                     height: '80px',
                                     backgroundImage: 'url(assets/WeaponSlotTestGame.png)',
