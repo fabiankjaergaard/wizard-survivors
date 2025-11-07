@@ -1906,7 +1906,7 @@ function GameUI() {
                             padding: '120px 40px 40px 40px',
                             overflow: 'hidden'
                         }}>
-                            {/* Back Arrow Button */}
+                            {/* Back button */}
                             <button
                                 onClick={() => {
                                     setShowMusicControl(false);
@@ -1914,41 +1914,36 @@ function GameUI() {
                                 }}
                                 style={{
                                     position: 'absolute',
-                                    left: '-15px',
-                                    top: '80px',
-                                    width: '50px',
-                                    height: '50px',
-                                    backgroundColor: '#8b6f47',
-                                    border: '3px solid #4a3728',
-                                    borderRadius: '0',
-                                    cursor: 'url(assets/wand-cursor-small.png) 8 8, auto',
+                                    left: '30px',
+                                    top: '30px',
+                                    width: '80px',
+                                    height: '80px',
+                                    backgroundImage: 'url(assets/WeaponSlotTestGame.png)',
+                                    backgroundSize: '100% 100%',
+                                    backgroundPosition: 'center',
+                                    backgroundRepeat: 'no-repeat',
+                                    border: 'none',
+                                    cursor: 'default',
                                     imageRendering: 'pixelated',
-                                    fontFamily: '"Press Start 2P", monospace',
-                                    fontSize: '28px',
-                                    color: '#2a1810',
-                                    fontWeight: 'bold',
+                                    transition: 'transform 0.15s ease, filter 0.15s ease',
+                                    backgroundColor: 'transparent',
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
-                                    transition: 'transform 0.15s ease, filter 0.15s ease',
-                                    filter: 'brightness(1)',
-                                    boxShadow: '4px 4px 0 rgba(0,0,0,0.3)'
+                                    fontSize: '20px',
+                                    color: 'white',
+                                    fontWeight: 'bold',
+                                    padding: 0,
+                                    paddingBottom: '2px',
+                                    textShadow: '2px 2px 4px rgba(0,0,0,0.5)'
                                 }}
                                 onMouseEnter={(e) => {
-                                    e.target.style.transform = 'scale(1.1)';
-                                    e.target.style.filter = 'brightness(1.2)';
+                                    e.currentTarget.style.transform = 'scale(1.1)';
+                                    e.currentTarget.style.filter = 'brightness(1.2)';
                                 }}
                                 onMouseLeave={(e) => {
-                                    e.target.style.transform = 'scale(1)';
-                                    e.target.style.filter = 'brightness(1)';
-                                }}
-                                onMouseDown={(e) => {
-                                    e.target.style.transform = 'scale(0.95)';
-                                    e.target.style.filter = 'brightness(0.8)';
-                                }}
-                                onMouseUp={(e) => {
-                                    e.target.style.transform = 'scale(1.1)';
-                                    e.target.style.filter = 'brightness(1.2)';
+                                    e.currentTarget.style.transform = 'scale(1)';
+                                    e.currentTarget.style.filter = 'brightness(1)';
                                 }}
                             >
                                 ←
