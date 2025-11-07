@@ -145,6 +145,7 @@ function GameUI() {
     const [showDebugMenu, setShowDebugMenu] = useState(false);
     const [coins, setCoins] = useState(0);
     const [showMusicControl, setShowMusicControl] = useState(false);
+    const [showMusicHover, setShowMusicHover] = useState(false);
 
     // Player progression data (persists between games)
     const [playerData, setPlayerData] = useState({
@@ -669,8 +670,14 @@ function GameUI() {
                         zIndex: 3000,
                         padding: 0
                     }}
-                    onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-                    onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                    onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = 'scale(1.05)';
+                        setShowMusicHover(true);
+                    }}
+                    onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'scale(1)';
+                        setShowMusicHover(false);
+                    }}
                     >
                         <span style={{
                             fontSize: '24px',
@@ -685,6 +692,69 @@ function GameUI() {
                             ♪
                         </span>
                     </button>
+
+                    {/* Next Track Button - Appears on Hover */}
+                    {showMusicHover && (
+                        <button onClick={() => {
+                            const currentIndex = MUSIC_TRACKS.findIndex(t => t.id === playerData.selectedTrack);
+                            const nextIndex = (currentIndex + 1) % MUSIC_TRACKS.length;
+                            const nextTrack = MUSIC_TRACKS[nextIndex];
+
+                            if (window.currentMusicAudio) {
+                                window.currentMusicAudio.pause();
+                                window.currentMusicAudio = null;
+                            }
+
+                            const audio = new Audio(nextTrack.path);
+                            audio.volume = playerData.musicVolume;
+                            audio.loop = true;
+                            audio.play().catch(err => console.error('Error playing music:', err));
+                            window.currentMusicAudio = audio;
+                            setPlayerData({...playerData, selectedTrack: nextTrack.id});
+                        }} style={{
+                            position: 'absolute',
+                            top: '20px',
+                            right: '110px',
+                            width: '80px',
+                            height: '80px',
+                            backgroundImage: 'url(assets/WeaponSlotTestGame.png)',
+                            backgroundSize: '100% 100%',
+                            backgroundPosition: 'center',
+                            backgroundRepeat: 'no-repeat',
+                            border: 'none',
+                            backgroundColor: 'transparent',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            cursor: 'default',
+                            imageRendering: 'pixelated',
+                            transition: 'transform 0.1s, opacity 0.2s',
+                            zIndex: 3000,
+                            padding: 0,
+                            opacity: 1
+                        }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.transform = 'scale(1.05)';
+                            setShowMusicHover(true);
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.transform = 'scale(1)';
+                        }}
+                        >
+                            <span style={{
+                                fontSize: '24px',
+                                color: 'white',
+                                fontFamily: '"Press Start 2P", monospace',
+                                textShadow: '2px 2px 0 rgba(0,0,0,0.5)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                lineHeight: 1
+                            }}>
+                                ⏭
+                            </span>
+                        </button>
+                    )}
 
                     {currentMenuView === 'main' && null}
 
