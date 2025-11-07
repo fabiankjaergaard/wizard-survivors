@@ -1885,55 +1885,6 @@ function GameUI() {
                 {/* In-Game Music Menu */}
                 {showMusicControl && (
                     <div className="modal-overlay">
-                        {/* Back Arrow Button */}
-                        <button
-                            onClick={() => {
-                                setShowMusicControl(false);
-                                setShowPaused(true);
-                            }}
-                            style={{
-                                position: 'absolute',
-                                left: '20px',
-                                top: '50%',
-                                transform: 'translateY(-50%)',
-                                width: '60px',
-                                height: '60px',
-                                backgroundColor: '#8b6f47',
-                                border: '3px solid #4a3728',
-                                borderRadius: '0',
-                                cursor: 'url(assets/wand-cursor-small.png) 8 8, auto',
-                                imageRendering: 'pixelated',
-                                fontFamily: '"Press Start 2P", monospace',
-                                fontSize: '30px',
-                                color: '#2a1810',
-                                fontWeight: 'bold',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                transition: 'transform 0.15s ease, filter 0.15s ease',
-                                filter: 'brightness(1)',
-                                boxShadow: '4px 4px 0 rgba(0,0,0,0.3)'
-                            }}
-                            onMouseEnter={(e) => {
-                                e.target.style.transform = 'translateY(-50%) scale(1.1)';
-                                e.target.style.filter = 'brightness(1.2)';
-                            }}
-                            onMouseLeave={(e) => {
-                                e.target.style.transform = 'translateY(-50%) scale(1)';
-                                e.target.style.filter = 'brightness(1)';
-                            }}
-                            onMouseDown={(e) => {
-                                e.target.style.transform = 'translateY(-50%) scale(0.95)';
-                                e.target.style.filter = 'brightness(0.8)';
-                            }}
-                            onMouseUp={(e) => {
-                                e.target.style.transform = 'translateY(-50%) scale(1.1)';
-                                e.target.style.filter = 'brightness(1.2)';
-                            }}
-                        >
-                            ←
-                        </button>
-
                         <div style={{
                             position: 'relative',
                             width: 'min(500px, 90vw)',
@@ -1955,6 +1906,54 @@ function GameUI() {
                             padding: '120px 40px 40px 40px',
                             overflow: 'hidden'
                         }}>
+                            {/* Back Arrow Button */}
+                            <button
+                                onClick={() => {
+                                    setShowMusicControl(false);
+                                    setShowPaused(true);
+                                }}
+                                style={{
+                                    position: 'absolute',
+                                    left: '30px',
+                                    top: '30px',
+                                    width: '50px',
+                                    height: '50px',
+                                    backgroundColor: '#8b6f47',
+                                    border: '3px solid #4a3728',
+                                    borderRadius: '0',
+                                    cursor: 'url(assets/wand-cursor-small.png) 8 8, auto',
+                                    imageRendering: 'pixelated',
+                                    fontFamily: '"Press Start 2P", monospace',
+                                    fontSize: '28px',
+                                    color: '#2a1810',
+                                    fontWeight: 'bold',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    transition: 'transform 0.15s ease, filter 0.15s ease',
+                                    filter: 'brightness(1)',
+                                    boxShadow: '4px 4px 0 rgba(0,0,0,0.3)'
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.target.style.transform = 'scale(1.1)';
+                                    e.target.style.filter = 'brightness(1.2)';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.target.style.transform = 'scale(1)';
+                                    e.target.style.filter = 'brightness(1)';
+                                }}
+                                onMouseDown={(e) => {
+                                    e.target.style.transform = 'scale(0.95)';
+                                    e.target.style.filter = 'brightness(0.8)';
+                                }}
+                                onMouseUp={(e) => {
+                                    e.target.style.transform = 'scale(1.1)';
+                                    e.target.style.filter = 'brightness(1.2)';
+                                }}
+                            >
+                                ←
+                            </button>
+
                             {/* Volume Control */}
                             <div style={{
                                 width: '100%',
