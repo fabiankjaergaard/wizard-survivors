@@ -1884,7 +1884,53 @@ function GameUI() {
 
                 {/* In-Game Music Menu */}
                 {showMusicControl && (
-                    <div className="modal-overlay">
+                    <div className="modal-overlay" style={{
+                        position: 'relative'
+                    }}>
+                        {/* Back button */}
+                        <button
+                            onClick={() => {
+                                setShowMusicControl(false);
+                                setShowPaused(true);
+                            }}
+                            style={{
+                                position: 'absolute',
+                                left: 'calc(50% - 320px)',
+                                top: '50%',
+                                transform: 'translateY(-50%)',
+                                    width: '80px',
+                                height: '80px',
+                                backgroundImage: 'url(assets/WeaponSlotTestGame.png)',
+                                backgroundSize: '100% 100%',
+                                backgroundPosition: 'center',
+                                backgroundRepeat: 'no-repeat',
+                                border: 'none',
+                                cursor: 'default',
+                                imageRendering: 'pixelated',
+                                transition: 'transform 0.15s ease, filter 0.15s ease',
+                                backgroundColor: 'transparent',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontSize: '20px',
+                                color: 'white',
+                                fontWeight: 'bold',
+                                padding: 0,
+                                paddingBottom: '2px',
+                                textShadow: '2px 2px 4px rgba(0,0,0,0.5)'
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)';
+                                e.currentTarget.style.filter = 'brightness(1.2)';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
+                                e.currentTarget.style.filter = 'brightness(1)';
+                            }}
+                        >
+                            ←
+                        </button>
+
                         <div style={{
                             position: 'relative',
                             width: 'min(500px, 90vw)',
@@ -1906,49 +1952,6 @@ function GameUI() {
                             padding: '120px 40px 40px 40px',
                             overflow: 'hidden'
                         }}>
-                            {/* Back button */}
-                            <button
-                                onClick={() => {
-                                    setShowMusicControl(false);
-                                    setShowPaused(true);
-                                }}
-                                style={{
-                                    position: 'absolute',
-                                    left: '40px',
-                                    top: '60px',
-                                    width: '80px',
-                                    height: '80px',
-                                    backgroundImage: 'url(assets/WeaponSlotTestGame.png)',
-                                    backgroundSize: '100% 100%',
-                                    backgroundPosition: 'center',
-                                    backgroundRepeat: 'no-repeat',
-                                    border: 'none',
-                                    cursor: 'default',
-                                    imageRendering: 'pixelated',
-                                    transition: 'transform 0.15s ease, filter 0.15s ease',
-                                    backgroundColor: 'transparent',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    fontSize: '20px',
-                                    color: 'white',
-                                    fontWeight: 'bold',
-                                    padding: 0,
-                                    paddingBottom: '2px',
-                                    textShadow: '2px 2px 4px rgba(0,0,0,0.5)'
-                                }}
-                                onMouseEnter={(e) => {
-                                    e.currentTarget.style.transform = 'scale(1.1)';
-                                    e.currentTarget.style.filter = 'brightness(1.2)';
-                                }}
-                                onMouseLeave={(e) => {
-                                    e.currentTarget.style.transform = 'scale(1)';
-                                    e.currentTarget.style.filter = 'brightness(1)';
-                                }}
-                            >
-                                ←
-                            </button>
-
                             {/* Volume Control */}
                             <div style={{
                                 width: '100%',
