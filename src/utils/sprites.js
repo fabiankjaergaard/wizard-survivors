@@ -20,6 +20,18 @@ backgroundTexture.src = 'assets/Background3TestGame.png';
 const rewardChestSprite = new Image();
 rewardChestSprite.src = 'assets/RewardChestGame.png';
 
+// Load Homing Missile Sprite
+const homingMissileSprite = new Image();
+homingMissileSprite.src = 'assets/HomingMissileGame.png';
+
+// Load Ghost Wolf Sprite
+const ghostWolfSprite = new Image();
+ghostWolfSprite.src = 'assets/GhostWolfProjectileNonPixelGame.png';
+
+// Expose sprites to window for global access
+window.homingMissileSprite = homingMissileSprite;
+window.ghostWolfSprite = ghostWolfSprite;
+
 // LPC Spritesheet has all animations in one image
 const wizardSprites = {
     lpc: wizardLPCSprite
