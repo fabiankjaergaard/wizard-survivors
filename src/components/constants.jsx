@@ -22,7 +22,7 @@ const getWeaponIcon = (weaponType) => {
         'fireball': { type: 'image', src: 'assets/FireBallProjectileGame.png' },
         'ice': { type: 'image', src: 'assets/IceSpikeGame.png' },
         'arcane': { type: 'image', src: 'assets/OrbProjectileGame.png' },
-        'homing_missile': { type: 'text', value: 'HMS' },
+        'homing_missile': { type: 'image', src: 'assets/HomingMissileGame.png' },
         'chain_lightning': { type: 'image', src: 'assets/TornadoProjectileGame.png' },
         'ghost_wolf': { type: 'image', src: 'assets/GhostWolfProjectileNonPixelGame.png' },
         'black_hole': { type: 'text', value: 'BHO' },
