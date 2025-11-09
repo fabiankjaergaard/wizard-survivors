@@ -236,25 +236,47 @@ class Projectile {
     draw() {
         const screen = toScreen(this.x, this.y);
 
-        // Magic missile uses custom sprite with rotation
+        // Magic missile with trail effect
         if (this.weapon.type === 'magic_missile') {
-            const projectileImg = new Image();
-            projectileImg.src = '/assets/MagicOrbProjectileBasicGame.png';
-
-            // Calculate angle based on velocity direction
-            const angle = Math.atan2(this.vy, this.vx);
-
+            // Draw trail first (behind projectile)
             ctx.save();
-            ctx.translate(screen.x, screen.y);
-            ctx.rotate(angle);
+            for (let i = 0; i < this.trail.length; i++) {
+                const trailPos = this.trail[i];
+                const trailScreen = toScreen(trailPos.x, trailPos.y);
+                const alpha = (i + 1) / this.trail.length; // Fade out older trail segments
+                const trailSize = 5 * alpha;
 
-            // Add glow effect
+                ctx.globalAlpha = alpha * 0.6;
+                ctx.fillStyle = '#a855f7';
+                ctx.shadowBlur = 10 * alpha;
+                ctx.shadowColor = '#a855f7';
+                ctx.beginPath();
+                ctx.arc(trailScreen.x, trailScreen.y, trailSize, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.restore();
+
+            // Draw main projectile
+            ctx.save();
             ctx.shadowBlur = 15;
             ctx.shadowColor = '#a855f7';
 
-            // Draw projectile image (centered)
-            const size = 40; // Size of the sprite
-            ctx.drawImage(projectileImg, -size/2, -size/2, size, size);
+            // Main orb
+            ctx.fillStyle = '#a855f7';
+            ctx.beginPath();
+            ctx.arc(screen.x, screen.y, 6, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Outer glow ring
+            ctx.strokeStyle = '#c084fc';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Inner bright core
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.arc(screen.x, screen.y, 2, 0, Math.PI * 2);
+            ctx.fill();
 
             ctx.restore();
             ctx.shadowBlur = 0;

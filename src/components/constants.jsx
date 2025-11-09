@@ -24,7 +24,7 @@ const getWeaponIcon = (weaponType) => {
         'arcane': { type: 'image', src: 'assets/OrbProjectileGame.png' },
         'homing_missile': { type: 'text', value: 'HMS' },
         'chain_lightning': { type: 'image', src: 'assets/TornadoProjectileGame.png' },
-        'spirit_wolf': { type: 'image', src: 'assets/GhostWolfGame.png' },
+        'ghost_wolf': { type: 'image', src: 'assets/GhostWolfProjectileNonPixelGame.png' },
         'black_hole': { type: 'text', value: 'BHO' },
         'poison_cloud': { type: 'text', value: 'PSN' },
         'crystal_shard': { type: 'text', value: 'CRY' },

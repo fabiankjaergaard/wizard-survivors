@@ -79,40 +79,22 @@ class SpiritWolf {
     draw() {
         const screen = toScreen(this.x, this.y);
 
-        ctx.save();
-
-        // Ghost effect - pulsing transparency
-        const alpha = 0.7 + Math.sin(Date.now() * 0.005) * 0.2;
-        ctx.globalAlpha = alpha;
-
-        // Glow effect
-        ctx.shadowBlur = 20;
-        ctx.shadowColor = '#8b5cf6';
-
-        // Load and draw the ghost wolf sprite
-        if (!this.sprite) {
-            this.sprite = new Image();
-            this.sprite.src = 'assets/GhostWolfGame.png';
-        }
-
-        if (this.sprite.complete) {
-            const spriteSize = this.size * 3; // Make it bigger than the old blob
+        // Use the ghost wolf sprite
+        if (ghostWolfSprite && ghostWolfSprite.complete) {
+            const spriteSize = this.size * 3;
             ctx.drawImage(
-                this.sprite,
+                ghostWolfSprite,
                 screen.x - spriteSize / 2,
                 screen.y - spriteSize / 2,
                 spriteSize,
                 spriteSize
             );
         } else {
-            // Fallback circle while loading
-            ctx.fillStyle = '#8b5cf6';
+            // Fallback circle if sprite not loaded
+            ctx.fillStyle = '#a855f7';
             ctx.beginPath();
             ctx.arc(screen.x, screen.y, this.size, 0, Math.PI * 2);
             ctx.fill();
         }
-
-        ctx.shadowBlur = 0;
-        ctx.restore();
     }
 }

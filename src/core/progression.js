@@ -228,16 +228,16 @@ function levelUp() {
         });
     }
 
-    if (canAddWeapon() && !hasWeapon('spirit_wolf')) {
+    if (canAddWeapon() && !hasWeapon('ghost_wolf')) {
         allUpgrades.push({
-            name: '🐺 Spirit Wolf',
+            name: '🐺 Ghost Wolf',
             desc: 'Summon ghost wolves (max 3)',
             type: 'new_weapon',
-            weaponType: 'spirit_wolf',
+            weaponType: 'ghost_wolf',
             apply: () => {
                 gameState.player.weapons.push({
-                    type: 'spirit_wolf',
-                    name: 'Spirit Wolf',
+                    type: 'ghost_wolf',
+                    name: 'Ghost Wolf',
                     damage: 18,
                     range: 0,
                     cooldown: 5000,

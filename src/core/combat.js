@@ -115,8 +115,8 @@ function autoAttack(currentTime) {
                 return;
             }
 
-            // Spirit Wolf - summon wolf companion
-            if (weapon.type === 'spirit_wolf') {
+            // Ghost Wolf - summon wolf companion
+            if (weapon.type === 'ghost_wolf') {
                 // Max 3 wolves at a time
                 if (gameState.spiritWolves.length < 3) {
                     const angle = Math.random() * Math.PI * 2;

@@ -2598,14 +2598,23 @@ function CharacterMenu({ playerData, setPlayerData, onBack }) {
     };
 
     return (
-        <div className="submenu" style={{ position: 'relative' }}>
+        <div style={{
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: '20px',
+            padding: '40px',
+            position: 'relative'
+        }}>
             {/* Back button */}
             <button
                 onClick={onBack}
                 style={{
                     position: 'absolute',
-                    left: '20px',
-                    top: '20px',
+                    left: '40px',
+                    top: '40px',
                     width: '80px',
                     height: '80px',
                     backgroundImage: 'url(assets/WeaponSlotTestGame.png)',
@@ -2640,44 +2649,77 @@ function CharacterMenu({ playerData, setPlayerData, onBack }) {
                 ←
             </button>
 
-            <h2>EQUIPMENT</h2>
-
             {/* Main Grid: Character on Left, Inventory on Right */}
             <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'auto 1fr',
-                gap: '20px'
+                display: 'flex',
+                gap: '20px',
+                height: '100%',
+                alignItems: 'center'
             }}>
                 {/* Character Sheet - LEFT SIDE */}
-                <div style={{
-                    background: '#d4c5a0',
-                    padding: '20px',
+                <div className="main-menu-box" style={{
+                    position: 'relative',
+                    width: '400px',
+                    height: '700px',
+                    backgroundImage: 'url(assets/MainMenuBoxGame.png)',
+                    backgroundSize: '100% 100%',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    border: 'none',
                     borderRadius: '0',
-                    border: '8px solid #8b6f47',
-                    boxShadow: '0 0 0 4px #5a4530, inset 0 0 0 6px #f5e6c8',
+                    boxShadow: 'none',
+                    imageRendering: 'pixelated',
+                    fontFamily: '"Press Start 2P", monospace',
                     display: 'flex',
                     flexDirection: 'column',
-                    imageRendering: 'pixelated',
-                    fontFamily: '"Press Start 2P", monospace'
+                    justifyContent: 'flex-start',
+                    alignItems: 'center',
+                    padding: '0',
+                    overflow: 'visible',
+                    boxSizing: 'border-box'
                 }}>
-                    <h3 style={{
-                        marginBottom: '15px',
-                        color: '#2a5840',
-                        fontSize: '12px',
+                    {/* Equipment Title - overlapping top */}
+                    <div style={{
+                        position: 'absolute',
+                        top: '30px',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        fontSize: '16px',
                         fontWeight: 'bold',
+                        color: '#2a5840',
                         textTransform: 'uppercase',
-                        letterSpacing: '1px',
-                        textAlign: 'center',
-                        textShadow: '1px 1px 0px #8b6f47'
-                    }}>EQUIPPED GEAR</h3>
+                        letterSpacing: '2px',
+                        textShadow: '2px 2px 0px #8b6f47',
+                        zIndex: 10,
+                        textAlign: 'center'
+                    }}>
+                        EQUIPMENT
+                    </div>
 
+                    <div style={{
+                        position: 'absolute',
+                        top: '140px',
+                        left: '45px',
+                        right: '45px',
+                        bottom: '110px',
+                        overflowY: 'auto',
+                        overflowX: 'visible',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        gap: '15px',
+                        paddingTop: '20px',
+                        paddingBottom: '20px',
+                        paddingLeft: '10px',
+                        paddingRight: '20px'
+                    }}>
                     <div style={{
                         display: 'grid',
                         gridTemplateColumns: '1fr auto 1fr',
                         gap: '10px',
                         alignItems: 'center',
                         marginBottom: '12px',
-                        flex: 1
+                        width: '100%'
                     }}>
                         {/* Left Gear Slots - 5 slots vertical */}
                         <div style={{
@@ -2807,32 +2849,71 @@ function CharacterMenu({ playerData, setPlayerData, onBack }) {
                             </div>
                         </div>
                     </div>
+                    </div>
                 </div>
 
                 {/* Inventory - RIGHT SIDE */}
-                <div style={{
-                    background: '#d4c5a0',
-                    padding: '20px',
+                <div className="main-menu-box" style={{
+                    position: 'relative',
+                    width: '600px',
+                    height: '700px',
+                    backgroundImage: 'url(assets/MainMenuBoxGame.png)',
+                    backgroundSize: '100% 100%',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    border: 'none',
                     borderRadius: '0',
-                    border: '8px solid #8b6f47',
-                    boxShadow: '0 0 0 4px #5a4530, inset 0 0 0 6px #f5e6c8',
+                    boxShadow: 'none',
                     imageRendering: 'pixelated',
-                    fontFamily: '"Press Start 2P", monospace'
+                    fontFamily: '"Press Start 2P", monospace',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'flex-start',
+                    alignItems: 'center',
+                    padding: '0',
+                    overflow: 'visible',
+                    boxSizing: 'border-box'
                 }}>
-                    <h3 style={{
-                        marginBottom: '15px',
-                        color: '#2a5840',
-                        fontSize: '12px',
+                    {/* Inventory Title - overlapping top */}
+                    <div style={{
+                        position: 'absolute',
+                        top: '30px',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        fontSize: '16px',
                         fontWeight: 'bold',
+                        color: '#2a5840',
                         textTransform: 'uppercase',
-                        letterSpacing: '1px',
-                        textAlign: 'center',
-                        textShadow: '1px 1px 0px #8b6f47'
-                    }}>INVENTORY ({playerData.inventory.length}/32)</h3>
+                        letterSpacing: '2px',
+                        textShadow: '2px 2px 0px #8b6f47',
+                        zIndex: 10,
+                        textAlign: 'center'
+                    }}>
+                        INVENTORY ({playerData.inventory.length}/32)
+                    </div>
+
+                    <div style={{
+                        position: 'absolute',
+                        top: '140px',
+                        left: '45px',
+                        right: '45px',
+                        bottom: '110px',
+                        overflowY: 'auto',
+                        overflowX: 'visible',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        gap: '15px',
+                        paddingTop: '20px',
+                        paddingBottom: '20px',
+                        paddingLeft: '10px',
+                        paddingRight: '20px'
+                    }}>
                     <div style={{
                         display: 'grid',
-                        gridTemplateColumns: 'repeat(16, 1fr)',
-                        gap: '5px'
+                        gridTemplateColumns: 'repeat(8, 1fr)',
+                        gap: '8px',
+                        width: '100%'
                     }}>
                         {/* Render all 32 slots (4 rows x 8 columns) */}
                         {Array.from({ length: 32 }).map((_, index) => {
@@ -2914,11 +2995,10 @@ function CharacterMenu({ playerData, setPlayerData, onBack }) {
                                 );
                             }
                         })}
+                    </div>
+                </div>
                 </div>
             </div>
-            </div>
-
-            <BackButton onClick={onBack} />
 
             {/* Comparison Tooltip */}
             {hoveredItem && (
